@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
+import { useI18n } from '@/contexts/I18nContext'
 import { 
   FileText, 
   Calendar, 
@@ -11,13 +12,12 @@ import {
   Code, 
   Eye,
   Download,
-  Trophy,
-  Clock,
-  Target
+  Trophy
 } from 'lucide-react'
 
 const Writeups = () => {
   const ref = useRef(null)
+  const { t } = useI18n()
   const isInView = useInView(ref, { once: true })
   const [selectedCategory, setSelectedCategory] = useState('All')
 
@@ -42,78 +42,103 @@ const Writeups = () => {
 
   const categories = ['All', 'Web Exploitation', 'Cryptography', 'Forensics', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
 
+  // Mis à jour pour référencer vos PDFs dans public/writeups
   const writeups = [
     {
-      title: "Vulnversity - TryHackMe Walkthrough",
-      description: "Complete walkthrough of the Vulnversity room covering file upload vulnerabilities and privilege escalation techniques.",
+      title: "Bookmarklet - picoCTF",
+      description: "Walkthrough du challenge Bookmarklet (picoCTF).",
       category: "Web Exploitation",
       difficulty: "Easy",
-      date: "2024-01-15",
-      readTime: "15 min",
-      tags: ["File Upload", "Privilege Escalation", "Linux"],
-      link: "#",
-      featured: true,
-      points: 120
+      date: "2025-01-01",
+      // readTime removed
+      tags: ["picoCTF", "JavaScript", "Bookmarklet"],
+      link: "/writeups/Bookmarklet_picoCTF.pdf",
+      featured: false,
+      // points removed
     },
     {
-      title: "Blue - Windows Privilege Escalation",
-      description: "Step-by-step guide to exploiting the Blue machine, covering SMB vulnerabilities and Windows privilege escalation.",
-      category: "Binary Exploitation",
+      title: "GET aHEAD",
+      description: "Exploitation de la technique HTTP GET aHEAD.",
+      category: "Web Exploitation",
       difficulty: "Easy",
-      date: "2024-01-14",
-      readTime: "20 min",
-      tags: ["SMB", "Windows", "EternalBlue"],
-      link: "#",
-      featured: true,
-      points: 100
+      date: "2025-01-02",
+      // readTime removed
+      tags: ["picoCTF", "HTTP", "Headers", "Web"],
+      link: "/writeups/GET_aHEAD.pdf",
+      featured: false,
+      // points removed
     },
     {
-      title: "Ice - Web Application Security",
-      description: "Detailed analysis of the Ice room focusing on web application vulnerabilities and exploitation techniques.",
+      title: "Includes - picoCTF",
+      description: "Analyse du challenge Includes (picoCTF).",
+      category: "Web Exploitation",
+      difficulty: "Easy",
+      date: "2025-01-03",
+      // readTime removed
+      tags: ["picoCTF", "Web", "Includes"],
+      link: "/writeups/Includes_picoCTF.pdf",
+      featured: false,
+      // points removed
+    },
+    {
+      title: "Intro to Burp - picoCTF",
+      description: "Introduction à Burp Suite sur picoCTF.",
+      category: "Web Exploitation",
+      difficulty: "Easy",
+      date: "2025-01-04",
+      // readTime removed
+      tags: ["Burp Suite", "Proxy", "picoCTF"],
+      link: "/writeups/introtoburp_picoctf.pdf",
+      featured: false,
+      // points removed
+    },
+    {
+      title: "OWASP Juice Shop",
+      description: "Rapport d'exercices OWASP Juice Shop.",
       category: "Web Exploitation",
       difficulty: "Medium",
-      date: "2024-01-13",
-      readTime: "25 min",
-      tags: ["Web App", "SQL Injection", "XSS"],
-      link: "#",
+      date: "2025-01-05",
+      // readTime removed
+      tags: ["TryHackMe", "OWASP", "Juice Shop", "Web"],
+      link: "/writeups/OWASP_Juice_Shop.pdf",
       featured: false,
-      points: 150
+      // points removed
     },
     {
-      title: "LazyAdmin - Linux Privilege Escalation",
-      description: "Comprehensive writeup covering the LazyAdmin room with focus on Linux privilege escalation methods.",
-      category: "Binary Exploitation",
-      difficulty: "Easy",
-      date: "2024-01-12",
-      readTime: "18 min",
-      tags: ["Linux", "Privilege Escalation", "SUID"],
-      link: "#",
-      featured: false,
-      points: 110
-    },
-    {
-      title: "Basic Pentesting - Network Reconnaissance",
-      description: "Complete guide to network reconnaissance and basic penetration testing methodologies.",
+      title: "Breaching Active Directory",
+      description: "Rapport de compromission Active Directory.",
       category: "Forensics",
-      difficulty: "Easy",
-      date: "2024-01-10",
-      readTime: "30 min",
-      tags: ["Network", "Reconnaissance", "Nmap"],
-      link: "#",
-      featured: false,
-      points: 200
+      difficulty: "Medium",
+      date: "2025-01-06",
+      // readTime removed
+      tags: ["TryHackMe", "Active Directory", "Windows", "Recon"],
+      link: "/writeups/Report_Breaching_Active_Directory.pdf",
+      featured: true,
+      // points removed
     },
     {
-      title: "RootMe - Web Application Challenges",
-      description: "Solving various web application security challenges including file uploads and directory traversal.",
+      title: "PickleRick - TryHackMe",
+      description: "Writeup du challenge PickleRick.",
+      category: "Web Exploitation",
+      difficulty: "Easy",
+      date: "2025-01-07",
+      // readTime removed
+      tags: ["TryHackMe", "CTF", "Web"],
+      link: "/writeups/Report_PickleRick_Challenge_TryHackMe.pdf",
+      featured: true,
+      // points removed
+    },
+    {
+      title: "WebDecode - picoCTF",
+      description: "Résolution du challenge WebDecode (picoCTF).",
       category: "Web Exploitation",
       difficulty: "Medium",
-      date: "2024-01-08",
-      readTime: "35 min",
-      tags: ["Web Security", "Directory Traversal", "File Upload"],
-      link: "#",
+      date: "2025-01-08",
+      // readTime removed
+      tags: ["picoCTF", "Decode", "Web"],
+      link: "/writeups/WebDecode_picoCTF.pdf",
       featured: false,
-      points: 180
+      // points removed
     }
   ]
 
@@ -143,10 +168,10 @@ const Writeups = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              CTF Writeups & Solutions
+              {t('section_writeups_title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-              Detailed walkthroughs and solutions for various cybersecurity challenges
+              {t('section_writeups_subtitle')}
             </p>
             
             {/* Category Filter */}
@@ -203,14 +228,6 @@ const Writeups = () => {
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(writeup.difficulty)}`}>
                       {writeup.difficulty}
                     </span>
-                    <div className="flex items-center space-x-1 text-gray-400">
-                      <Clock size={14} />
-                      <span className="text-sm">{writeup.readTime}</span>
-                    </div>
-                    <div className="flex items-center space-x-1 text-primary-400">
-                      <Target size={14} />
-                      <span className="text-sm">{writeup.points} pts</span>
-                    </div>
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mb-4">
@@ -276,10 +293,6 @@ const Writeups = () => {
                   
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
                     <span>{writeup.date}</span>
-                    <div className="flex items-center space-x-3">
-                      <span>{writeup.readTime}</span>
-                      <span>{writeup.points} pts</span>
-                    </div>
                   </div>
                   
                   <div className="flex flex-wrap gap-1 mb-4">

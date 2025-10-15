@@ -2,9 +2,12 @@
 
 import { motion } from 'framer-motion'
 import { Shield, Terminal, Code, ArrowDown, Github, Linkedin, Mail, User } from 'lucide-react'
+import { useI18n } from '@/contexts/I18nContext'
 import Image from 'next/image'
 
 const Hero = () => {
+  const { t } = useI18n()
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -110,7 +113,7 @@ const Hero = () => {
                 variants={itemVariants}
                 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-6"
               >
-                Cybersecurity & Pentester Student
+                {t('hero_subtitle')}
               </motion.h2>
 
               {/* Description */}
@@ -118,9 +121,7 @@ const Hero = () => {
                 variants={itemVariants}
                 className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed"
               >
-                Engineering student specialized in cybersecurity and pentesting. 
-                Looking for a 6-month end of study internship starting March 2026 in Pentest or Red Team. 
-                Top 4% on TryHackMe with expertise in OWASP Top 10, web security, and penetration testing tools.
+                {t('hero_description')}
               </motion.p>
 
               {/* CTA Buttons */}
@@ -134,7 +135,7 @@ const Hero = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200 cyber-border"
                 >
-                  Learn More About Me
+                  {t('hero_cta_learn_more')}
                 </motion.a>
                 <motion.a
                   href="#resume"
@@ -142,7 +143,7 @@ const Hero = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-3 border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white font-semibold rounded-lg transition-all duration-200"
                 >
-                  View Resume
+                  {t('hero_cta_view_resume')}
                 </motion.a>
               </motion.div>
 

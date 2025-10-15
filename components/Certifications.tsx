@@ -5,9 +5,11 @@ import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Award, ExternalLink, Calendar, CheckCircle, Clock, Download } from 'lucide-react'
 import Image from 'next/image'
+import { useI18n } from '@/contexts/I18nContext'
 
 const Certifications = () => {
   const ref = useRef(null)
+  const { t } = useI18n()
   const isInView = useInView(ref, { once: true })
 
   const containerVariants = {
@@ -29,72 +31,51 @@ const Certifications = () => {
     }
   }
 
+  // Mis à jour pour utiliser vos PDF ajoutés dans public/certifications
   const certifications = [
     {
       id: 1,
-      name: "TryHackMe Pre Security",
+      name: "TryHackMe – Pre Security",
       issuer: "TryHackMe",
       status: "completed",
-      date: "2024",
-      badge: "/certifications/tryhackme-pre-security.png",
-      credential: "https://tryhackme.com/certificate/example",
-      description: "Fundamental cybersecurity concepts and terminology",
-      skills: ["Cybersecurity Basics", "Network Fundamentals", "Linux Basics"]
+      date: "2025",
+      badge: null,
+      credential: "/certifications/THM-2VA9D29GVH.pdf",
+      description: "Official TryHackMe certificate",
+      skills: ["Hands-on Labs", "Problem Solving", "Security Fundamentals"]
     },
     {
       id: 2,
-      name: "TryHackMe Cyber Security 101",
+      name: "TryHackMe – Jr Penetration Tester",
       issuer: "TryHackMe",
       status: "completed",
-      date: "2024",
-      badge: "/certifications/tryhackme-cybersecurity-101.png",
-      credential: "https://tryhackme.com/certificate/example",
-      description: "Introduction to cybersecurity principles and practices",
-      skills: ["Security Fundamentals", "Threat Modeling", "Risk Assessment"]
+      date: "2025",
+      badge: null,
+      credential: "/certifications/THM-D1HNOAGTNF.pdf",
+      description: "Official TryHackMe certificate",
+      skills: ["Penetration Testing", "Linux", "Networking"]
     },
     {
       id: 3,
-      name: "TryHackMe Jr Penetration Tester",
+      name: "TryHackMe – Web Fundamentals",
       issuer: "TryHackMe",
       status: "completed",
-      date: "2024",
-      badge: "/certifications/tryhackme-jr-pentester.png",
-      credential: "https://tryhackme.com/certificate/example",
-      description: "Junior-level penetration testing skills and methodologies",
-      skills: ["Penetration Testing", "Vulnerability Assessment", "OWASP Top 10"]
+      date: "2025",
+      badge: null,
+      credential: "/certifications/THM-IO0ENMJOKE.pdf",
+      description: "Official TryHackMe certificate",
+      skills: ["Web Security", "Enumeration", "Exploitation"]
     },
     {
       id: 4,
-      name: "TryHackMe Web Fundamentals",
+      name: "TryHackMe – Cyber Security 101",
       issuer: "TryHackMe",
       status: "completed",
-      date: "2024",
-      badge: "/certifications/tryhackme-web-fundamentals.png",
-      credential: "https://tryhackme.com/certificate/example",
-      description: "Web application security and OWASP Top 10 vulnerabilities",
-      skills: ["Web Security", "OWASP Top 10", "Burp Suite"]
-    },
-    {
-      id: 5,
-      name: "AWS Cloud Practitioner",
-      issuer: "Amazon Web Services",
-      status: "in_progress",
       date: "2025",
-      badge: "/certifications/aws-cloud-practitioner.png",
-      credential: null,
-      description: "Cloud computing fundamentals and AWS services",
-      skills: ["Cloud Computing", "AWS Services", "Security Best Practices"]
-    },
-    {
-      id: 6,
-      name: "CompTIA Security+",
-      issuer: "CompTIA",
-      status: "planned",
-      date: "2025",
-      badge: "/certifications/comptia-security-plus.png",
-      credential: null,
-      description: "Industry-standard cybersecurity certification",
-      skills: ["Network Security", "Risk Management", "Incident Response"]
+      badge: null,
+      credential: "/certifications/THM-UIEHN9AGLM.pdf",
+      description: "Official TryHackMe certificate",
+      skills: ["Recon", "Privilege Escalation", "Reporting"]
     }
   ]
 
@@ -137,10 +118,10 @@ const Certifications = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Certifications & Achievements
+              {t('section_certs_title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Industry-recognized certifications and learning achievements in cybersecurity
+              {t('section_certs_subtitle')}
             </p>
           </motion.div>
 
@@ -158,15 +139,21 @@ const Certifications = () => {
                 >
                   {/* Badge */}
                   <div className="flex justify-center mb-6">
-                    <div className="relative w-24 h-24 group-hover:scale-110 transition-transform duration-300">
-                      <Image
-                        src={cert.badge}
-                        alt={`${cert.name} badge`}
-                        fill
-                        className="object-contain"
-                        sizes="96px"
-                      />
-                    </div>
+                    {cert.badge ? (
+                      <div className="relative w-24 h-24 group-hover:scale-110 transition-transform duration-300">
+                        <Image
+                          src={cert.badge}
+                          alt={`${cert.name} badge`}
+                          fill
+                          className="object-contain"
+                          sizes="96px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 rounded-full bg-dark-700 flex items-center justify-center border border-dark-600">
+                        <Award className="w-10 h-10 text-primary-500" />
+                      </div>
+                    )}
                   </div>
 
                   {/* Certification Info */}
@@ -214,19 +201,19 @@ const Certifications = () => {
                         className="flex items-center space-x-1 px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition-colors"
                       >
                         <ExternalLink className="w-4 h-4" />
-                        <span>View</span>
+                        <span>View PDF</span>
                       </a>
                     )}
-                    <button
-                      onClick={() => {
-                        // Download certificate logic
-                        console.log(`Download ${cert.name}`)
-                      }}
-                      className="flex items-center space-x-1 px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 text-sm rounded-lg transition-colors"
-                    >
-                      <Download className="w-4 h-4" />
-                      <span>Download</span>
-                    </button>
+                    {cert.credential && (
+                      <a
+                        href={cert.credential}
+                        download
+                        className="flex items-center space-x-1 px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 text-sm rounded-lg transition-colors"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span>Download</span>
+                      </a>
+                    )}
                   </div>
                 </motion.div>
               )
