@@ -41,46 +41,62 @@ const TryHackMe = () => {
 
   // Sample data - replace with your actual TryHackMe data
   const [stats, setStats] = useState({
-    rank: 15000,
-    totalRooms: 45,
-    completedRooms: 32,
-    totalPoints: 2840,
-    streak: 15,
-    badges: 8
+    rank: 64461,
+    totalRooms: 750,
+    completedRooms: 119,
+    totalPoints: 11692,
+    streak: 118,
+    badges: 21
   })
 
   const learningPaths = [
     {
-      title: "Complete Beginner",
+      title: "Pre Security",
       progress: 100,
-      rooms: 12,
-      completed: 12,
+      rooms: 18,
+      completed: 18,
       difficulty: "Easy",
       color: "from-green-500 to-emerald-500"
     },
     {
       title: "Web Fundamentals",
-      progress: 85,
-      rooms: 20,
-      completed: 17,
-      difficulty: "Medium",
+      progress: 100,
+      rooms: 28,
+      completed: 28,
+      difficulty: "Easy",
       color: "from-blue-500 to-cyan-500"
     },
     {
-      title: "Network Security",
-      progress: 70,
-      rooms: 15,
-      completed: 11,
+      title: "Cyber Security 101",
+      progress: 100,
+      rooms: 54,
+      completed: 54,
       difficulty: "Medium",
       color: "from-purple-500 to-pink-500"
     },
     {
-      title: "Penetration Testing",
-      progress: 45,
-      rooms: 25,
-      completed: 11,
-      difficulty: "Hard",
+      title: "Jr Penetration Tester",
+      progress: 100,
+      rooms: 39,
+      completed: 39,
+      difficulty: "Medium",
       color: "from-red-500 to-red-600"
+    },
+    {
+      title: "Web Application Pentesting",
+      progress: 18,
+      rooms: 29,
+      completed: 4,
+      difficulty: "Medium",
+      color: "from-red-500 to-red-600"
+    },
+    {
+      title: "Red Teaming",
+      progress: 18,
+      rooms: 36,
+      completed: 5,
+      difficulty: "Hard",
+      color: "from-purple-500 to-pink-500"
     }
   ]
 

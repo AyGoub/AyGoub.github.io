@@ -75,19 +75,19 @@ const Contact = () => {
     {
       icon: Mail,
       label: "Email",
-      value: "contact@aygoub.dev",
-      link: "mailto:contact@aygoub.dev"
+      value: "ayoub.goubraim@ecole.ensicaen.fr",
+      link: "mailto:ayoub.goubraim@ecole.ensicaen.fr"
     },
     {
       icon: Phone,
       label: "Phone",
-      value: "+1 (555) 123-4567",
-      link: "tel:+15551234567"
+      value: "+33 7 53 44 54 36",
+      link: "tel:+33753445436"
     },
     {
       icon: MapPin,
       label: "Location",
-      value: "Your City, Country",
+      value: "Caen, France",
       link: "#"
     }
   ]
@@ -102,7 +102,7 @@ const Contact = () => {
     {
       icon: Linkedin,
       label: "LinkedIn",
-      link: "https://linkedin.com/in/aygoub",
+      link: "https://linkedin.com/in/ayoubgoubraim",
       color: "hover:text-blue-400"
     },
     {

@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
+import Image from 'next/image'
 import { 
   Shield, 
   Terminal, 
@@ -16,7 +17,31 @@ import {
   Globe,
   Key,
   Eye,
-  Award
+  Award,
+  Zap,
+  Monitor,
+  Server,
+  FileCode,
+  GitBranch,
+  ShieldCheck,
+  Target,
+  SearchCheck,
+  Hammer,
+  LockKeyhole,
+  Wifi,
+  HardDrive,
+  MousePointer,
+  Settings,
+  Layers,
+  Smartphone,
+  CreditCard,
+  Euro,
+  FileText,
+  BarChart3,
+  Git,
+  Ruler,
+  TrendingUp,
+  Coffee
 } from 'lucide-react'
 
 const Skills = () => {
@@ -46,12 +71,12 @@ const Skills = () => {
       title: "Programming Languages",
       icon: Code,
       skills: [
-        { name: "Python", level: 85, icon: "🐍" },
-        { name: "C/C++", level: 80, icon: "⚙️" },
-        { name: "Java", level: 75, icon: "☕" },
-        { name: "JavaScript", level: 80, icon: "🟨" },
-        { name: "HTML/CSS", level: 85, icon: "🎨" },
-        { name: "Bash", level: 80, icon: "💻" }
+        { name: "Python", logo: "/logos/python.png" },
+        { name: "C/C++", logo: "/logos/cpp.png" },
+        { name: "Java", logo: "/logos/java.png" },
+        { name: "JavaScript", logo: "/logos/javascript.png" },
+        { name: "HTML/CSS", logo: "/logos/html-css.png" },
+        { name: "Bash", logo: "/logos/bash.png" }
       ],
       color: "from-blue-500 to-cyan-500"
     },
@@ -59,10 +84,10 @@ const Skills = () => {
       title: "Frameworks & Libraries",
       icon: Globe,
       skills: [
-        { name: "Qt", level: 70, icon: "🖥️" },
-        { name: "JavaFX", level: 65, icon: "☕" },
-        { name: "React", level: 80, icon: "⚛️" },
-        { name: "SDL2", level: 75, icon: "🎮" }
+        { name: "Qt", logo: "/logos/qt.png" },
+        { name: "JavaFX", logo: "/logos/javafx.png" },
+        { name: "React", logo: "/logos/react.png" },
+        { name: "SDL2", logo: "/logos/sdl.png" }
       ],
       color: "from-green-500 to-emerald-500"
     },
@@ -70,10 +95,10 @@ const Skills = () => {
       title: "Systems & Databases",
       icon: Database,
       skills: [
-        { name: "Linux/Unix", level: 90, icon: "🐧" },
-        { name: "Windows", level: 85, icon: "🪟" },
-        { name: "PostgreSQL", level: 80, icon: "🐘" },
-        { name: "UNIX Multi-process", level: 85, icon: "⚡" }
+        { name: "Linux/Unix", logo: "/logos/linux.png" },
+        { name: "Windows", logo: "/logos/windows.png" },
+        { name: "PostgreSQL", logo: "/logos/postgresql.jpg" },
+        { name: "UNIX Multi-process", logo: "/logos/unix.jpg" }
       ],
       color: "from-purple-500 to-pink-500"
     },
@@ -81,10 +106,9 @@ const Skills = () => {
       title: "Network & Protocols",
       icon: Network,
       skills: [
-        { name: "TCP/IP", level: 85, icon: "🌐" },
-        { name: "SSL/TLS", level: 80, icon: "🔒" },
-        { name: "Wireshark", level: 85, icon: "🦈" },
-        { name: "Network Analysis", level: 80, icon: "📊" }
+        { name: "TCP/IP", logo: "/logos/tcp-ip.png" },
+        { name: "SSL/TLS", logo: "/logos/ssl-tls.png" },
+        { name: "Wireshark", logo: "/logos/wireshark.png" },
       ],
       color: "from-blue-500 to-blue-600"
     },
@@ -92,37 +116,26 @@ const Skills = () => {
       title: "Pentesting Tools",
       icon: Shield,
       skills: [
-        { name: "Nmap", level: 90, icon: "👁️" },
-        { name: "Burp Suite", level: 85, icon: "⚡" },
-        { name: "Metasploit", level: 80, icon: "🎯" },
-        { name: "Hydra", level: 75, icon: "💧" },
-        { name: "John the Ripper", level: 75, icon: "🔨" },
-        { name: "SQLmap", level: 80, icon: "🗄️" },
-        { name: "Gobuster", level: 80, icon: "🔍" },
-        { name: "Netcat", level: 85, icon: "🌐" }
+        { name: "Nmap", logo: "/logos/nmap.png" },
+        { name: "Burp Suite", logo: "/logos/burp-suite.png" },
+        { name: "Metasploit", logo: "/logos/metasploit.png" },
+        { name: "Hydra", logo: "/logos/hydra.png" },
+        { name: "John the Ripper", logo: "/logos/john-ripper.png" },
+        { name: "SQLmap", logo: "/logos/sqlmap.png" },
+        { name: "Gobuster", logo: "/logos/gobuster.png" },
+        { name: "Netcat", logo: "/logos/netcat.png" }
       ],
       color: "from-red-500 to-red-600"
     },
-    {
-      title: "Web Security",
-      icon: Lock,
-      skills: [
-        { name: "OWASP Top 10", level: 90, icon: "🛡️" },
-        { name: "WSTG/ASVS", level: 85, icon: "📋" },
-        { name: "OWASP ZAP", level: 80, icon: "⚡" },
-        { name: "ffuf/gobuster", level: 80, icon: "🔍" },
-        { name: "jwt-tool", level: 75, icon: "🔑" }
-      ],
-      color: "from-orange-500 to-red-500"
-    },
+    
     {
       title: "FinTech & e-Payment",
       icon: Key,
       skills: [
-        { name: "EMV", level: 70, icon: "💳" },
-        { name: "NFC", level: 75, icon: "📱" },
-        { name: "SEPA", level: 70, icon: "🇪🇺" },
-        { name: "ISO 7816", level: 65, icon: "📄" }
+        { name: "EMV", logo: "/logos/emv.png" },
+        { name: "NFC", logo: "/logos/nfc.png" },
+        { name: "SEPA", logo: "/logos/sepa.png" },
+        { name: "ISO 7816", logo: "/logos/iso-7816.png" }
       ],
       color: "from-yellow-500 to-orange-500"
     },
@@ -130,10 +143,10 @@ const Skills = () => {
       title: "Development Tools",
       icon: Terminal,
       skills: [
-        { name: "Git", level: 85, icon: "🌿" },
-        { name: "UML", level: 75, icon: "📐" },
-        { name: "Gnuplot", level: 70, icon: "📈" },
-        { name: "pandas", level: 80, icon: "🐼" }
+        { name: "Git", logo: "/logos/git.png" },
+        { name: "UML", logo: "/logos/uml.png" },
+        { name: "Gnuplot", logo: "/logos/gnuplot.png" },
+        { name: "pandas", logo: "/logos/pandas.png" }
       ],
       color: "from-indigo-500 to-purple-500"
     }
@@ -205,27 +218,28 @@ const Skills = () => {
                   </h3>
                 </div>
 
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {category.skills.map((skill, skillIndex) => (
-                      <div key={skill.name} className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-lg">{skill.icon}</span>
-                            <span className="text-gray-300 font-medium">
-                              {skill.name}
-                            </span>
+                      <motion.div
+                        key={skill.name}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        className="bg-dark-700 hover:bg-dark-600 rounded-lg p-3 border border-dark-600 hover:border-primary-500/50 transition-all duration-200 group"
+                      >
+                        <div className="flex flex-col items-center text-center space-y-2">
+                          <div className="w-12 h-12 relative group-hover:scale-110 transition-transform duration-200">
+                            <Image
+                              src={skill.logo}
+                              alt={`${skill.name} logo`}
+                              fill
+                              className="object-contain"
+                              sizes="48px"
+                            />
                           </div>
-                          <span className="text-primary-400 font-semibold">
-                            {skill.level}%
+                          <span className="text-gray-300 font-medium text-sm">
+                            {skill.name}
                           </span>
                         </div>
-                        <div className="w-full bg-dark-700 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full bg-gradient-to-r ${category.color}`}
-                            style={{ width: `${skill.level}%` }}
-                          />
-                        </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
               </motion.div>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://aygoub.github.io'),
   title: 'AyGoub - Cybersecurity Student & Penetration Tester',
   description: 'Cybersecurity student specializing in penetration testing, TryHackMe achievements, CTF writeups, and security research. Seeking internship opportunities in cybersecurity.',
   keywords: ['cybersecurity', 'penetration testing', 'TryHackMe', 'CTF', 'security researcher', 'internship'],

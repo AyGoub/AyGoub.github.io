@@ -64,9 +64,9 @@ const Footer = () => {
             <div>
               <h3 className="text-lg font-semibold text-white mb-4">Get In Touch</h3>
               <div className="space-y-2 text-gray-400">
-                <p>contact@aygoub.dev</p>
+                <p>ayoub.goubraim@ecole.ensicaen.fr</p>
                 <p>Available for internships</p>
-                <p>Summer 2024</p>
+                <p>March 2026</p>
               </div>
             </div>
           </div>

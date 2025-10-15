@@ -7,6 +7,7 @@ import Hero from '@/components/Hero'
 // Lazy load components for better performance
 const About = lazy(() => import('@/components/About'))
 const Skills = lazy(() => import('@/components/Skills'))
+const Certifications = lazy(() => import('@/components/Certifications'))
 const TryHackMe = lazy(() => import('@/components/TryHackMe'))
 const Writeups = lazy(() => import('@/components/Writeups'))
 const Resume = lazy(() => import('@/components/Resume'))
@@ -30,6 +31,9 @@ export default function Home() {
       </Suspense>
       <Suspense fallback={<LoadingSpinner />}>
         <Skills />
+      </Suspense>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Certifications />
       </Suspense>
       <Suspense fallback={<LoadingSpinner />}>
         <TryHackMe />

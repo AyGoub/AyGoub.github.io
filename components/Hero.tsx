@@ -60,7 +60,7 @@ const Hero = () => {
                     {/* Alternative: Use your actual image */}
                     {
                     <Image
-                      src="AyGoub.github.io\public\profile-picture.jpg"
+                      src="/profile-picture.jpg"
                       alt="AyGoub - Cybersecurity Professional"
                       fill
                       className="rounded-full object-cover"
@@ -119,7 +119,7 @@ const Hero = () => {
                 className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed"
               >
                 Engineering student specialized in cybersecurity and pentesting. 
-                Looking for a 6-month PFE internship starting March 2026 in Pentest or Red Team. 
+                Looking for a 6-month end of study internship starting March 2026 in Pentest or Red Team. 
                 Top 4% on TryHackMe with expertise in OWASP Top 10, web security, and penetration testing tools.
               </motion.p>
 
