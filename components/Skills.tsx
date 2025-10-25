@@ -107,8 +107,8 @@ const Skills = () => {
       icon: Network,
       skills: [
         { name: "TCP/IP", logo: "/logos/tcp-ip.png" },
-        { name: "SSL/TLS", logo: "/logos/ssl-tls.png" },
-        { name: "Wireshark", logo: "/logos/wireshark.png" },
+        { name: "SSL/TLS", logo: "/logos/SSL-TLC.png" },
+        { name: "Wireshark", logo: "/logos/Wireshark_Icon.png" },
       ],
       color: "from-blue-500 to-blue-600"
     },
@@ -117,13 +117,13 @@ const Skills = () => {
       icon: Shield,
       skills: [
         { name: "Nmap", logo: "/logos/nmap.png" },
-        { name: "Burp Suite", logo: "/logos/burp-suite.png" },
+        { name: "Burp Suite", logo: "/logos/burpsuite.jpg" },
         { name: "Metasploit", logo: "/logos/metasploit.png" },
-        { name: "Hydra", logo: "/logos/hydra.png" },
-        { name: "John the Ripper", logo: "/logos/john-ripper.png" },
+        { name: "Hydra", logo: "/logos/hydra.jpeg" },
+        { name: "John the Ripper", logo: "/logos/john.png" },
         { name: "SQLmap", logo: "/logos/sqlmap.png" },
         { name: "Gobuster", logo: "/logos/gobuster.png" },
-        { name: "Netcat", logo: "/logos/netcat.png" }
+        { name: "Netcat", logo: "/logos/netcat_v3.png" }
       ],
       color: "from-red-500 to-red-600"
     },
@@ -286,7 +286,7 @@ const Skills = () => {
                 📚 Continuous Learning Philosophy
               </h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                In the rapidly evolving field of cybersecurity, continuous learning is not just important—it's essential. 
+                In the rapidly evolving field of cybersecurity, continuous learning is not just important it's essential. 
                 I dedicate time daily to staying updated with the latest threats, tools, and techniques. 
                 Whether it's through TryHackMe rooms, CTF competitions, or hands-on lab practice, 
                 I believe in learning by doing and sharing knowledge with the community.

@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import { useI18n } from '@/contexts/I18nContext'
 import { 
   FileText, 
   Calendar, 
@@ -17,7 +16,6 @@ import {
 
 const Writeups = () => {
   const ref = useRef(null)
-  const { t } = useI18n()
   const isInView = useInView(ref, { once: true })
   const [selectedCategory, setSelectedCategory] = useState('All')
 
@@ -168,10 +166,10 @@ const Writeups = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              {t('section_writeups_title')}
+              CTF Writeups & Solutions
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-              {t('section_writeups_subtitle')}
+              Detailed walkthroughs and solutions for various cybersecurity challenges
             </p>
             
             {/* Category Filter */}

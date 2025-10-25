@@ -5,11 +5,9 @@ import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Award, ExternalLink, Calendar, CheckCircle, Clock, Download } from 'lucide-react'
 import Image from 'next/image'
-import { useI18n } from '@/contexts/I18nContext'
 
 const Certifications = () => {
   const ref = useRef(null)
-  const { t } = useI18n()
   const isInView = useInView(ref, { once: true })
 
   const containerVariants = {
@@ -118,10 +116,10 @@ const Certifications = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              {t('section_certs_title')}
+              Certifications & Achievements
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              {t('section_certs_subtitle')}
+              Industry-recognized certifications and learning achievements in cybersecurity
             </p>
           </motion.div>
 

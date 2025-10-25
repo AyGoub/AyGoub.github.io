@@ -3,12 +3,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Menu, X, Shield, Terminal } from 'lucide-react'
-import { useI18n } from '@/contexts/I18nContext'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { language, setLanguage, t } = useI18n()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,14 +17,14 @@ const Header = () => {
   }, [])
 
   const navItems = [
-    { name: t('nav_home'), href: '#home' },
-    { name: t('nav_about'), href: '#about' },
-    { name: t('nav_skills'), href: '#skills' },
-    { name: t('nav_certifications'), href: '#certifications' },
-    { name: t('nav_tryhackme'), href: '#tryhackme' },
-    { name: t('nav_writeups'), href: '#writeups' },
-    { name: t('nav_resume'), href: '#resume' },
-    { name: t('nav_contact'), href: '#contact' },
+    { name: 'Home', href: '#home' },
+    { name: 'About', href: '#about' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Certifications', href: '#certifications' },
+    { name: 'TryHackMe', href: '#tryhackme' },
+    { name: 'Writeups', href: '#writeups' },
+    { name: 'Resume', href: '#resume' },
+    { name: 'Contact', href: '#contact' },
   ]
 
   return (
@@ -63,18 +61,6 @@ const Header = () => {
                 {item.name}
               </motion.a>
             ))}
-            <div className="flex items-center space-x-2 ml-2">
-              <button
-                aria-label="Switch to English"
-                className={`px-3 py-1 rounded text-sm ${language === 'en' ? 'bg-primary-600 text-white' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
-                onClick={() => setLanguage('en')}
-              >EN</button>
-              <button
-                aria-label="Passer en français"
-                className={`px-3 py-1 rounded text-sm ${language === 'fr' ? 'bg-primary-600 text-white' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
-                onClick={() => setLanguage('fr')}
-              >FR</button>
-            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -107,18 +93,6 @@ const Header = () => {
                 {item.name}
               </a>
             ))}
-            <div className="flex items-center space-x-2 pt-2">
-              <button
-                aria-label="Switch to English"
-                className={`px-3 py-1 rounded text-sm ${language === 'en' ? 'bg-primary-600 text-white' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
-                onClick={() => { setLanguage('en'); setIsMenuOpen(false) }}
-              >EN</button>
-              <button
-                aria-label="Passer en français"
-                className={`px-3 py-1 rounded text-sm ${language === 'fr' ? 'bg-primary-600 text-white' : 'bg-dark-700 text-gray-300 hover:bg-dark-600'}`}
-                onClick={() => { setLanguage('fr'); setIsMenuOpen(false) }}
-              >FR</button>
-            </div>
           </div>
         </motion.div>
       </nav>

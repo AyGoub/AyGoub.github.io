@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { I18nProvider } from '@/contexts/I18nContext'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://aygoub.github.io'),
@@ -36,9 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="antialiased">
-        <I18nProvider>
-          {children}
-        </I18nProvider>
+        {children}
       </body>
     </html>
   )

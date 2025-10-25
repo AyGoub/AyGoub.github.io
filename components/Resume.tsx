@@ -4,11 +4,9 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react'
-import { useI18n } from '@/contexts/I18nContext'
 
 const Resume = () => {
   const ref = useRef(null)
-  const { t } = useI18n()
   const isInView = useInView(ref, { once: true })
 
   const containerVariants = {
@@ -61,10 +59,9 @@ const Resume = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              {t('section_resume_title')}
+              Resume / CV
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              {/* Keep English description; translate later if needed */}
               My professional experience, education, and achievements in cybersecurity
             </p>
           </motion.div>

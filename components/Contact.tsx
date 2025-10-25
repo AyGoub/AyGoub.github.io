@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
+import emailjs from '@emailjs/browser'
 import { 
   Mail, 
   Phone, 
@@ -58,17 +59,41 @@ const Contact = () => {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false)
-      setFormData({ name: '', email: '', subject: '', message: '' })
-    }, 3000)
+    try {
+      
+      const serviceID = 'service_k6c6x68' 
+      const templateID = 'template_f9chp09' 
+      const publicKey = 'eWMLkbKhIU0-t0ybf'
+      
+      // Envoi de l'email via EmailJS
+      await emailjs.send(
+        serviceID,
+        templateID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: 'ayoubporfolio@gmail.com', // Votre email de réception
+        },
+        publicKey
+      )
+      
+      setIsSubmitting(false)
+      setIsSubmitted(true)
+      
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false)
+        setFormData({ name: '', email: '', subject: '', message: '' })
+      }, 3000)
+      
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error)
+      setIsSubmitting(false)
+      // Vous pouvez ajouter un état d'erreur ici si vous voulez
+      alert('Erreur lors de l\'envoi du message. Veuillez réessayer.')
+    }
   }
 
   const contactInfo = [
@@ -195,11 +220,11 @@ const Contact = () => {
                   💼 Currently Available
                 </h4>
                 <p className="text-white/90 text-sm mb-3">
-                  I'm actively seeking cybersecurity internship opportunities for Summer 2024.
+                  I'm actively seeking cybersecurity internship opportunities for 2026.
                 </p>
                 <div className="flex items-center space-x-2 text-white/80">
                   <Calendar className="w-4 h-4" />
-                  <span className="text-sm">Available: May 2024 - August 2024</span>
+                  <span className="text-sm">Available: March 2026 - August 2026</span>
                 </div>
               </div>
             </motion.div>
