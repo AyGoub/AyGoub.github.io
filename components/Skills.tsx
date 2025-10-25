@@ -38,7 +38,6 @@ import {
   Euro,
   FileText,
   BarChart3,
-  Git,
   Ruler,
   TrendingUp,
   Coffee
