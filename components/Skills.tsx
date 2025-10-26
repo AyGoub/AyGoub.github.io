@@ -132,9 +132,9 @@ const Skills = () => {
       icon: Key,
       skills: [
         { name: "EMV", logo: "/logos/emv.png" },
-        { name: "NFC", logo: "/logos/nfc.png" },
-        { name: "SEPA", logo: "/logos/sepa.png" },
-        { name: "ISO 7816", logo: "/logos/iso-7816.png" }
+        { name: "NFC", logo: "/logos/nfc.jpg" },
+        { name: "SEPA", logo: "/logos/sepa.jpg" },
+        { name: "ISO 7816", logo: "/logos/iso.png" }
       ],
       color: "from-yellow-500 to-orange-500"
     },

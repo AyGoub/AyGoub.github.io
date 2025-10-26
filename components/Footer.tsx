@@ -100,7 +100,7 @@ const Footer = () => {
 
             <div className="mt-4 pt-4 border-t border-dark-700">
               <p className="text-center text-gray-500 text-sm">
-                © 2024 AyGoub. All rights reserved. | Built with Next.js, TypeScript, and Tailwind CSS
+                © 2025 AyGoub. All rights reserved. | Built with Next.js, TypeScript, and Tailwind CSS
               </p>
             </div>
           </div>
