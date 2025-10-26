@@ -8,6 +8,7 @@ import Hero from '@/components/Hero'
 const About = lazy(() => import('@/components/About'))
 const Skills = lazy(() => import('@/components/Skills'))
 const Certifications = lazy(() => import('@/components/Certifications'))
+const Projects = lazy(() => import('@/components/Projects'))
 const TryHackMe = lazy(() => import('@/components/TryHackMe'))
 const Writeups = lazy(() => import('@/components/Writeups'))
 const Resume = lazy(() => import('@/components/Resume'))
@@ -34,6 +35,9 @@ export default function Home() {
       </Suspense>
       <Suspense fallback={<LoadingSpinner />}>
         <Certifications />
+      </Suspense>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Projects />
       </Suspense>
       <Suspense fallback={<LoadingSpinner />}>
         <TryHackMe />
