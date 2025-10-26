@@ -54,6 +54,7 @@ const Writeups = () => {
       featured: false,
       // points removed
     },
+
     {
       title: "GET aHEAD",
       description: "Exploitation de la technique HTTP GET aHEAD.",
@@ -66,6 +67,19 @@ const Writeups = () => {
       featured: false,
       // points removed
     },
+    {
+      title: "Hammer - TryHackMe",
+      description: "Rapport du challenge Hammer sur TryHackMe.",
+      category: "Web Exploitation",
+      difficulty: "Medium",
+      date: "2025-10-26",
+      // readTime removed
+      tags: ["TryHackMe", "CTF", "Web", "Exploitation"],
+      link: "/writeups/Hammer_report.pdf",
+      featured: true,
+      // points removed
+    },
+
     {
       title: "Includes - picoCTF",
       description: "Analyse du challenge Includes (picoCTF).",
@@ -118,7 +132,7 @@ const Writeups = () => {
       title: "PickleRick - TryHackMe",
       description: "Writeup du challenge PickleRick.",
       category: "Web Exploitation",
-      difficulty: "Easy",
+      difficulty: "Medium",
       date: "2025-01-07",
       // readTime removed
       tags: ["TryHackMe", "CTF", "Web"],

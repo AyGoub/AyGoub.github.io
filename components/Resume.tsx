@@ -2,12 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin, Languages } from 'lucide-react'
 
 const Resume = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const [language, setLanguage] = useState<'fr' | 'en'>('fr')
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -40,11 +41,15 @@ const Resume = () => {
   }
 
   const handleDownload = () => {
+    const cvPath = language === 'fr' ? '/cv/Cv_PFE_Pentesting-2.pdf' : '/cv/Cv_Pfe_ENGLISH.pdf'
+    const fileName = language === 'fr' ? 'AyGoub_CV_FR.pdf' : 'AyGoub_CV_EN.pdf'
     const link = document.createElement('a')
-    link.href = '/cv/AyGoub_CV.pdf'
-    link.download = 'AyGoub_CV.pdf'
+    link.href = cvPath
+    link.download = fileName
     link.click()
   }
+
+  const cvPath = language === 'fr' ? '/cv/Cv_PFE_Pentesting-2.pdf' : '/cv/Cv_Pfe_ENGLISH.pdf'
 
   return (
     <section id="resume" className="py-20 bg-dark-900">
@@ -132,9 +137,34 @@ const Resume = () => {
                       <FileText className="w-5 h-5 text-primary-500" />
                       <h3 className="text-lg font-semibold text-white">AyGoub CV</h3>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Eye className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-400 text-sm">Preview</span>
+                    <div className="flex items-center space-x-4">
+                      {/* Language Switch */}
+                      <div className="flex items-center space-x-2 bg-dark-600 rounded-lg p-1">
+                        <button
+                          onClick={() => setLanguage('fr')}
+                          className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 ${
+                            language === 'fr'
+                              ? 'bg-primary-600 text-white'
+                              : 'text-gray-400 hover:text-gray-300'
+                          }`}
+                        >
+                          🇫🇷 FR
+                        </button>
+                        <button
+                          onClick={() => setLanguage('en')}
+                          className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 ${
+                            language === 'en'
+                              ? 'bg-primary-600 text-white'
+                              : 'text-gray-400 hover:text-gray-300'
+                          }`}
+                        >
+                          🇬🇧 EN
+                        </button>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Eye className="w-4 h-4 text-gray-400" />
+                        <span className="text-gray-400 text-sm">Preview</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -142,7 +172,8 @@ const Resume = () => {
                 {/* PDF Embed */}
                 <div className="h-[800px] w-full">
                   <iframe
-                    src="/cv/AyGoub_CV.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
+                    key={language}
+                    src={`${cvPath}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
                     className="w-full h-full border-0"
                     title="AyGoub CV Preview"
                   />

@@ -127,37 +127,6 @@ const TryHackMe = () => {
     }
   ]
 
-  const recentRooms = [
-    {
-      name: "Vulnversity",
-      difficulty: "Easy",
-      category: "Web Application Security",
-      completed: "2024-01-15",
-      points: 120
-    },
-    {
-      name: "Blue",
-      difficulty: "Easy",
-      category: "Windows Privilege Escalation",
-      completed: "2024-01-14",
-      points: 100
-    },
-    {
-      name: "Ice",
-      difficulty: "Medium",
-      category: "Web Application Security",
-      completed: "2024-01-13",
-      points: 150
-    },
-    {
-      name: "LazyAdmin",
-      difficulty: "Easy",
-      category: "Linux Privilege Escalation",
-      completed: "2024-01-12",
-      points: 110
-    }
-  ]
-
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Easy': return 'text-green-400 bg-green-400/20'
@@ -263,43 +232,6 @@ const TryHackMe = () => {
                         className={`h-3 rounded-full bg-gradient-to-r ${path.color}`}
                       />
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Recent Rooms */}
-          <motion.div variants={itemVariants} className="mb-16">
-            <h3 className="text-3xl font-bold text-center gradient-text mb-8">
-              Recent Room Completions
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {recentRooms.map((room, index) => (
-                <motion.div
-                  key={room.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-dark-700 rounded-lg p-6 border border-dark-600 hover:border-primary-500 transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-lg font-semibold text-white">
-                      {room.name}
-                    </h4>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${getDifficultyColor(room.difficulty)}`}>
-                      {room.difficulty}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-400 text-sm mb-3">
-                    {room.category}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-300">
-                    <span>{room.points} points</span>
-                    <span>{room.completed}</span>
                   </div>
                 </motion.div>
               ))}
