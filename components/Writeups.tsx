@@ -43,6 +43,18 @@ const Writeups = () => {
   // Mis à jour pour référencer vos PDFs dans public/writeups
   const writeups = [
     {
+      title: "Basic Pentesting",
+      description: "Rapport complet de pentesting sur un environnement de base. Analyse des vulnérabilités, exploitation et recommandations.",
+      category: "Web Exploitation",
+      difficulty: "Easy",
+      date: "2025-10-28",
+      // readTime removed
+      tags: ["TryHackMe", "Pentesting", "Reconnaissance", "Exploitation","Web"],
+      link: "/writeups/Basic_Pentesting_Report.pdf",
+      featured: false,
+      // points removed
+    },
+    {
       title: "Bookmarklet - picoCTF",
       description: "Walkthrough du challenge Bookmarklet (picoCTF).",
       category: "Web Exploitation",
