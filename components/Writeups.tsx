@@ -163,6 +163,18 @@ const Writeups = () => {
       link: "/writeups/WebDecode_picoCTF.pdf",
       featured: false,
       // points removed
+    },
+    {
+      title: "NoSQL Injection",
+      description: "Writeup complet sur l'exploitation de vulnérabilités NoSQL Injection.",
+      category: "Web Exploitation",
+      difficulty: "Hard",
+      date: "2025-12-16",
+      // readTime removed
+      tags: ["TryHackMe", "NoSQL", "Injection", "Database", "Security"],
+      link: "/writeups/NOSql_injection_Writeup.pdf",
+      featured: true,
+      // points removed
     }
   ]
 
