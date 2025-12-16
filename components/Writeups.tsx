@@ -44,7 +44,7 @@ const Writeups = () => {
   const writeups = [
     {
       title: "Basic Pentesting",
-      description: "Rapport complet de pentesting sur un environnement de base. Analyse des vulnérabilités, exploitation et recommandations.",
+      description: "Comprehensive pentesting report on a basic environment. Vulnerability analysis, exploitation techniques and security recommendations.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-10-28",
@@ -56,7 +56,7 @@ const Writeups = () => {
     },
     {
       title: "Bookmarklet - picoCTF",
-      description: "Walkthrough du challenge Bookmarklet (picoCTF).",
+      description: "Complete walkthrough of the Bookmarklet challenge from picoCTF.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-01",
@@ -69,7 +69,7 @@ const Writeups = () => {
 
     {
       title: "GET aHEAD",
-      description: "Exploitation de la technique HTTP GET aHEAD.",
+      description: "Exploitation of the HTTP GET aHEAD technique for web vulnerabilities.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-02",
@@ -81,7 +81,7 @@ const Writeups = () => {
     },
     {
       title: "Hammer - TryHackMe",
-      description: "Rapport du challenge Hammer sur TryHackMe.",
+      description: "Detailed report of the Hammer challenge from TryHackMe.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-10-26",
@@ -94,7 +94,7 @@ const Writeups = () => {
 
     {
       title: "Includes - picoCTF",
-      description: "Analyse du challenge Includes (picoCTF).",
+      description: "Analysis and solution for the Includes challenge from picoCTF.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-03",
@@ -106,7 +106,7 @@ const Writeups = () => {
     },
     {
       title: "Intro to Burp - picoCTF",
-      description: "Introduction à Burp Suite sur picoCTF.",
+      description: "Introduction to Burp Suite proxy tools through picoCTF challenges.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-04",
@@ -118,7 +118,7 @@ const Writeups = () => {
     },
     {
       title: "OWASP Juice Shop",
-      description: "Rapport d'exercices OWASP Juice Shop.",
+      description: "Complete writeup of the OWASP Juice Shop security challenges.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-01-05",
@@ -130,7 +130,7 @@ const Writeups = () => {
     },
     {
       title: "Breaching Active Directory",
-      description: "Rapport de compromission Active Directory.",
+      description: "Active Directory breach analysis and exploitation techniques on Windows infrastructure.",
       category: "Forensics",
       difficulty: "Medium",
       date: "2025-01-06",
@@ -142,7 +142,7 @@ const Writeups = () => {
     },
     {
       title: "PickleRick - TryHackMe",
-      description: "Writeup du challenge PickleRick.",
+      description: "Complete writeup for the PickleRick CTF challenge from TryHackMe.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-01-07",
@@ -154,7 +154,7 @@ const Writeups = () => {
     },
     {
       title: "WebDecode - picoCTF",
-      description: "Résolution du challenge WebDecode (picoCTF).",
+      description: "Solution for the WebDecode challenge from picoCTF involving decoding techniques.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-01-08",
@@ -166,7 +166,7 @@ const Writeups = () => {
     },
     {
       title: "NoSQL Injection",
-      description: "Writeup complet sur l'exploitation de vulnérabilités NoSQL Injection.",
+      description: "Comprehensive writeup on exploiting NoSQL injection vulnerabilities in web applications.",
       category: "Web Exploitation",
       difficulty: "Hard",
       date: "2025-12-16",
@@ -174,6 +174,18 @@ const Writeups = () => {
       tags: ["TryHackMe", "NoSQL", "Injection", "Database", "Security"],
       link: "/writeups/NOSql_injection_Writeup.pdf",
       featured: true,
+      // points removed
+    },
+    {
+      title: "XXE Injection",
+      description: "Complete writeup to XML External Entity (XXE) injection attacks and exploitation techniques.",
+      category: "Web Exploitation",
+      difficulty: "Hard",
+      date: "2025-12-16",
+      // readTime removed
+      tags: ["XXE", "XML", "Injection", "Web", "Security"],
+      link: "/writeups/xxe_injection.pdf",
+      featured: false,
       // points removed
     }
   ]
