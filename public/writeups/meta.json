@@ -78,6 +78,16 @@
     "tags": ["picoCTF", "Decode", "Web"],
     "link": "/writeups/WebDecode_picoCTF.pdf",
     "featured": false
+  },
+  {
+    "title": "Injectics - TryHackMe",
+    "description": "Writeup détaillé de la room Injectics (TryHackMe).",
+    "category": "Web Exploitation",
+    "difficulty": "Medium",
+    "date": "2026-04-06",
+    "tags": ["TryHackMe", "Injection", "Web", "CTF"],
+    "link": "/writeups/Injectics_Writeup.pdf",
+    "featured": false
   }
 ]
 

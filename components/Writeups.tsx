@@ -187,6 +187,16 @@ const Writeups = () => {
       link: "/writeups/xxe_injection.pdf",
       featured: false,
       // points removed
+    },
+    {
+      title: "Injectics - TryHackMe",
+      description: "Detailed walkthrough of the Injectics TryHackMe room with practical web injection exploitation steps.",
+      category: "Web Exploitation",
+      difficulty: "Medium",
+      date: "2026-04-06",
+      tags: ["TryHackMe", "Injection", "Web", "CTF","SSTI","Information Disclosure"],
+      link: "/writeups/Injectics_Writeup.pdf",
+      featured: false,
     }
   ]
 
