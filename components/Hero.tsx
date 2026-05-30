@@ -120,8 +120,8 @@ const Hero = () => {
                 className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed"
               >
                 Engineering student specialized in cybersecurity and pentesting. 
-                Looking for a 6-month end of study internship starting March 2026 in Pentest or Red Team. 
-                Top 4% on TryHackMe with expertise in OWASP Top 10, web security, and penetration testing tools.
+                Looking for a 6-month end of study internship September 2026 - February 2027 in Pentest or Red Team.
+                Top 2% on TryHackMe with expertise in OWASP Top 10, web security, and penetration testing tools.
               </motion.p>
 
               {/* CTA Buttons */}

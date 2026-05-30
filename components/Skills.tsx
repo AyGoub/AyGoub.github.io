@@ -173,9 +173,9 @@ const Skills = () => {
       description: "Web application security and OWASP Top 10 vulnerabilities"
     },
     {
-      name: "TryHackMe Top 4% Global Ranking",
+      name: "TryHackMe Top 2% Global Ranking",
       status: "Achievement",
-      description: "Ranked in top 4% of all TryHackMe users globally"
+      description: "Ranked in top 2% of all TryHackMe users globally"
     }
   ]
 

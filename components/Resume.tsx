@@ -2,14 +2,12 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
-import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin, Languages } from 'lucide-react'
+import { useRef } from 'react'
+import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react'
 
 const Resume = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
-  const [language, setLanguage] = useState<'fr' | 'en'>('fr')
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -40,16 +38,14 @@ const Resume = () => {
     website: "https://aygoub.github.io"
   }
 
+  const cvPath = '/cv/Cv_PFE_Cybersécurité.pdf'
+
   const handleDownload = () => {
-    const cvPath = language === 'fr' ? '/cv/Cv_PFE_Pentesting-2.pdf' : '/cv/Cv_Pfe_ENGLISH.pdf'
-    const fileName = language === 'fr' ? 'AyGoub_CV_FR.pdf' : 'AyGoub_CV_EN.pdf'
     const link = document.createElement('a')
     link.href = cvPath
-    link.download = fileName
+    link.download = 'AyGoub_CV.pdf'
     link.click()
   }
-
-  const cvPath = language === 'fr' ? '/cv/Cv_PFE_Pentesting-2.pdf' : '/cv/Cv_Pfe_ENGLISH.pdf'
 
   return (
     <section id="resume" className="py-20 bg-dark-900">
@@ -137,34 +133,9 @@ const Resume = () => {
                       <FileText className="w-5 h-5 text-primary-500" />
                       <h3 className="text-lg font-semibold text-white">AyGoub CV</h3>
                     </div>
-                    <div className="flex items-center space-x-4">
-                      {/* Language Switch */}
-                      <div className="flex items-center space-x-2 bg-dark-600 rounded-lg p-1">
-                        <button
-                          onClick={() => setLanguage('fr')}
-                          className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 ${
-                            language === 'fr'
-                              ? 'bg-primary-600 text-white'
-                              : 'text-gray-400 hover:text-gray-300'
-                          }`}
-                        >
-                          🇫🇷 FR
-                        </button>
-                        <button
-                          onClick={() => setLanguage('en')}
-                          className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 ${
-                            language === 'en'
-                              ? 'bg-primary-600 text-white'
-                              : 'text-gray-400 hover:text-gray-300'
-                          }`}
-                        >
-                          🇬🇧 EN
-                        </button>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Eye className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-400 text-sm">Preview</span>
-                      </div>
+                    <div className="flex items-center space-x-2">
+                      <Eye className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-400 text-sm">Preview</span>
                     </div>
                   </div>
                 </div>
@@ -172,7 +143,6 @@ const Resume = () => {
                 {/* PDF Embed */}
                 <div className="h-[800px] w-full">
                   <iframe
-                    key={language}
                     src={`${cvPath}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
                     className="w-full h-full border-0"
                     title="AyGoub CV Preview"
@@ -224,11 +194,11 @@ const Resume = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">TryHackMe Rank:</span>
-                    <span className="text-primary-400">Top 4%</span>
+                    <span className="text-primary-400">Top 2%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Availability:</span>
-                    <span className="text-primary-400">March 2026</span>
+                    <span className="text-primary-400">September 2026 - February 2027</span>
                   </div>
                 </div>
               </div>

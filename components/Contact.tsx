@@ -224,7 +224,7 @@ const Contact = () => {
                 </p>
                 <div className="flex items-center space-x-2 text-white/80">
                   <Calendar className="w-4 h-4" />
-                  <span className="text-sm">Available: March 2026 - August 2026</span>
+                  <span className="text-sm">Available: September 2026 - February 2027</span>
                 </div>
               </div>
             </motion.div>

@@ -243,7 +243,7 @@ const Certifications = () => {
                 <div className="text-white/80">Planned</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-white mb-2">Top 4%</div>
+                <div className="text-3xl font-bold text-white mb-2">Top 2%</div>
                 <div className="text-white/80">TryHackMe Rank</div>
               </div>
             </div>

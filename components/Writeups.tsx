@@ -38,7 +38,7 @@ const Writeups = () => {
     }
   }
 
-  const categories = ['All', 'Web Exploitation', 'Cryptography', 'Forensics', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
+  const categories = ['All', 'Web Exploitation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
 
   // Mis à jour pour référencer vos PDFs dans public/writeups
   const writeups = [
@@ -131,11 +131,11 @@ const Writeups = () => {
     {
       title: "Breaching Active Directory",
       description: "Active Directory breach analysis and exploitation techniques on Windows infrastructure.",
-      category: "Forensics",
+      category: "Active Directory",
       difficulty: "Medium",
       date: "2025-01-06",
       // readTime removed
-      tags: ["TryHackMe", "Active Directory", "Windows", "Recon"],
+      tags: ["TryHackMe", "Active Directory", "Windows", "Red Team"],
       link: "/writeups/Report_Breaching_Active_Directory.pdf",
       featured: true,
       // points removed

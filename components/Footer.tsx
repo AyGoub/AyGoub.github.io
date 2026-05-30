@@ -71,7 +71,7 @@ const Footer = () => {
               <div className="space-y-2 text-gray-400">
                 <p>ayoub.goubraim@ecole.ensicaen.fr</p>
                 <p>Available for internships</p>
-                <p>March 2026</p>
+                <p>September 2026 - February 2027</p>
               </div>
             </div>
           </div>

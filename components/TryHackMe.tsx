@@ -44,7 +44,7 @@ const TryHackMe = () => {
     rank: 64461,
     totalRooms: 750,
     completedRooms: 119,
-    totalPoints: 11692,
+    totalPoints: 18000,
     streak: 118,
     badges: 21
   })
@@ -116,7 +116,7 @@ const TryHackMe = () => {
     {
       icon: Star,
       title: "Total Points",
-      value: stats.totalPoints.toLocaleString(),
+      value: stats.totalPoints.toLocaleString() + "+",
       description: "Earned through challenges"
     },
     {
