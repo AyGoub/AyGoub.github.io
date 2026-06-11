@@ -21,6 +21,8 @@ import {
 } from 'lucide-react'
 import { Project } from '@/data/projects'
 import ReactMarkdown from 'react-markdown'
+import { useLanguage } from '@/contexts/LanguageContext'
+import translations from '@/locales/translations'
 
 interface ProjectDetailProps {
   project: Project
@@ -29,6 +31,12 @@ interface ProjectDetailProps {
 const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
   const router = useRouter()
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const { t, language } = useLanguage()
+
+  const tr = translations[language] as typeof translations['en']
+  const challenges = (tr.projectChallenges as Record<string, string[]>)[project.slug] ?? project.challenges ?? []
+  const solutions = (tr.projectSolutions as Record<string, string[]>)[project.slug] ?? project.solutions ?? []
+  const outcomes = (tr.projectOutcomes as Record<string, string[]>)[project.slug] ?? project.outcomes ?? []
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -77,7 +85,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
           className="flex items-center space-x-2 text-gray-400 hover:text-primary-400 mb-8 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back to Projects</span>
+          <span>{t('projectDetail.back')}</span>
         </motion.button>
 
         {/* Project Header */}
@@ -89,11 +97,11 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
         >
           <div className="flex flex-wrap items-center gap-4 mb-6">
             <span className={`px-4 py-2 rounded-full text-sm font-medium ${getCategoryColor(project.category)}`}>
-              {project.category}
+              {t(`projectCategories.${project.category.trim()}`)}
             </span>
             {project.featured && (
               <span className="px-4 py-2 rounded-full text-sm font-medium text-yellow-400 bg-yellow-400/20">
-                ⭐ Featured
+                ⭐ {t('projectDetail.featured')}
               </span>
             )}
           </div>
@@ -103,7 +111,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
           </h1>
 
           <p className="text-xl text-gray-400 mb-8">
-            {project.description}
+            {t(`projectDescriptions.${project.slug}`)}
           </p>
 
           {/* Project Meta Info */}
@@ -121,7 +129,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
             {project.teamSize && (
               <div className="flex items-center space-x-2">
                 <Users className="w-5 h-5 text-primary-500" />
-                <span>{project.teamSize} {project.teamSize > 1 ? 'members' : 'member'}</span>
+                <span>{project.teamSize} {project.teamSize > 1 ? t('projectDetail.members') : t('projectDetail.member')}</span>
               </div>
             )}
           </div>
@@ -137,7 +145,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
                 className="flex items-center space-x-2 px-6 py-3 bg-dark-800 border border-dark-700 hover:border-primary-500 rounded-lg text-white transition-all"
               >
                 <Github className="w-5 h-5" />
-                <span>View Code</span>
+                <span>{t('projectDetail.viewCode')}</span>
               </motion.a>
             )}
             {project.demo && (
@@ -149,7 +157,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
                 className="flex items-center space-x-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all"
               >
                 <ExternalLink className="w-5 h-5" />
-                <span>View Demo</span>
+                <span>{t('projectDetail.viewDemo')}</span>
               </motion.a>
             )}
             {project.report && (
@@ -161,7 +169,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
                 className="flex items-center space-x-2 px-6 py-3 bg-dark-800 border border-dark-700 hover:border-primary-500 rounded-lg text-white transition-all"
               >
                 <FileText className="w-5 h-5" />
-                <span>View Report</span>
+                <span>{t('projectDetail.viewReport')}</span>
               </motion.a>
             )}
           </div>
@@ -176,7 +184,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
         >
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
             <Code className="w-6 h-6 text-primary-500" />
-            <span>Technologies Used</span>
+            <span>{t('projectDetail.technologies')}</span>
           </h2>
           <div className="flex flex-wrap gap-3">
             {project.technologies.map((tech) => (
@@ -269,7 +277,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
         {/* Challenges, Solutions, Outcomes */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {/* Challenges */}
-          {project.challenges && project.challenges.length > 0 && (
+          {challenges.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -278,10 +286,10 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
             >
               <div className="flex items-center space-x-2 mb-4">
                 <Target className="w-6 h-6 text-red-400" />
-                <h3 className="text-xl font-bold text-white">Challenges</h3>
+                <h3 className="text-xl font-bold text-white">{t('projectDetail.challenges')}</h3>
               </div>
               <ul className="space-y-3">
-                {project.challenges.map((challenge, index) => (
+                {challenges.map((challenge, index) => (
                   <li key={index} className="text-gray-400 text-sm leading-relaxed">
                     {challenge}
                   </li>
@@ -291,7 +299,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
           )}
 
           {/* Solutions */}
-          {project.solutions && project.solutions.length > 0 && (
+          {solutions.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -300,10 +308,10 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
             >
               <div className="flex items-center space-x-2 mb-4">
                 <Lightbulb className="w-6 h-6 text-yellow-400" />
-                <h3 className="text-xl font-bold text-white">Solutions</h3>
+                <h3 className="text-xl font-bold text-white">{t('projectDetail.solutions')}</h3>
               </div>
               <ul className="space-y-3">
-                {project.solutions.map((solution, index) => (
+                {solutions.map((solution, index) => (
                   <li key={index} className="text-gray-400 text-sm leading-relaxed">
                     {solution}
                   </li>
@@ -313,7 +321,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
           )}
 
           {/* Outcomes */}
-          {project.outcomes && project.outcomes.length > 0 && (
+          {outcomes.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -322,10 +330,10 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
             >
               <div className="flex items-center space-x-2 mb-4">
                 <TrendingUp className="w-6 h-6 text-green-400" />
-                <h3 className="text-xl font-bold text-white">Outcomes</h3>
+                <h3 className="text-xl font-bold text-white">{t('projectDetail.outcomes')}</h3>
               </div>
               <ul className="space-y-3">
-                {project.outcomes.map((outcome, index) => (
+                {outcomes.map((outcome, index) => (
                   <li key={index} className="flex items-start space-x-2 text-gray-400 text-sm">
                     <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
                     <span className="leading-relaxed">{outcome}</span>
@@ -348,7 +356,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
             className="inline-flex items-center space-x-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 rounded-lg text-white font-semibold transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to All Projects</span>
+            <span>{t('projectDetail.backToAll')}</span>
           </button>
         </motion.div>
       </div>
