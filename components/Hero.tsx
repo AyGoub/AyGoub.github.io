@@ -1,10 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Shield, Terminal, Code, ArrowDown, Github, Linkedin, Mail, User } from 'lucide-react'
+import { Shield, Terminal, Code, ArrowDown, Github, Linkedin, Mail } from 'lucide-react'
 import Image from 'next/image'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Hero = () => {
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -107,25 +109,23 @@ const Hero = () => {
               </motion.div>
 
               {/* Subtitle */}
-              <motion.h2 
+              <motion.h2
                 variants={itemVariants}
                 className="text-2xl md:text-3xl font-semibold text-gray-300 mb-6"
               >
-                Cybersecurity & Pentester Student
+                {t('hero.subtitle')}
               </motion.h2>
 
               {/* Description */}
-              <motion.p 
+              <motion.p
                 variants={itemVariants}
                 className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed"
               >
-                Engineering student specialized in cybersecurity and pentesting. 
-                Looking for a 6-month end of study internship September 2026 - February 2027 in Pentest or Red Team.
-                Top 2% on TryHackMe with expertise in OWASP Top 10, web security, and penetration testing tools.
+                {t('hero.description')}
               </motion.p>
 
               {/* CTA Buttons */}
-              <motion.div 
+              <motion.div
                 variants={itemVariants}
                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6 mb-12"
               >
@@ -135,7 +135,7 @@ const Hero = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200 cyber-border"
                 >
-                  Learn More About Me
+                  {t('hero.learnMore')}
                 </motion.a>
                 <motion.a
                   href="#resume"
@@ -143,7 +143,7 @@ const Hero = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-3 border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white font-semibold rounded-lg transition-all duration-200"
                 >
-                  View Resume
+                  {t('hero.viewResume')}
                 </motion.a>
               </motion.div>
 

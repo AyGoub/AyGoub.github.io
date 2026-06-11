@@ -4,8 +4,9 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Image from 'next/image'
-import { 
-  Shield, 
+import { useLanguage } from '@/contexts/LanguageContext'
+import {
+  Shield,
   Terminal, 
   Network, 
   Database, 
@@ -46,6 +47,7 @@ import {
 const Skills = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -67,7 +69,7 @@ const Skills = () => {
 
   const skillCategories = [
     {
-      title: "Programming Languages",
+      titleKey: 'skills.categories.programming',
       icon: Code,
       skills: [
         { name: "Python", logo: "/logos/python.png" },
@@ -80,7 +82,7 @@ const Skills = () => {
       color: "from-blue-500 to-cyan-500"
     },
     {
-      title: "Frameworks & Libraries",
+      titleKey: 'skills.categories.frameworks',
       icon: Globe,
       skills: [
         { name: "Qt", logo: "/logos/qt.png" },
@@ -91,7 +93,7 @@ const Skills = () => {
       color: "from-green-500 to-emerald-500"
     },
     {
-      title: "Systems & Databases",
+      titleKey: 'skills.categories.systems',
       icon: Database,
       skills: [
         { name: "Linux/Unix", logo: "/logos/linux.png" },
@@ -102,7 +104,7 @@ const Skills = () => {
       color: "from-purple-500 to-pink-500"
     },
     {
-      title: "Network & Protocols",
+      titleKey: 'skills.categories.network',
       icon: Network,
       skills: [
         { name: "TCP/IP", logo: "/logos/tcp-ip.png" },
@@ -112,7 +114,7 @@ const Skills = () => {
       color: "from-blue-500 to-blue-600"
     },
     {
-      title: "Pentesting Tools",
+      titleKey: 'skills.categories.pentesting',
       icon: Shield,
       skills: [
         { name: "Nmap", logo: "/logos/nmap.png" },
@@ -128,7 +130,7 @@ const Skills = () => {
     },
     
     {
-      title: "FinTech & e-Payment",
+      titleKey: 'skills.categories.fintech',
       icon: Key,
       skills: [
         { name: "EMV", logo: "/logos/emv.png" },
@@ -139,7 +141,7 @@ const Skills = () => {
       color: "from-yellow-500 to-orange-500"
     },
     {
-      title: "Development Tools",
+      titleKey: 'skills.categories.devtools',
       icon: Terminal,
       skills: [
         { name: "Git", logo: "/logos/git.png" },
@@ -152,31 +154,11 @@ const Skills = () => {
   ]
 
   const certifications = [
-    {
-      name: "TryHackMe Pre Security",
-      status: "Completed",
-      description: "Fundamental cybersecurity concepts and terminology"
-    },
-    {
-      name: "TryHackMe Cyber Security 101",
-      status: "Completed",
-      description: "Introduction to cybersecurity principles and practices"
-    },
-    {
-      name: "TryHackMe Jr Penetration Tester",
-      status: "Completed",
-      description: "Junior-level penetration testing skills and methodologies"
-    },
-    {
-      name: "TryHackMe Web Fundamentals",
-      status: "Completed",
-      description: "Web application security and OWASP Top 10 vulnerabilities"
-    },
-    {
-      name: "TryHackMe Top 2% Global Ranking",
-      status: "Achievement",
-      description: "Ranked in top 2% of all TryHackMe users globally"
-    }
+    { name: "TryHackMe Pre Security", status: "Completed", descKey: 'skills.certs.preSecurity.description' },
+    { name: "TryHackMe Cyber Security 101", status: "Completed", descKey: 'skills.certs.cyberSec101.description' },
+    { name: "TryHackMe Jr Penetration Tester", status: "Completed", descKey: 'skills.certs.jrPentest.description' },
+    { name: "TryHackMe Web Fundamentals", status: "Completed", descKey: 'skills.certs.webFund.description' },
+    { name: "TryHackMe Top 2% Global Ranking", status: "Achievement", descKey: 'skills.certs.top2.description' },
   ]
 
   return (
@@ -192,10 +174,10 @@ const Skills = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Skills & Expertise
+              {t('skills.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              My technical skills and areas of expertise in cybersecurity
+              {t('skills.subtitle')}
             </p>
           </motion.div>
 
@@ -203,7 +185,7 @@ const Skills = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {skillCategories.map((category, categoryIndex) => (
               <motion.div
-                key={category.title}
+                key={category.titleKey}
                 variants={itemVariants}
                 whileHover={{ scale: 1.02 }}
                 className="bg-dark-800 rounded-lg p-6 border border-dark-700 hover:border-primary-500 transition-all duration-300"
@@ -213,7 +195,7 @@ const Skills = () => {
                     <category.icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-xl font-semibold text-white">
-                    {category.title}
+                    {t(category.titleKey)}
                   </h3>
                 </div>
 
@@ -248,7 +230,7 @@ const Skills = () => {
           {/* Certifications */}
           <motion.div variants={itemVariants} className="mb-16">
             <h3 className="text-3xl font-bold text-center gradient-text mb-8">
-              Certifications & Learning Path
+              {t('skills.certTitle')}
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {certifications.map((cert, index) => (
@@ -265,10 +247,10 @@ const Skills = () => {
                     {cert.name}
                   </h4>
                   <p className="text-primary-400 font-medium mb-3">
-                    {cert.status}
+                    {t(`skills.certStatus.${cert.status}`)}
                   </p>
                   <p className="text-gray-400 text-sm">
-                    {cert.description}
+                    {t(cert.descKey)}
                   </p>
                 </motion.div>
               ))}
@@ -276,19 +258,16 @@ const Skills = () => {
           </motion.div>
 
           {/* Learning Philosophy */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="text-center"
           >
             <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
-                📚 Continuous Learning Philosophy
+                {t('skills.learningPhilosophyTitle')}
               </h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                In the rapidly evolving field of cybersecurity, continuous learning is not just important it's essential. 
-                I dedicate time daily to staying updated with the latest threats, tools, and techniques. 
-                Whether it's through TryHackMe rooms, CTF competitions, or hands-on lab practice, 
-                I believe in learning by doing and sharing knowledge with the community.
+                {t('skills.learningPhilosophy')}
               </p>
             </div>
           </motion.div>

@@ -2,8 +2,11 @@
 
 import { motion } from 'framer-motion'
 import { Shield, Heart, ArrowUp } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Footer = () => {
+  const { t } = useLanguage()
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -23,14 +26,13 @@ const Footer = () => {
                 <span className="text-xl font-bold gradient-text">AyGoub</span>
               </motion.div>
               <p className="text-gray-400 leading-relaxed">
-                Cybersecurity student passionate about penetration testing, 
-                vulnerability assessment, and securing digital infrastructure.
+                {t('footer.desc')}
               </p>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">{t('footer.quickLinks')}</h3>
               <ul className="space-y-2">
                 <li>
                   <a href="#about" className="text-gray-400 hover:text-primary-400 transition-colors">
@@ -67,11 +69,11 @@ const Footer = () => {
 
             {/* Contact Info */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Get In Touch</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">{t('footer.getInTouch')}</h3>
               <div className="space-y-2 text-gray-400">
                 <p>ayoub.goubraim@ecole.ensicaen.fr</p>
-                <p>Available for internships</p>
-                <p>September 2026 - February 2027</p>
+                <p>{t('footer.available')}</p>
+                <p>{t('footer.availableDate')}</p>
               </div>
             </div>
           </div>
@@ -98,14 +100,14 @@ const Footer = () => {
                   className="flex items-center space-x-2 text-gray-400 hover:text-primary-400 transition-colors"
                 >
                   <ArrowUp className="w-4 h-4" />
-                  <span>Back to top</span>
+                  <span>{t('footer.backToTop')}</span>
                 </motion.button>
               </div>
             </div>
 
             <div className="mt-4 pt-4 border-t border-dark-700">
               <p className="text-center text-gray-500 text-sm">
-                © 2025 AyGoub. All rights reserved. | Built with Next.js, TypeScript, and Tailwind CSS
+                {t('footer.copyright')}
               </p>
             </div>
           </div>

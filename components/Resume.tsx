@@ -4,10 +4,12 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Resume = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -38,12 +40,12 @@ const Resume = () => {
     website: "https://aygoub.github.io"
   }
 
-  const cvPath = '/cv/Cv_PFE_Cybersécurité.pdf'
+  const cvPath = t('resume.cvFile')
 
   const handleDownload = () => {
     const link = document.createElement('a')
     link.href = cvPath
-    link.download = 'AyGoub_CV.pdf'
+    link.download = t('resume.downloadFilename')
     link.click()
   }
 
@@ -60,10 +62,10 @@ const Resume = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Resume / CV
+              {t('resume.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              My professional experience, education, and achievements in cybersecurity
+              {t('resume.subtitle')}
             </p>
           </motion.div>
 
@@ -131,11 +133,11 @@ const Resume = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <FileText className="w-5 h-5 text-primary-500" />
-                      <h3 className="text-lg font-semibold text-white">AyGoub CV</h3>
+                      <h3 className="text-lg font-semibold text-white">{t('resume.cvPreviewTitle')}</h3>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Eye className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-400 text-sm">Preview</span>
+                      <span className="text-gray-400 text-sm">{t('resume.preview')}</span>
                     </div>
                   </div>
                 </div>
@@ -163,17 +165,17 @@ const Resume = () => {
                     <Download className="w-8 h-8 text-primary-500" />
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-2">
-                    Download CV
+                    {t('resume.downloadTitle')}
                   </h3>
                   <p className="text-gray-400 mb-6">
-                    Get the latest version of my resume in PDF format
+                    {t('resume.downloadDesc')}
                   </p>
                   <button
                     onClick={handleDownload}
                     className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
                   >
                     <Download className="w-5 h-5" />
-                    <span>Download PDF</span>
+                    <span>{t('resume.downloadBtn')}</span>
                   </button>
                 </div>
               </div>
@@ -181,24 +183,24 @@ const Resume = () => {
               {/* Quick Info */}
               <div className="bg-dark-800 rounded-lg p-6 border border-dark-700">
                 <h4 className="text-lg font-semibold text-white mb-4">
-                  Quick Info
+                  {t('resume.quickInfo')}
                 </h4>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Experience Level:</span>
-                    <span className="text-primary-400">Student</span>
+                    <span className="text-gray-400">{t('resume.experienceLevel')}</span>
+                    <span className="text-primary-400">{t('resume.studentLabel')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Specialization:</span>
-                    <span className="text-primary-400">Cybersecurity</span>
+                    <span className="text-gray-400">{t('resume.specialization')}</span>
+                    <span className="text-primary-400">{t('resume.cybersecurityLabel')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">TryHackMe Rank:</span>
-                    <span className="text-primary-400">Top 2%</span>
+                    <span className="text-gray-400">{t('resume.thmRank')}</span>
+                    <span className="text-primary-400">{t('resume.top2Label')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Availability:</span>
-                    <span className="text-primary-400">September 2026 - February 2027</span>
+                    <span className="text-gray-400">{t('resume.availability')}</span>
+                    <span className="text-primary-400">{t('resume.availabilityDate')}</span>
                   </div>
                 </div>
               </div>
@@ -206,16 +208,16 @@ const Resume = () => {
               {/* Contact CTA */}
               <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-white mb-2">
-                  Interested in working together?
+                  {t('resume.ctaTitle')}
                 </h4>
                 <p className="text-white/90 text-sm mb-4">
-                  I'm actively seeking internship opportunities in penetration testing and red team operations.
+                  {t('resume.ctaDesc')}
                 </p>
                 <a
                   href="#contact"
                   className="block w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-center"
                 >
-                  Get in Touch
+                  {t('resume.ctaBtn')}
                 </a>
               </div>
             </motion.div>

@@ -15,10 +15,12 @@ import {
   ArrowRight
 } from 'lucide-react'
 import { projects } from '@/data/projects'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Projects = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -62,10 +64,10 @@ const Projects = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Academic Projects
+              {t('projects.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Projects developed during my academic journey, showcasing technical skills and problem-solving abilities
+              {t('projects.subtitle')}
             </p>
           </motion.div>
 
@@ -73,7 +75,7 @@ const Projects = () => {
           {projects.filter(p => p.featured).length > 0 && (
             <motion.div variants={itemVariants} className="mb-16">
               <h3 className="text-2xl font-bold text-primary-400 mb-8">
-                ⭐ Featured Projects
+                {t('projects.featured')}
               </h3>
               <div className="grid md:grid-cols-2 gap-8">
                 {projects.filter(p => p.featured).map((project, index) => (
@@ -135,18 +137,18 @@ const Projects = () => {
                           {project.github && (
                             <span className="flex items-center space-x-2 text-gray-400 text-sm">
                               <Github className="w-4 h-4" />
-                              <span>Code</span>
+                              <span>{t('projects.code')}</span>
                             </span>
                           )}
                           {project.demo && (
                             <span className="flex items-center space-x-2 text-gray-400 text-sm">
                               <ExternalLink className="w-4 h-4" />
-                              <span>Demo</span>
+                              <span>{t('projects.demo')}</span>
                             </span>
                           )}
                         </div>
                         <div className="flex items-center space-x-2 text-primary-400 text-sm font-medium">
-                          <span>Learn more</span>
+                          <span>{t('projects.learnMore')}</span>
                           <ArrowRight className="w-4 h-4" />
                         </div>
                       </div>
@@ -160,7 +162,7 @@ const Projects = () => {
           {/* All Projects */}
           <motion.div variants={itemVariants}>
             <h3 className="text-2xl font-bold text-primary-400 mb-8">
-              All Projects ({projects.length})
+              {t('projects.all')} ({projects.length})
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
@@ -214,13 +216,13 @@ const Projects = () => {
                         {project.github && (
                           <span className="flex items-center space-x-1 text-gray-400 text-sm">
                             <Github className="w-4 h-4" />
-                            <span>Code</span>
+                            <span>{t('projects.code')}</span>
                           </span>
                         )}
                         {project.demo && (
                           <span className="flex items-center space-x-1 text-gray-400 text-sm">
                             <ExternalLink className="w-4 h-4" />
-                            <span>Demo</span>
+                            <span>{t('projects.demo')}</span>
                           </span>
                         )}
                       </div>
@@ -239,13 +241,10 @@ const Projects = () => {
           >
             <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
-                💡 Project Approach
+                {t('projects.philosophyTitle')}
               </h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                Each project represents a learning opportunity where I apply theoretical knowledge 
-                to practical problems. Through these projects, I've developed strong problem-solving 
-                skills, learned to work with various technologies, and gained experience in delivering 
-                complete solutions from concept to implementation.
+                {t('projects.philosophy')}
               </p>
             </div>
           </motion.div>

@@ -4,22 +4,24 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import emailjs from '@emailjs/browser'
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Github, 
-  Linkedin, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Github,
+  Linkedin,
   Twitter,
   Send,
   MessageSquare,
   Calendar,
   CheckCircle
 } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Contact = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -89,32 +91,16 @@ const Contact = () => {
       }, 3000)
       
     } catch (error) {
-      console.error('Erreur lors de l\'envoi:', error)
+      console.error('Send error:', error)
       setIsSubmitting(false)
-      // Vous pouvez ajouter un état d'erreur ici si vous voulez
-      alert('Erreur lors de l\'envoi du message. Veuillez réessayer.')
+      alert(t('contact.errorMsg'))
     }
   }
 
   const contactInfo = [
-    {
-      icon: Mail,
-      label: "Email",
-      value: "ayoub.goubraim@ecole.ensicaen.fr",
-      link: "mailto:ayoub.goubraim@ecole.ensicaen.fr"
-    },
-    {
-      icon: Phone,
-      label: "Phone",
-      value: "+33 7 53 44 54 36",
-      link: "tel:+33753445436"
-    },
-    {
-      icon: MapPin,
-      label: "Location",
-      value: "Caen, France",
-      link: "#"
-    }
+    { icon: Mail, labelKey: 'contact.email', value: 'ayoub.goubraim@ecole.ensicaen.fr', link: 'mailto:ayoub.goubraim@ecole.ensicaen.fr' },
+    { icon: Phone, labelKey: 'contact.phoneLabel', value: '+33 7 53 44 54 36', link: 'tel:+33753445436' },
+    { icon: MapPin, labelKey: 'contact.locationLabel', value: 'Caen, France', link: '#' },
   ]
 
   const socialLinks = [
@@ -151,10 +137,10 @@ const Contact = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Get In Touch
+              {t('contact.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-              Ready to discuss cybersecurity opportunities? Let's connect and explore how I can contribute to your team.
+              {t('contact.subtitle')}
             </p>
           </motion.div>
 
@@ -163,13 +149,10 @@ const Contact = () => {
             <motion.div variants={itemVariants} className="space-y-8">
               <div>
                 <h3 className="text-2xl font-semibold text-white mb-6">
-                  Let's Connect
+                  {t('contact.connectTitle')}
                 </h3>
                 <p className="text-gray-400 leading-relaxed mb-8">
-                  I'm actively seeking internship opportunities in cybersecurity, particularly in 
-                  penetration testing and red team operations. Whether you're looking for a 
-                  passionate student to join your security team or want to discuss cybersecurity 
-                  projects, I'd love to hear from you.
+                  {t('contact.connectDesc')}
                 </p>
               </div>
 
@@ -177,7 +160,7 @@ const Contact = () => {
               <div className="space-y-4">
                 {contactInfo.map((info, index) => (
                   <motion.a
-                    key={info.label}
+                    key={info.labelKey}
                     href={info.link}
                     whileHover={{ scale: 1.02, x: 10 }}
                     className="flex items-center space-x-4 p-4 bg-dark-800 rounded-lg border border-dark-700 hover:border-primary-500 transition-all duration-300"
@@ -186,7 +169,7 @@ const Contact = () => {
                       <info.icon className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-gray-400 text-sm">{info.label}</p>
+                      <p className="text-gray-400 text-sm">{t(info.labelKey)}</p>
                       <p className="text-white font-medium">{info.value}</p>
                     </div>
                   </motion.a>
@@ -196,7 +179,7 @@ const Contact = () => {
               {/* Social Links */}
               <div>
                 <h4 className="text-lg font-semibold text-white mb-4">
-                  Follow Me
+                  {t('contact.followMe')}
                 </h4>
                 <div className="flex space-x-4">
                   {socialLinks.map((social, index) => (
@@ -217,14 +200,14 @@ const Contact = () => {
               {/* Availability */}
               <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-white mb-2">
-                  💼 Currently Available
+                  {t('contact.available')}
                 </h4>
                 <p className="text-white/90 text-sm mb-3">
-                  I'm actively seeking cybersecurity internship opportunities for 2026.
+                  {t('contact.availableDesc')}
                 </p>
                 <div className="flex items-center space-x-2 text-white/80">
                   <Calendar className="w-4 h-4" />
-                  <span className="text-sm">Available: September 2026 - February 2027</span>
+                  <span className="text-sm">{t('contact.availableDate')}</span>
                 </div>
               </div>
             </motion.div>
@@ -233,7 +216,7 @@ const Contact = () => {
             <motion.div variants={itemVariants}>
               <div className="bg-dark-800 rounded-lg p-8 border border-dark-700">
                 <h3 className="text-2xl font-semibold text-white mb-6">
-                  Send a Message
+                  {t('contact.sendMessage')}
                 </h3>
                 
                 {isSubmitted ? (
@@ -244,10 +227,10 @@ const Contact = () => {
                   >
                     <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
                     <h4 className="text-xl font-semibold text-white mb-2">
-                      Message Sent Successfully!
+                      {t('contact.successTitle')}
                     </h4>
                     <p className="text-gray-400">
-                      Thank you for reaching out. I'll get back to you soon.
+                      {t('contact.successDesc')}
                     </p>
                   </motion.div>
                 ) : (
@@ -255,7 +238,7 @@ const Contact = () => {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                          Name
+                          {t('contact.name')}
                         </label>
                         <input
                           type="text"
@@ -265,12 +248,12 @@ const Contact = () => {
                           onChange={handleInputChange}
                           required
                           className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors"
-                          placeholder="Your name"
+                          placeholder={t('contact.namePlaceholder')}
                         />
                       </div>
                       <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                          Email
+                          {t('contact.email')}
                         </label>
                         <input
                           type="email"
@@ -280,14 +263,14 @@ const Contact = () => {
                           onChange={handleInputChange}
                           required
                           className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors"
-                          placeholder="your.email@example.com"
+                          placeholder={t('contact.emailPlaceholder')}
                         />
                       </div>
                     </div>
                     
                     <div>
                       <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                        Subject
+                        {t('contact.subject')}
                       </label>
                       <input
                         type="text"
@@ -297,13 +280,13 @@ const Contact = () => {
                         onChange={handleInputChange}
                         required
                         className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors"
-                        placeholder="What's this about?"
+                        placeholder={t('contact.subjectPlaceholder')}
                       />
                     </div>
                     
                     <div>
                       <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                        Message
+                        {t('contact.message')}
                       </label>
                       <textarea
                         id="message"
@@ -313,7 +296,7 @@ const Contact = () => {
                         required
                         rows={6}
                         className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors resize-none"
-                        placeholder="Tell me about the opportunity or project..."
+                        placeholder={t('contact.messagePlaceholder')}
                       />
                     </div>
                     
@@ -327,12 +310,12 @@ const Contact = () => {
                       {isSubmitting ? (
                         <>
                           <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>Sending...</span>
+                          <span>{t('contact.sending')}</span>
                         </>
                       ) : (
                         <>
                           <Send className="w-5 h-5" />
-                          <span>Send Message</span>
+                          <span>{t('contact.send')}</span>
                         </>
                       )}
                     </motion.button>

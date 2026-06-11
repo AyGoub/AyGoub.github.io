@@ -5,10 +5,12 @@ import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Award, ExternalLink, Calendar, CheckCircle, Clock, Download } from 'lucide-react'
 import Image from 'next/image'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Certifications = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -116,10 +118,10 @@ const Certifications = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              Certifications & Achievements
+              {t('certifications.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Industry-recognized certifications and learning achievements in cybersecurity
+              {t('certifications.subtitle')}
             </p>
           </motion.div>
 
@@ -163,7 +165,7 @@ const Certifications = () => {
                       {cert.issuer}
                     </p>
                     <p className="text-gray-400 text-sm">
-                      {cert.description}
+                      {t('certifications.description')}
                     </p>
                   </div>
 
@@ -171,7 +173,7 @@ const Certifications = () => {
                   <div className="flex justify-center mb-4">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(cert.status)}`}>
                       <StatusIcon className="w-4 h-4" />
-                      <span className="capitalize">{cert.status.replace('_', ' ')}</span>
+                      <span>{t(`certifications.status.${cert.status}`)}</span>
                     </span>
                   </div>
 
@@ -199,7 +201,7 @@ const Certifications = () => {
                         className="flex items-center space-x-1 px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition-colors"
                       >
                         <ExternalLink className="w-4 h-4" />
-                        <span>View PDF</span>
+                        <span>{t('certifications.viewPdf')}</span>
                       </a>
                     )}
                     {cert.credential && (
@@ -209,7 +211,7 @@ const Certifications = () => {
                         className="flex items-center space-x-1 px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 text-sm rounded-lg transition-colors"
                       >
                         <Download className="w-4 h-4" />
-                        <span>Download</span>
+                        <span>{t('certifications.download')}</span>
                       </a>
                     )}
                   </div>
@@ -228,23 +230,23 @@ const Certifications = () => {
                 <div className="text-3xl font-bold text-white mb-2">
                   {certifications.filter(c => c.status === 'completed').length}
                 </div>
-                <div className="text-white/80">Completed</div>
+                <div className="text-white/80">{t('certifications.stats.completed')}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white mb-2">
                   {certifications.filter(c => c.status === 'in_progress').length}
                 </div>
-                <div className="text-white/80">In Progress</div>
+                <div className="text-white/80">{t('certifications.stats.inProgress')}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white mb-2">
                   {certifications.filter(c => c.status === 'planned').length}
                 </div>
-                <div className="text-white/80">Planned</div>
+                <div className="text-white/80">{t('certifications.stats.planned')}</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white mb-2">Top 2%</div>
-                <div className="text-white/80">TryHackMe Rank</div>
+                <div className="text-white/80">{t('certifications.stats.rank')}</div>
               </div>
             </div>
           </motion.div>

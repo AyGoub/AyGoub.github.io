@@ -4,20 +4,22 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { 
-  FileText, 
-  Calendar, 
-  Tag, 
-  ExternalLink, 
-  Code, 
+  FileText,
+  Calendar,
+  Tag,
+  ExternalLink,
+  Code,
   Eye,
   Download,
   Trophy
 } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const Writeups = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -38,7 +40,8 @@ const Writeups = () => {
     }
   }
 
-  const categories = ['All', 'Web Exploitation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
+  const categoryValues = ['All', 'Web Exploitation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
+  const categories = categoryValues.map(v => ({ value: v, label: t(`writeups.categories.${v}`) }))
 
   // Mis à jour pour référencer vos PDFs dans public/writeups
   const writeups = [
@@ -226,27 +229,27 @@ const Writeups = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              CTF Writeups & Solutions
+              {t('writeups.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-              Detailed walkthroughs and solutions for various cybersecurity challenges
+              {t('writeups.subtitle')}
             </p>
-            
+
             {/* Category Filter */}
             <div className="flex flex-wrap justify-center gap-2 mb-8">
               {categories.map((category) => (
                 <motion.button
-                  key={category}
+                  key={category.value}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedCategory(category)}
+                  onClick={() => setSelectedCategory(category.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedCategory === category
+                    selectedCategory === category.value
                       ? 'bg-primary-600 text-white'
                       : 'bg-dark-700 text-gray-300 hover:bg-dark-600'
                   }`}
                 >
-                  {category}
+                  {category.label}
                 </motion.button>
               ))}
             </div>
@@ -255,7 +258,7 @@ const Writeups = () => {
           {/* Featured Writeups */}
           <motion.div variants={itemVariants} className="mb-16">
             <h3 className="text-2xl font-bold text-primary-400 mb-8">
-              🔥 Featured Writeups
+              {t('writeups.featured')}
             </h3>
             <div className="grid md:grid-cols-2 gap-8">
               {writeups.filter(w => w.featured).map((writeup, index) => (
@@ -269,7 +272,7 @@ const Writeups = () => {
                 >
                   <div className="absolute top-4 right-4 flex items-center space-x-2">
                     <Trophy className="w-5 h-5 text-yellow-500" />
-                    <span className="text-yellow-500 text-sm font-medium">Featured</span>
+                    <span className="text-yellow-500 text-sm font-medium">{t('writeups.featuredLabel')}</span>
                   </div>
                   
                   <div className="flex items-start justify-between mb-4">
@@ -308,7 +311,7 @@ const Writeups = () => {
                       whileHover={{ scale: 1.05 }}
                       className="flex items-center space-x-2 text-primary-400 hover:text-primary-300 transition-colors"
                     >
-                      <span className="text-sm font-medium">Read Writeup</span>
+                      <span className="text-sm font-medium">{t('writeups.readWriteup')}</span>
                       <ExternalLink size={16} />
                     </motion.a>
                   </div>
@@ -320,7 +323,7 @@ const Writeups = () => {
           {/* All Writeups Grid */}
           <motion.div variants={itemVariants} className="mb-16">
             <h3 className="text-2xl font-bold text-primary-400 mb-8">
-              All Writeups ({filteredWriteups.length})
+              {t('writeups.allWriteups')} ({filteredWriteups.length})
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredWriteups.map((writeup, index) => (
@@ -375,7 +378,7 @@ const Writeups = () => {
                     className="flex items-center justify-center space-x-2 w-full py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
                   >
                     <Eye size={16} />
-                    <span>Read More</span>
+                    <span>{t('writeups.readMore')}</span>
                   </motion.a>
                 </motion.div>
               ))}
@@ -383,20 +386,16 @@ const Writeups = () => {
           </motion.div>
 
           {/* Writing Philosophy */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="text-center"
           >
             <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
-                📝 Writing Philosophy
+                {t('writeups.philosophyTitle')}
               </h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                I believe in sharing knowledge and helping others learn. Each writeup I create 
-                is designed to be educational and comprehensive, explaining not just the steps 
-                to solve a challenge, but the reasoning behind each technique. My goal is to 
-                contribute to the cybersecurity community by making complex concepts accessible 
-                to beginners while providing value to more experienced practitioners.
+                {t('writeups.philosophy')}
               </p>
             </div>
           </motion.div>

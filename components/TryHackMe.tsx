@@ -4,21 +4,23 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import { 
-  Trophy, 
-  Star, 
-  Target, 
-  BookOpen, 
-  Calendar, 
+  Trophy,
+  Star,
+  Target,
+  BookOpen,
+  Calendar,
   ExternalLink,
   TrendingUp,
   Award,
   Shield,
   Zap
 } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const TryHackMe = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -103,28 +105,28 @@ const TryHackMe = () => {
   const achievements = [
     {
       icon: Trophy,
-      title: "Learning Streak",
+      titleKey: 'tryhackme.achievements.streak.title',
       value: `${stats.streak} days`,
-      description: "Consistent daily learning"
+      descKey: 'tryhackme.achievements.streak.description',
     },
     {
       icon: Target,
-      title: "Rooms Completed",
+      titleKey: 'tryhackme.achievements.rooms.title',
       value: `${stats.completedRooms}/${stats.totalRooms}`,
-      description: "CTF challenges solved"
+      descKey: 'tryhackme.achievements.rooms.description',
     },
     {
       icon: Star,
-      title: "Total Points",
-      value: stats.totalPoints.toLocaleString() + "+",
-      description: "Earned through challenges"
+      titleKey: 'tryhackme.achievements.points.title',
+      value: stats.totalPoints.toLocaleString() + '+',
+      descKey: 'tryhackme.achievements.points.description',
     },
     {
       icon: Award,
-      title: "Badges Earned",
+      titleKey: 'tryhackme.achievements.badges.title',
       value: stats.badges,
-      description: "Achievement badges"
-    }
+      descKey: 'tryhackme.achievements.badges.description',
+    },
   ]
 
   const getDifficultyColor = (difficulty: string) => {
@@ -149,10 +151,10 @@ const TryHackMe = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              TryHackMe Journey
+              {t('tryhackme.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-6">
-              My learning progress and achievements on TryHackMe
+              {t('tryhackme.subtitle')}
             </p>
             <motion.a
               href="https://tryhackme.com/p/AyGoub"
@@ -161,7 +163,7 @@ const TryHackMe = () => {
               whileHover={{ scale: 1.05 }}
               className="inline-flex items-center space-x-2 text-primary-400 hover:text-primary-300 transition-colors"
             >
-              <span>View my TryHackMe profile</span>
+              <span>{t('tryhackme.viewProfile')}</span>
               <ExternalLink size={16} />
             </motion.a>
           </motion.div>
@@ -170,7 +172,7 @@ const TryHackMe = () => {
           <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
             {achievements.map((achievement, index) => (
               <motion.div
-                key={achievement.title}
+                key={achievement.titleKey}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
@@ -182,10 +184,10 @@ const TryHackMe = () => {
                   {achievement.value}
                 </h3>
                 <p className="text-gray-300 font-medium mb-1">
-                  {achievement.title}
+                  {t(achievement.titleKey)}
                 </p>
                 <p className="text-gray-400 text-sm">
-                  {achievement.description}
+                  {t(achievement.descKey)}
                 </p>
               </motion.div>
             ))}
@@ -194,7 +196,7 @@ const TryHackMe = () => {
           {/* Learning Paths */}
           <motion.div variants={itemVariants} className="mb-16">
             <h3 className="text-3xl font-bold text-center gradient-text mb-8">
-              Learning Paths Progress
+              {t('tryhackme.pathsTitle')}
             </h3>
             <div className="grid md:grid-cols-2 gap-6">
               {learningPaths.map((path, index) => (
@@ -211,13 +213,13 @@ const TryHackMe = () => {
                       {path.title}
                     </h4>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(path.difficulty)}`}>
-                      {path.difficulty}
+                      {t(`tryhackme.difficulty.${path.difficulty}`)}
                     </span>
                   </div>
                   
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm text-gray-300">
-                      <span>Progress: {path.completed}/{path.rooms} rooms</span>
+                      <span>{t('tryhackme.progress')}: {path.completed}/{path.rooms} {t('tryhackme.rooms')}</span>
                       <span>{path.progress}%</span>
                     </div>
                     <div className="w-full bg-dark-600 rounded-full h-3">
@@ -239,19 +241,16 @@ const TryHackMe = () => {
           </motion.div>
 
           {/* Learning Philosophy */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="text-center"
           >
             <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
-                🎯 Learning Philosophy
+                {t('tryhackme.philosophyTitle')}
               </h3>
               <p className="text-lg text-white/90 leading-relaxed">
-                TryHackMe has been instrumental in my cybersecurity journey, providing hands-on 
-                experience with real-world scenarios. Each room I complete teaches me something new 
-                about security concepts, tools, and techniques. I believe in learning by doing, 
-                and TryHackMe's interactive approach perfectly aligns with this philosophy.
+                {t('tryhackme.philosophy')}
               </p>
             </div>
           </motion.div>

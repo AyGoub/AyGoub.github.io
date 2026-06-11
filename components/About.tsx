@@ -4,10 +4,12 @@ import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Shield, Target, BookOpen, Users, Award, Zap } from 'lucide-react'
+import { useLanguage } from '@/contexts/LanguageContext'
 
 const About = () => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
+  const { t } = useLanguage()
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -29,36 +31,12 @@ const About = () => {
   }
 
   const interests = [
-    {
-      icon: Shield,
-      title: "Penetration Testing",
-      description: "Ethical hacking and vulnerability assessment"
-    },
-    {
-      icon: Target,
-      title: "Red Team Operations",
-      description: "Simulating real-world cyber attacks"
-    },
-    {
-      icon: BookOpen,
-      title: "Security Research",
-      description: "Staying updated with latest threats and defenses"
-    },
-    {
-      icon: Users,
-      title: "Community Learning",
-      description: "Active in cybersecurity communities and CTFs"
-    },
-    {
-      icon: Award,
-      title: "Certifications",
-      description: "Pursuing industry-recognized certifications"
-    },
-    {
-      icon: Zap,
-      title: "Innovation",
-      description: "Developing creative security solutions"
-    }
+    { icon: Shield, titleKey: 'about.interests.pentest.title', descKey: 'about.interests.pentest.description' },
+    { icon: Target, titleKey: 'about.interests.redTeam.title', descKey: 'about.interests.redTeam.description' },
+    { icon: BookOpen, titleKey: 'about.interests.research.title', descKey: 'about.interests.research.description' },
+    { icon: Users, titleKey: 'about.interests.community.title', descKey: 'about.interests.community.description' },
+    { icon: Award, titleKey: 'about.interests.certifications.title', descKey: 'about.interests.certifications.description' },
+    { icon: Zap, titleKey: 'about.interests.innovation.title', descKey: 'about.interests.innovation.description' },
   ]
 
   return (
@@ -74,10 +52,10 @@ const About = () => {
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              whoami
+              {t('about.title')}
             </h2>
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Get to know me better and understand my passion for cybersecurity
+              {t('about.subtitle')}
             </p>
           </motion.div>
 
@@ -89,40 +67,28 @@ const About = () => {
                   $ whoami
                 </p>
                 <p className="text-gray-300 text-lg leading-relaxed">
-                  I'm a passionate cybersecurity student with a deep fascination for 
-                  understanding how systems can be secured and how attackers think. 
-                  My journey began with curiosity about how things work under the hood, 
-                  which naturally led me to the world of cybersecurity.
+                  {t('about.intro')}
                 </p>
               </div>
 
               <div className="space-y-4">
                 <h3 className="text-2xl font-semibold text-primary-400">
-                  My Journey
+                  {t('about.journeyTitle')}
                 </h3>
                 <p className="text-gray-300 leading-relaxed">
-                  Starting with basic programming and system administration, I discovered 
-                  my passion for security through TryHackMe's interactive learning platform. 
-                  The hands-on approach to learning penetration testing, network security, 
-                  and ethical hacking captivated me from day one.
+                  {t('about.journey1')}
                 </p>
                 <p className="text-gray-300 leading-relaxed">
-                  Now, I'm actively pursuing knowledge in areas like web application 
-                  security, network penetration testing, and red team methodologies. 
-                  I believe that understanding both offensive and defensive security 
-                  is crucial for building robust security solutions.
+                  {t('about.journey2')}
                 </p>
               </div>
 
               <div className="space-y-4">
                 <h3 className="text-2xl font-semibold text-primary-400">
-                  Goals & Aspirations
+                  {t('about.goalsTitle')}
                 </h3>
                 <p className="text-gray-300 leading-relaxed">
-                  I'm actively seeking internship opportunities where I can apply my 
-                  theoretical knowledge to real-world scenarios. My goal is to become 
-                  a skilled penetration tester who can help organizations identify and 
-                  remediate security vulnerabilities before malicious actors exploit them.
+                  {t('about.goals')}
                 </p>
               </div>
             </motion.div>
@@ -131,7 +97,7 @@ const About = () => {
             <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {interests.map((interest, index) => (
                 <motion.div
-                  key={interest.title}
+                  key={interest.titleKey}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
@@ -141,11 +107,11 @@ const About = () => {
                   <div className="flex items-center space-x-3 mb-3">
                     <interest.icon className="w-6 h-6 text-primary-500" />
                     <h4 className="text-lg font-semibold text-white">
-                      {interest.title}
+                      {t(interest.titleKey)}
                     </h4>
                   </div>
                   <p className="text-gray-400 text-sm">
-                    {interest.description}
+                    {t(interest.descKey)}
                   </p>
                 </motion.div>
               ))}
@@ -153,19 +119,16 @@ const About = () => {
           </div>
 
           {/* Fun Fact */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="mt-16 text-center"
           >
             <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
-                🎯 Fun Fact
+                {t('about.funFactTitle')}
               </h3>
               <p className="text-lg text-white/90">
-                I spend my free time participating in CTF competitions and writing 
-                detailed writeups to help other cybersecurity enthusiasts learn. 
-                My favorite part of cybersecurity is the constant learning - 
-                there's always something new to discover!
+                {t('about.funFact')}
               </p>
             </div>
           </motion.div>
