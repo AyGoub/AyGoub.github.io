@@ -3,6 +3,7 @@ export interface Project {
   title: string
   description: string
   longDescription: string
+  longDescriptionFr?: string
   category: string
   date: string
   technologies: string[]
@@ -87,6 +88,71 @@ Automated deployment using GitHub Actions:
 • Deployment to GitHub Pages
 • Build verification and error checking
 • Ready for custom domain configuration
+    `,
+    longDescriptionFr: `
+Un site portfolio personnel complet conçu pour présenter mon expertise en cybersécurité, mes projets académiques, certifications et parcours professionnel. Développé avec des technologies web modernes pour des performances optimales et une expérience utilisateur de qualité.
+
+## 🎯 Objectifs du projet
+
+• Créer une présence en ligne professionnelle mettant en valeur les compétences en cybersécurité
+• Présenter des projets académiques avec des explications détaillées
+• Afficher les certifications et réalisations de plateformes comme TryHackMe
+• Offrir une expérience utilisateur interactive et responsive
+• Optimiser les performances et le référencement (SEO)
+• Déployer sur GitHub Pages avec CI/CD automatisé
+
+## 🛠️ Stack technologique
+
+• **Next.js 14** - App Router pour une architecture React moderne
+• **TypeScript** - Typage fort et meilleure expérience développeur
+• **Tailwind CSS** - Design responsive basé sur les utilitaires
+• **Framer Motion** - Animations fluides et engageantes
+• **Lucide React** - Iconographie cohérente et moderne
+• **GitHub Actions** - Workflow CI/CD automatisé
+• **EmailJS** - Formulaire de contact sans backend
+
+## ✨ Fonctionnalités principales
+
+• **Pages de projets dynamiques** - Chaque projet dispose d'une page détaillée
+• **CV bilingue** - Basculer entre les versions française et anglaise du CV
+• **Intégration TryHackMe** - Affichage des statistiques et réalisations en temps réel
+• **Section Writeups CTF** - Présentation des writeups de tests de pénétration
+• **Visualisation des compétences** - Affichage interactif des compétences techniques
+• **Galerie de certifications** - Certifications professionnelles avec liens de vérification
+• **Design responsive** - Entièrement responsive sur tous les appareils
+• **Thème sombre** - Palette cybersécurité sombre
+• **Formulaire de contact** - Intégration email fonctionnelle
+• **Optimisé SEO** - Balises meta et génération statique
+
+## 🏗️ Architecture
+
+Le site utilise le App Router de Next.js 14 avec la génération de site statique (SSG). Toutes les pages sont pré-rendues au moment du build et servies en HTML statique, garantissant des temps de chargement rapides et un excellent référencement.
+
+**Structure du projet :**
+• Architecture basée sur les composants avec des modules réutilisables
+• Routage dynamique pour les pages de projets individuels
+• Gestion centralisée des données dans des fichiers TypeScript
+• Chargement différé pour de meilleures performances
+• Support Markdown pour le formatage de texte enrichi
+
+## 🚀 Processus de développement
+
+**1. Planification** - Conception de l'architecture du site et du flux utilisateur
+**2. Design** - Création d'un design sombre sur le thème cybersécurité
+**3. Implémentation** - Construction incrémentale des composants avec TypeScript
+**4. Contenu** - Remplissage avec les vrais projets et réalisations
+**5. Optimisation** - Chargement différé, optimisation des images, découpage du code
+**6. Tests** - Tests multi-navigateurs et multi-appareils
+**7. Déploiement** - Mise en place du pipeline CI/CD avec GitHub Actions
+
+## 📦 Déploiement & CI/CD
+
+Déploiement automatisé avec GitHub Actions :
+• Builds automatiques lors des pushs sur la branche main
+• Génération de site statique avec export Next.js
+• Déploiement sur GitHub Pages
+• Vérification des builds et détection des erreurs
+• Prêt pour la configuration d'un domaine personnalisé
     `,
     category: "Web Development",
     date: "2025-2026",
@@ -186,6 +252,69 @@ Through developing this project, I gained valuable knowledge about:
 • Developed appreciation for endpoint security measures
 • Enhanced knowledge of malware analysis and detection
 • Understood the ethical responsibilities in cybersecurity
+    `,
+    longDescriptionFr: `
+Un keylogger pédagogique développé en Python pour comprendre les techniques de surveillance des frappes clavier, les interactions au niveau système et les implications en termes de sécurité. Ce projet a été créé **uniquement à des fins de recherche et d'éducation en cybersécurité**.
+
+## 🎯 Présentation du projet
+
+Ce projet démontre le fonctionnement technique des keyloggers, permettant de comprendre les vulnérabilités de sécurité système et les mesures défensives. Il illustre la programmation système bas niveau, la gestion des événements et les bonnes pratiques de codage sécurisé.
+
+## 📚 Objectifs pédagogiques
+
+• Comprendre les mécanismes de capture de frappes au niveau OS
+• Apprendre la programmation système et les hooks d'événements
+• Explorer les implications sécuritaires des keyloggers malveillants
+• Développer des stratégies défensives contre ce type d'attaque
+• Pratiquer les principes de divulgation responsable et d'éthique
+
+## 🔧 Implémentation technique
+
+**Fonctionnalités principales :**
+
+• **Capture des frappes** - Surveillance en temps réel des événements clavier
+• **Journalisation des événements** - Stockage sécurisé des données capturées
+• **Hooks système** - Intégration avec les API clavier au niveau OS
+• **Fonctionnement discret** - Compréhension des techniques de dissimulation
+• **Export des données** - Formats de journalisation structurés pour l'analyse
+
+**Architecture :**
+
+Le keylogger utilise des bibliothèques Python pour interfacer avec les événements clavier système :
+• Écouteurs d'événements pour la capture des frappes
+• Gestion des tampons pour un traitement efficace
+• Opérations d'E/S fichier pour la journalisation sécurisée
+• Gestion des erreurs et reprise sur incident
+
+## 🛡️ Considérations de sécurité
+
+Ce projet met l'accent sur la compréhension des vecteurs d'attaque pour construire de meilleures défenses :
+
+• **Sensibilisation** - Comprendre le fonctionnement des keyloggers
+• **Détection** - Apprendre à identifier les logiciels de surveillance
+• **Prévention** - Mettre en place des mesures de sécurité contre la surveillance
+• **Éthique** - Insister sur l'utilisation responsable et les implications légales
+
+## 🔍 Enseignements défensifs
+
+Ce projet m'a apporté des connaissances précieuses sur :
+
+• La détection de keyloggers sur les systèmes
+• Les bonnes pratiques de sécurité pour se protéger contre la surveillance
+• L'importance des solutions de sécurité endpoint
+• Les schémas comportementaux indiquant la présence d'un keylogger
+
+## ⚠️ Avis légal et éthique
+
+**IMPORTANT :** Ce projet est uniquement destiné à l'éducation et à la recherche. L'utilisation non autorisée de keyloggers est illégale dans la plupart des juridictions. Le projet a été développé dans un environnement contrôlé pour comprendre les vulnérabilités et améliorer les mesures défensives.
+
+## 📖 Résultats d'apprentissage
+
+• Compréhension approfondie de la gestion des événements au niveau OS
+• Apprentissage des concepts de programmation système en Python
+• Appréciation renforcée des mesures de sécurité endpoint
+• Connaissances améliorées sur l'analyse et la détection de malwares
+• Compréhension des responsabilités éthiques en cybersécurité
     `,
     category: "Cybersecurity",
     date: "2025",
@@ -336,6 +465,89 @@ This project implements a competitive F1 racing AI using the A* pathfinding algo
 • Enhanced understanding of state space search and heuristic design
 • Practiced efficient C programming with manual memory management
     `,
+    longDescriptionFr: `
+Un bot de course Formule 1 intelligent développé en C pour une compétition de programmation. Le système utilise des algorithmes de pathfinding avancés pour naviguer de manière autonome sur les circuits, éviter les collisions, gérer la consommation de carburant et optimiser les stratégies de course en temps réel.
+
+## 🎯 Présentation du projet
+
+Ce projet implémente une IA de course F1 compétitive utilisant l'algorithme A* avec des heuristiques personnalisées. Le bot affronte d'autres pilotes IA sur différents circuits, prenant des décisions en temps réel sur l'accélération, le freinage, les dépassements et la gestion du carburant.
+
+**Objectifs principaux :**
+
+• **Atteindre l'arrivée le plus rapidement possible** - Minimiser le temps de parcours en combinant vitesse et décisions stratégiques
+• **Respecter les règles de course** - Respecter les limites de vitesse, les règles de consommation et les contraintes d'accélération
+• **Conception d'algorithme de déplacement optimal** - Développer un algorithme garantissant le chemin le plus court possible
+• **Validation multi-circuits** - Tester les performances sur différents circuits
+• **Optimisation du code** - Améliorer les performances en optimisant le code source
+
+## 🏎️ Fonctionnalités principales
+
+• **Algorithme A*** - Implémentation personnalisée pour trouver les routes optimales sur les circuits
+• **Prise de décision en temps réel** - Calcul des vecteurs d'accélération à chaque tour (réponse sous la seconde)
+• **Évitement des collisions** - Détection et évitement des obstacles et véhicules adverses
+• **Gestion du carburant** - Optimisation de la vitesse vs. consommation pour terminer la course
+• **Adaptation au terrain** - Gestion des différents types de surface (piste, sable, obstacles)
+• **Course multi-adversaires** - Suivi de jusqu'à 2 autres pilotes IA simultanément
+• **Stratégie turbo** - Utilisation stratégique des 5 turbos disponibles par course
+
+## 💻 Implémentation technique
+
+**Algorithmes principaux :**
+
+• **Recherche A*** - A* modifié avec heuristique de Chebyshev pour le pathfinding optimal
+• **Détection de collision** - Algorithme de Bresenham pour la vérification de trajectoire
+• **Table de hachage** - Table personnalisée (capacité 1000) pour l'optimisation de l'ensemble fermé
+• **File de priorité** - File min-tas pour une exploration efficace des nœuds
+• **Sélection de destination** - Priorisation des cibles par distance euclidienne
+
+**Structures de données :**
+
+• **GraphNode** - Position, vitesse, carburant, coût, heuristique, chaîne prédécesseur
+• **TerrainMap** - Représentation 2D du circuit en grille
+• **GraphQueue** - File de priorité triée par coût total (coût + heuristique)
+• **HashTable** - Accès rapide aux nœuds visités avec fonction de hachage personnalisée
+• **DestinationList** - Liste ordonnée des positions de la ligne d'arrivée
+
+## 🧮 Détails de l'algorithme
+
+**Implémentation A*** :
+• Espace d'état : (x, y, vx, vy) - vecteurs position et vitesse
+• Heuristique : distance de Chebyshev (max de dx, dy) vers la ligne d'arrivée
+• Fonction de coût : longueur du chemin + pénalité de consommation carburant
+• Génération de successeurs : 9 options d'accélération (-1, 0, +1 pour x et y)
+• Contrainte de vitesse : magnitude maximale de 25 unités
+• Calcul carburant : basé sur la magnitude d'accélération et la vitesse actuelle
+
+**Détection de collision :**
+• Parcours de ligne de la position actuelle à la suivante
+• Vérification de chaque point discret le long du chemin
+• Détection des murs (.), obstacles, sable (~) et positions adverses
+• Évitement des positions occupées par d'autres véhicules
+
+## 🏁 Éléments stratégiques
+
+• Calcul d'accélération optimale depuis l'état courant
+• Manœuvres de dépassement quand les adversaires bloquent le chemin
+• Trajectoire économe en carburant en cas de réserve faible
+• Adaptation de vitesse selon le type de terrain
+• Freinage d'urgence pour l'évitement d'obstacles
+
+## 📊 Métriques de performance
+
+• **Temps de réponse** - Calcul des mouvements en moins d'1 seconde par tour
+• **Efficacité carburant** - Optimisation longueur de chemin vs. coûts d'accélération
+• **Précision du pathfinding** - Navigation réussie sur circuits complexes
+• **Évitement des collisions** - Zéro crash dans les conditions optimales
+• **Gestion mémoire** - Allocation/désallocation correcte sans fuites
+
+## 📚 Résultats d'apprentissage
+
+• Maîtrise de l'implémentation de l'algorithme A* from scratch
+• Implémentation de structures de données avancées (file de priorité, table de hachage)
+• Application de techniques d'optimisation algorithmique pour contraintes temps réel
+• Expérience en programmation compétitive et prise de décision IA
+• Développement de détection de collision robuste par géométrie computationnelle
+    `,
     category: "Algorithms ",
     date: "2024",
     technologies: ["C", "A* Algorithm", "Pathfinding", "Data Structures", "Graph Search", "Hash Tables"],
@@ -472,6 +684,102 @@ The simulation implements the classic SIR model:
 • Understanding pandemic dynamics
 • Educational demonstrations
 • Testing intervention strategies
+    `,
+    longDescriptionFr: `
+Un système complet de simulation d'épidémie développé en C dans le cadre d'un cours de Systèmes d'Exploitation. Le projet simule la propagation des maladies à l'aide du modèle épidémiologique SIR (Susceptibles-Infectés-Rétablis) avec le multi-threading, la synchronisation de processus et la visualisation de données en temps réel.
+
+## 🎯 Présentation du projet
+
+Ce projet démontre des concepts avancés de systèmes d'exploitation incluant la gestion des processus, la communication inter-processus, la synchronisation des threads et la gestion des ressources. La simulation modélise la propagation des maladies avec des paramètres configurables pour les taux de transmission, les temps de guérison et la dynamique de population.
+
+**Équipe :** Développé en collaboration par une équipe de 4 membres
+**Réalisation :** Classé parmi les 3 meilleurs projets de toute la promotion
+
+## 👥 Responsabilités de l'équipe
+
+Notre équipe a réparti le travail sur différents composants système :
+
+• **Moteur de simulation** - Logique principale et modèle de propagation épidémique
+• **Multi-threading** - Gestion des threads et mécanismes de synchronisation
+• **Analyse des données** - Collecte et analyse statistique
+• **Visualisation** - Interface graphique et tracé en temps réel
+
+## 🔧 Architecture technique
+
+**Composants principaux :**
+
+• Modèle de propagation épidémique multi-threadé
+• Implémentation mathématique du modèle SIR
+• Exécution concurrente des agents de population
+• Synchronisation par mutex pour les ressources partagées
+• Visualisation graphique en temps réel
+• Suivi statistique et analyse des données
+
+**Concepts de Systèmes d'Exploitation :**
+
+• **Multi-threading** - Chaque agent de population s'exécute dans un thread séparé
+• **Synchronisation de processus** - Sections critiques protégées par des mutexes
+• **Mémoire partagée** - Partage efficace des données entre threads
+• **Gestion des ressources** - Allocation et désallocation appropriées
+• **Prévention des deadlocks** - Conception de synchronisation prudente
+• **Gestion des conditions de course** - Opérations thread-safe
+
+## 🦠 Modèle épidémiologique SIR
+
+La simulation implémente le modèle SIR classique :
+
+• **Susceptibles (S)** - Individus pouvant contracter la maladie
+• **Infectés (I)** - Individus actuellement infectés et contagieux
+• **Rétablis (R)** - Individus immunisés après guérison
+
+## ⚙️ Paramètres configurables
+
+• Taille et densité de la population
+• Taux de transmission (beta)
+• Taux de guérison (gamma)
+• Nombre initial d'individus infectés
+• Schémas de mouvement et taux de contact
+• Durée de simulation et pas de temps
+
+## 📊 Surveillance en temps réel
+
+• Visualisation en direct de la courbe épidémique
+• Suivi des transitions d'état de la population
+• Temps et magnitude du pic d'infection
+• Calcul du nombre de reproduction (R0)
+• Analyse statistique complète
+
+## 💻 Implémentation
+
+**Technologies :**
+• Langage C pour la programmation système haute performance
+• POSIX Threads (pthread) pour le multi-threading
+• Mutexes et variables de condition pour la synchronisation
+• Gestion dynamique de la mémoire
+• Bibliothèque graphique pour la visualisation en temps réel
+
+**Optimisations de performance :**
+• Durée minimisée des sections critiques
+• Ordonnancement efficace des threads
+• Structures de données optimisées
+• Réduction des surcoûts de changement de contexte
+
+## 📚 Résultats d'apprentissage
+
+• Maîtrise de la programmation concurrente et de la gestion des threads
+• Application pratique des mécanismes de synchronisation
+• Compréhension approfondie de la gestion des ressources OS
+• Développement des compétences en optimisation des performances
+• Renforcement des capacités de travail en équipe
+• Conception de système à grande échelle
+
+## 🌍 Applications réelles
+
+• Planification de la santé publique et préparation aux épidémies
+• Évaluation des politiques de contrôle des maladies
+• Compréhension des dynamiques pandémiques
+• Démonstrations pédagogiques
+• Test de stratégies d'intervention
     `,
     category: "System Programming",
     date: "2024/2025",

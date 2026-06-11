@@ -269,7 +269,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
                 ),
               }}
             >
-              {project.longDescription}
+              {language === 'fr' && project.longDescriptionFr ? project.longDescriptionFr : project.longDescription}
             </ReactMarkdown>
           </div>
         </motion.div>
