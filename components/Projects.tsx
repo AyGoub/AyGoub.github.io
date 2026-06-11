@@ -102,12 +102,12 @@ const Projects = () => {
                       </div>
                       
                       <p className="text-gray-400 mb-4 leading-relaxed">
-                        {project.description}
+                        {t(`projectDescriptions.${project.slug}`)}
                       </p>
-                      
+
                       <div className="flex items-center space-x-4 mb-4">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(project.category)}`}>
-                          {project.category}
+                          {t(`projectCategories.${project.category.trim()}`)}
                         </span>
                         <div className="flex items-center text-gray-400 text-sm">
                           <Calendar className="w-4 h-4 mr-1" />
@@ -185,12 +185,12 @@ const Projects = () => {
                     </div>
                     
                     <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                      {project.description}
+                      {t(`projectDescriptions.${project.slug}`)}
                     </p>
-                    
+
                     <div className="flex items-center justify-between mb-3">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${getCategoryColor(project.category)}`}>
-                        {project.category}
+                        {t(`projectCategories.${project.category.trim()}`)}
                       </span>
                       <span className="text-gray-500 text-xs">{project.date}</span>
                     </div>

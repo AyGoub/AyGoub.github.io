@@ -43,157 +43,130 @@ const Writeups = () => {
   const categoryValues = ['All', 'Web Exploitation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
   const categories = categoryValues.map(v => ({ value: v, label: t(`writeups.categories.${v}`) }))
 
-  // Mis à jour pour référencer vos PDFs dans public/writeups
   const writeups = [
     {
+      key: 'basicPentesting',
       title: "Basic Pentesting",
-      description: "Comprehensive pentesting report on a basic environment. Vulnerability analysis, exploitation techniques and security recommendations.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-10-28",
-      // readTime removed
       tags: ["TryHackMe", "Pentesting", "Reconnaissance", "Exploitation","Web"],
       link: "/writeups/Basic_Pentesting_Report.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'bookmarklet',
       title: "Bookmarklet - picoCTF",
-      description: "Complete walkthrough of the Bookmarklet challenge from picoCTF.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-01",
-      // readTime removed
       tags: ["picoCTF", "JavaScript", "Bookmarklet"],
       link: "/writeups/Bookmarklet_picoCTF.pdf",
       featured: false,
-      // points removed
     },
-
     {
+      key: 'getAHead',
       title: "GET aHEAD",
-      description: "Exploitation of the HTTP GET aHEAD technique for web vulnerabilities.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-02",
-      // readTime removed
       tags: ["picoCTF", "HTTP", "Headers", "Web"],
       link: "/writeups/GET_aHEAD.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'hammer',
       title: "Hammer - TryHackMe",
-      description: "Detailed report of the Hammer challenge from TryHackMe.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-10-26",
-      // readTime removed
       tags: ["TryHackMe", "CTF", "Web", "Exploitation"],
       link: "/writeups/Hammer_report.pdf",
       featured: true,
-      // points removed
     },
-
     {
+      key: 'includes',
       title: "Includes - picoCTF",
-      description: "Analysis and solution for the Includes challenge from picoCTF.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-03",
-      // readTime removed
       tags: ["picoCTF", "Web", "Includes"],
       link: "/writeups/Includes_picoCTF.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'introToBurp',
       title: "Intro to Burp - picoCTF",
-      description: "Introduction to Burp Suite proxy tools through picoCTF challenges.",
       category: "Web Exploitation",
       difficulty: "Easy",
       date: "2025-01-04",
-      // readTime removed
       tags: ["Burp Suite", "Proxy", "picoCTF"],
       link: "/writeups/introtoburp_picoctf.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'owaspJuiceShop',
       title: "OWASP Juice Shop",
-      description: "Complete writeup of the OWASP Juice Shop security challenges.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-01-05",
-      // readTime removed
       tags: ["TryHackMe", "OWASP", "Juice Shop", "Web"],
       link: "/writeups/OWASP_Juice_Shop.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'breachingAD',
       title: "Breaching Active Directory",
-      description: "Active Directory breach analysis and exploitation techniques on Windows infrastructure.",
       category: "Active Directory",
       difficulty: "Medium",
       date: "2025-01-06",
-      // readTime removed
       tags: ["TryHackMe", "Active Directory", "Windows", "Red Team"],
       link: "/writeups/Report_Breaching_Active_Directory.pdf",
       featured: true,
-      // points removed
     },
     {
+      key: 'pickleRick',
       title: "PickleRick - TryHackMe",
-      description: "Complete writeup for the PickleRick CTF challenge from TryHackMe.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-01-07",
-      // readTime removed
       tags: ["TryHackMe", "CTF", "Web"],
       link: "/writeups/Report_PickleRick_Challenge_TryHackMe.pdf",
       featured: true,
-      // points removed
     },
     {
+      key: 'webDecode',
       title: "WebDecode - picoCTF",
-      description: "Solution for the WebDecode challenge from picoCTF involving decoding techniques.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2025-01-08",
-      // readTime removed
       tags: ["picoCTF", "Decode", "Web"],
       link: "/writeups/WebDecode_picoCTF.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'noSqlInjection',
       title: "NoSQL Injection",
-      description: "Comprehensive writeup on exploiting NoSQL injection vulnerabilities in web applications.",
       category: "Web Exploitation",
       difficulty: "Hard",
       date: "2025-12-16",
-      // readTime removed
       tags: ["TryHackMe", "NoSQL", "Injection", "Database", "Security"],
       link: "/writeups/NOSql_injection_Writeup.pdf",
       featured: true,
-      // points removed
     },
     {
+      key: 'xxeInjection',
       title: "XXE Injection",
-      description: "Complete writeup to XML External Entity (XXE) injection attacks and exploitation techniques.",
       category: "Web Exploitation",
       difficulty: "Hard",
       date: "2025-12-16",
-      // readTime removed
       tags: ["XXE", "XML", "Injection", "Web", "Security"],
       link: "/writeups/xxe_injection.pdf",
       featured: false,
-      // points removed
     },
     {
+      key: 'injectics',
       title: "Injectics - TryHackMe",
-      description: "Detailed walkthrough of the Injectics TryHackMe room with practical web injection exploitation steps.",
       category: "Web Exploitation",
       difficulty: "Medium",
       date: "2026-04-06",
@@ -282,12 +255,12 @@ const Writeups = () => {
                   </div>
                   
                   <p className="text-gray-400 mb-4 leading-relaxed">
-                    {writeup.description}
+                    {t(`writeupsData.${writeup.key}`)}
                   </p>
-                  
+
                   <div className="flex items-center space-x-4 mb-4">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(writeup.difficulty)}`}>
-                      {writeup.difficulty}
+                      {t(`writeups.difficulty.${writeup.difficulty}`)}
                     </span>
                   </div>
                   
@@ -337,19 +310,19 @@ const Writeups = () => {
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm text-primary-400 font-medium">
-                      {writeup.category}
+                      {t(`writeups.categories.${writeup.category}`)}
                     </span>
                     <span className={`px-2 py-1 rounded text-xs font-medium ${getDifficultyColor(writeup.difficulty)}`}>
-                      {writeup.difficulty}
+                      {t(`writeups.difficulty.${writeup.difficulty}`)}
                     </span>
                   </div>
-                  
+
                   <h4 className="text-lg font-semibold text-white mb-2 line-clamp-2">
                     {writeup.title}
                   </h4>
-                  
+
                   <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                    {writeup.description}
+                    {t(`writeupsData.${writeup.key}`)}
                   </p>
                   
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
