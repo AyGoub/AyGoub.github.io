@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@next/third-parties": "^14.2.35",
     "@tailwindcss/typography": "^0.5.10",
     "framer-motion": "^10.16.0",
     "lucide-react": "^0.292.0",
