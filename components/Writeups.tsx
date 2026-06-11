@@ -173,6 +173,16 @@ const Writeups = () => {
       tags: ["TryHackMe", "Injection", "Web", "CTF","SSTI","Information Disclosure"],
       link: "/writeups/Injectics_Writeup.pdf",
       featured: false,
+    },
+    {
+      key: 'recruit',
+      title: "Recruit - TryHackMe",
+      category: "Web Exploitation",
+      difficulty: "Medium",
+      date: "2026-06-11",
+      tags: ["TryHackMe", "CTF", "Web", "Exploitation"],
+      link: "/writeups/recruit_Writeup.pdf",
+      featured: false,
     }
   ]
 
