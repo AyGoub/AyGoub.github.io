@@ -21,6 +21,717 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "dark-web-monitor",
+    title: "Dark Web Monitor — CTI Passive Surveillance Tool",
+    description: "Passive CTI surveillance tool monitoring .onion sources for threat intelligence, extracting IOCs, and auto-scoring threat criticality — deployed via Docker with strict OPSEC.",
+    longDescription: `
+A Cyber Threat Intelligence (CTI) tool for passive monitoring of Tor .onion sources. Detects mentions of a target organization in public dark web sources, extracts Indicators of Compromise (IOCs), and automatically qualifies threat criticality.
+
+## 🎯 Project Overview
+
+Built as an OPSEC-strict passive reconnaissance tool for SOC/CERT environments. All traffic is routed through a local Tor daemon (SOCKS5 proxy), and the tool verifies Tor exit before any collection.
+
+**Usage scope:** Passive monitoring of public sources only — no authentication, no marketplace interaction, no download of illegal content.
+
+## 🔍 Threat Detection Categories
+
+- **fuite_information** — Source code leaks, API keys, database dumps, exposed secrets
+- **compromission** — Credentials, stealer logs, VPN/RDP access sales
+- **atteinte_image** — Phishing pages, typosquatting, fake login portals
+
+## 🧩 IOC Extraction
+
+Automatically extracts and classifies IOCs from .onion page content:
+- Credentials (\`email:password\` pairs)
+- AWS access keys (\`AKIA…\` pattern)
+- IP addresses
+- Cryptographic hashes (MD5, SHA-1, SHA-256)
+
+## 🔐 k-Anonymity Breach Verification (HIBP)
+
+Detected passwords are verified against the **Have I Been Pwned** API using the k-anonymity model:
+- Only the first 5 characters of the SHA-1 hash are sent to the API
+- The full password or hash is never transmitted
+- The server returns all hashes matching that prefix; the check is done locally
+
+## 📊 Threat Scoring
+
+| Score | Meaning |
+|-------|---------|
+| INFO | Mention found, no IOC |
+| LOW | Generic IOC, target not confirmed |
+| MEDIUM | IOC linked to target |
+| HIGH | Active credential or access leak for target |
+| CRITICAL | Confirmed breach with mass credential/access dump |
+
+Passwords are redacted (\`:***redacted***\`) in all alert outputs.
+
+## 🏗️ Architecture & Deployment
+
+- **Alerting** — Alerts written to \`alerts.jsonl\` (JSON Lines), ready for Elasticsearch/OpenSearch ingestion
+- **Docker Compose** — Containerized deployment for reproducibility and isolation
+- **OPSEC** — Tor exit verification before any collection; designed for isolated VM deployment
+
+## 🛠️ Stack
+
+| Component | Technology |
+|-----------|-----------|
+| Language | Python 3.10+ |
+| Anonymous network | Tor (SOCKS5 via requests[socks]) |
+| HTML parsing | BeautifulSoup4 |
+| Breach API | Have I Been Pwned (k-anonymity) |
+| Containerization | Docker / Docker Compose |
+    `,
+    longDescriptionFr: `
+Outil de Cyber Threat Intelligence (CTI) pour la surveillance passive de sources .onion sur le réseau Tor. Détecte les mentions d'une organisation cible sur des sources dark web publiques, extrait des Indicateurs de Compromission (IOC) et qualifie automatiquement la criticité des menaces.
+
+## 🎯 Présentation du projet
+
+Conçu comme un outil de reconnaissance passive OPSEC-strict pour les environnements SOC/CERT. Tout le trafic est routé via un démon Tor local (proxy SOCKS5), et l'outil vérifie la sortie Tor avant toute collecte.
+
+**Périmètre d'usage :** Surveillance passive de sources publiques uniquement — pas d'authentification, pas d'interaction avec les marketplaces, pas de téléchargement de contenu illégal.
+
+## 🔍 Catégories de détection
+
+- **fuite_information** — Fuites de code source, clés API, database dumps, secrets exposés
+- **compromission** — Credentials, logs de stealers, ventes d'accès VPN/RDP
+- **atteinte_image** — Pages de phishing, typosquatting, faux portails de connexion
+
+## 🧩 Extraction d'IOC
+
+Extraction et classification automatiques des IOC depuis le contenu des pages .onion :
+- Credentials (paires \`email:password\`)
+- Clés d'accès AWS (motif \`AKIA…\`)
+- Adresses IP
+- Hashes cryptographiques (MD5, SHA-1, SHA-256)
+
+## 🔐 Vérification HIBP en k-Anonymat
+
+Les mots de passe détectés sont vérifiés contre **Have I Been Pwned** via le modèle k-anonymat :
+- Seuls les 5 premiers caractères du hash SHA-1 sont envoyés à l'API
+- Le mot de passe complet ou le hash ne transite jamais
+- Le serveur retourne tous les hashes correspondant au préfixe ; la vérification est effectuée localement
+
+## 📊 Scoring de criticité
+
+| Score | Signification |
+|-------|--------------|
+| INFO | Mention trouvée, pas d'IOC |
+| LOW | IOC générique, cible non confirmée |
+| MEDIUM | IOC lié à la cible |
+| HIGH | Fuite de credentials ou d'accès actifs pour la cible |
+| CRITICAL | Brèche confirmée avec dump massif de credentials/accès |
+
+Les mots de passe sont masqués (\`:***redacted***\`) dans toutes les sorties d'alertes.
+
+## 🏗️ Architecture & Déploiement
+
+- **Alertes** — Écrites dans \`alerts.jsonl\` (JSON Lines), prêtes à être ingérées dans Elasticsearch/OpenSearch
+- **Docker Compose** — Déploiement conteneurisé pour la reproductibilité et l'isolation
+- **OPSEC** — Vérification de la sortie Tor avant toute collecte ; conçu pour un déploiement en VM isolée
+    `,
+    category: "Cybersecurity",
+    date: "2026",
+    technologies: ["Python", "Tor (SOCKS5)", "BeautifulSoup4", "Have I Been Pwned API", "Docker", "CTI", "IOC Extraction"],
+    github: "https://github.com/AyGoub/darkweb-monitor",
+    demo: "",
+    featured: true,
+    images: [],
+    challenges: [
+      "Routing all traffic through Tor while verifying OPSEC before any collection",
+      "Implementing k-anonymity for HIBP password checking without leaking the full hash",
+      "Designing a multi-category threat classifier that minimizes false positives",
+      "Masking sensitive data in alert output while preserving forensic value",
+      "Building an extensible alert format compatible with SIEM ingestion pipelines"
+    ],
+    solutions: [
+      "SOCKS5 proxy via requests[socks] + mandatory Tor exit check before collection loop",
+      "SHA-1 prefix (5 chars) sent to HIBP; local suffix match against returned hash list",
+      "Three-category threat taxonomy with keyword-based classification per category",
+      "Regex-based IOC extractor with automatic password redaction in JSON alert output",
+      "JSON Lines format (alerts.jsonl) enabling direct ingestion into Elasticsearch/OpenSearch"
+    ],
+    outcomes: [
+      "Functional CTI passive monitoring tool covering credential leaks, access sales, and brand threats",
+      "k-anonymity HIBP integration ensuring zero sensitive data transmission",
+      "Automated IOC extraction: credentials, AWS keys, IPs, cryptographic hashes",
+      "Criticality scoring from INFO to CRITICAL with target-presence weighting",
+      "Containerized deployment via Docker Compose for reproducible SOC/CERT environments"
+    ],
+    teamSize: 1,
+    duration: "Completed (June 2026)"
+  },
+  {
+    slug: "student-sec-score",
+    title: "StudentSecScore — DevSecOps Automated Security Platform",
+    description: "SaaS platform for automated security analysis of GitHub repositories via OAuth, integrating SCA (Trivy), SAST (SonarQube/Semgrep), and DAST (OWASP ZAP) to generate dynamic OWASP compliance scores.",
+    longDescription: `
+A web application that automates the security analysis of GitHub repositories through OAuth integration. Combines multiple security scanning tools (SCA, SAST, DAST) into a unified pipeline and generates dynamic compliance scores aligned with OWASP Top 10.
+
+## 🎯 Project Overview
+
+StudentSecScore makes DevSecOps accessible by providing automated, one-click security analysis of any GitHub repository. The platform generates actionable compliance reports with exportable dashboards.
+
+## 🔍 Security Scanning Pipeline
+
+**SCA — Software Composition Analysis**
+- **Trivy** — Scans dependencies and container images for known CVEs
+- Detects outdated libraries, insecure package versions, and license risks
+
+**SAST — Static Application Security Testing**
+- **SonarQube** — Code quality and security bug detection
+- **Semgrep** — Fast, customizable static analysis with security rulesets
+
+**DAST — Dynamic Application Security Testing**
+- **OWASP ZAP** — Automated web vulnerability scanning (injection, XSS, CSRF, etc.)
+- Tests running applications against OWASP Top 10 attack vectors
+
+## 📊 Compliance Scoring
+
+- Dynamic score generated from aggregated scan results
+- Breakdown by OWASP Top 10 category
+- Risk tracking dashboard with trend visualization
+- Exportable compliance reports (PDF/JSON)
+
+## 🔐 GitHub OAuth Integration
+
+- Secure OAuth 2.0 flow for repository access
+- Scoped permissions — read-only access to repository contents
+- Supports public and private repositories
+
+## 🏗️ Architecture
+
+- **Frontend** — React with dynamic dashboards
+- **Backend** — Python/Node.js API orchestrating scan tools
+- **Pipeline** — Containerized scan workers via Docker
+    `,
+    longDescriptionFr: `
+Application web qui automatise l'analyse de sécurité des dépôts GitHub via une intégration OAuth. Combine plusieurs outils de scan de sécurité (SCA, SAST, DAST) en un pipeline unifié et génère des scores de conformité dynamiques alignés sur l'OWASP Top 10.
+
+## 🎯 Présentation du projet
+
+StudentSecScore rend le DevSecOps accessible en fournissant une analyse de sécurité automatisée en un clic de n'importe quel dépôt GitHub. La plateforme génère des rapports de conformité exploitables avec des tableaux de bord exportables.
+
+## 🔍 Pipeline de scan de sécurité
+
+**SCA — Analyse de Composition Logicielle**
+- **Trivy** — Analyse des dépendances et images conteneurs pour les CVE connus
+- Détecte les bibliothèques obsolètes, les versions non sécurisées et les risques de licence
+
+**SAST — Test de Sécurité Statique**
+- **SonarQube** — Détection de bugs de qualité et de sécurité dans le code
+- **Semgrep** — Analyse statique rapide et personnalisable avec des règles de sécurité
+
+**DAST — Test de Sécurité Dynamique**
+- **OWASP ZAP** — Scan automatisé de vulnérabilités web (injection, XSS, CSRF, etc.)
+- Teste les applications en cours d'exécution contre les vecteurs d'attaque OWASP Top 10
+
+## 📊 Scoring de conformité
+
+- Score dynamique généré à partir des résultats agrégés des scans
+- Décomposition par catégorie OWASP Top 10
+- Tableau de bord de suivi des risques avec visualisation des tendances
+- Rapports de conformité exportables (PDF/JSON)
+
+## 🔐 Intégration OAuth GitHub
+
+- Flux OAuth 2.0 sécurisé pour l'accès aux dépôts
+- Permissions à portée limitée — accès en lecture seule au contenu des dépôts
+- Support des dépôts publics et privés
+    `,
+    category: "Cybersecurity",
+    date: "2026",
+    technologies: ["Python", "Node.js", "React", "OAuth GitHub", "Trivy", "SonarQube", "Semgrep", "OWASP ZAP", "Docker", "DevSecOps"],
+    github: "",
+    demo: "",
+    featured: true,
+    images: [],
+    challenges: [
+      "Orchestrating heterogeneous security tools (SCA, SAST, DAST) into a unified pipeline",
+      "Managing GitHub OAuth scopes to minimize permissions while enabling repository access",
+      "Aggregating scan results from different tools into a coherent compliance score",
+      "Designing a scoring model aligned with OWASP Top 10 categories"
+    ],
+    solutions: [
+      "Built a pipeline orchestrator running Trivy → Semgrep/SonarQube → OWASP ZAP with structured output",
+      "Used read-only OAuth scopes (repo:read) for safe GitHub integration",
+      "Designed a normalized vulnerability schema mapping findings from all tools to OWASP categories",
+      "Implemented weighted scoring per OWASP Top 10 category with severity multipliers"
+    ],
+    outcomes: [
+      "Full automated DevSecOps pipeline covering SCA, SAST, and DAST in a single platform",
+      "Dynamic compliance scores with OWASP Top 10 breakdown and risk trend dashboards",
+      "GitHub OAuth integration enabling analysis of public and private repositories",
+      "Exportable compliance reports ready for academic and professional use"
+    ],
+    teamSize: 1,
+    duration: "Completed (February 2026)"
+  },
+  {
+    slug: "rag-assistant",
+    title: "RAG Assistant — Microservices & Cloud Deployment",
+    description: "Intelligent RAG assistant split across 3 independent microservices, orchestrated with Kubernetes, secured with RBAC and HashiCorp Vault, and monitored via the Prometheus/Loki/Grafana stack.",
+    longDescription: `
+Development of an intelligent Retrieval-Augmented Generation (RAG) assistant split into 3 independent microservices for independent scalability. Deployed on a cloud environment with strict security policies and full observability.
+
+## 🎯 Project Overview
+
+This academic project explores modern cloud-native architecture patterns: microservices decomposition, container orchestration, infrastructure-as-code, and production-grade security. The RAG assistant answers user queries by retrieving relevant context from a knowledge base before generating responses.
+
+## 🏗️ Microservices Architecture
+
+The application is divided into 3 independent services, each deployable and scalable separately:
+
+1. **Retrieval Service** — Vector similarity search over the knowledge base
+2. **Generation Service** — Language model interface for response generation with retrieved context
+3. **API Gateway** — Single entry point, routing, authentication, and rate limiting
+
+## ☁️ Containerization & Orchestration
+
+- **Docker** — Each microservice containerized with optimized multi-stage builds
+- **Kubernetes (K8s)** — Cluster orchestration with independent HPA per service
+- **Network Policies** — Strict inter-service communication rules (least privilege)
+- **RBAC** — Role-Based Access Control for Kubernetes resources
+
+## 🔐 Security
+
+- **HashiCorp Vault** — Dynamic secrets management; no hardcoded credentials
+- **RBAC** — Fine-grained access control on Kubernetes namespaces and resources
+- **Network Policies** — Pod-to-pod communication restricted to declared flows
+
+## 🚀 CI/CD Pipeline (GitLab CI)
+
+- Docker image build and push on commit
+- Kubernetes manifest linting
+- Automated deployment to staging/production namespaces
+- Rollback triggers on health check failure
+
+## 📊 Observability Stack (PLG)
+
+| Tool | Role |
+|------|------|
+| **Prometheus** | Metrics scraping (latency, throughput, error rate) |
+| **Loki** | Centralized log aggregation from all pods |
+| **Grafana** | Unified dashboards for metrics and logs |
+
+Custom dashboards track AI generation latency P50/P95/P99 and retrieval hit rates.
+    `,
+    longDescriptionFr: `
+Développement d'un assistant intelligent RAG (Retrieval-Augmented Generation) découpé en 3 micro-services indépendants pour une scalabilité indépendante. Déployé sur environnement cloud avec des politiques de sécurité strictes et une observabilité complète.
+
+## 🎯 Présentation du projet
+
+Ce projet académique explore les patterns d'architecture cloud-native modernes : décomposition en micro-services, orchestration de conteneurs, infrastructure-as-code et sécurité de niveau production.
+
+## 🏗️ Architecture Micro-services
+
+L'application est divisée en 3 services indépendants :
+
+1. **Service de Récupération** — Recherche par similarité vectorielle sur la base de connaissances
+2. **Service de Génération** — Interface avec le modèle de langage pour la génération avec contexte récupéré
+3. **API Gateway** — Point d'entrée unique, routage, authentification et limitation de débit
+
+## ☁️ Conteneurisation & Orchestration
+
+- **Docker** — Chaque micro-service conteneurisé avec des builds multi-étapes optimisés
+- **Kubernetes (K8s)** — Orchestration de cluster avec HPA indépendant par service
+- **Network Policies** — Règles strictes de communication inter-services (moindre privilège)
+- **RBAC** — Contrôle d'accès basé sur les rôles pour les ressources Kubernetes
+
+## 🔐 Sécurité
+
+- **HashiCorp Vault** — Gestion dynamique des secrets ; pas de credentials codés en dur
+- **RBAC** — Contrôle d'accès granulaire sur les namespaces Kubernetes
+- **Network Policies** — Communication pod-à-pod restreinte aux flux déclarés
+
+## 🚀 Pipeline CI/CD (GitLab CI)
+
+- Build et push d'images Docker au commit
+- Lint des manifestes Kubernetes
+- Déploiement automatisé vers les namespaces staging/production
+- Déclencheurs de rollback en cas d'échec des health checks
+
+## 📊 Stack d'Observabilité (PLG)
+
+| Outil | Rôle |
+|-------|------|
+| **Prometheus** | Collecte de métriques (latence, débit, taux d'erreur) |
+| **Loki** | Agrégation centralisée des logs de tous les pods |
+| **Grafana** | Tableaux de bord unifiés pour métriques et logs |
+    `,
+    category: "DevOps & Cloud",
+    date: "2026",
+    technologies: ["Docker", "Kubernetes", "GitLab CI", "Prometheus", "Loki", "Grafana", "HashiCorp Vault", "RBAC", "Python", "RAG"],
+    github: "",
+    demo: "",
+    featured: true,
+    images: [],
+    challenges: [
+      "Decomposing a monolithic RAG system into independently deployable microservices",
+      "Managing secrets securely in a Kubernetes cluster without hardcoded credentials",
+      "Ensuring strict network isolation between services with Kubernetes Network Policies",
+      "Building observability for AI-specific metrics (generation latency, retrieval accuracy)"
+    ],
+    solutions: [
+      "Defined clear service boundaries as separate K8s Deployments with independent HPA",
+      "Integrated HashiCorp Vault for dynamic secret injection via Vault Agent sidecar",
+      "Implemented NetworkPolicy manifests allowing only declared pod-to-pod communication paths",
+      "Created custom Prometheus metrics in the generation service for P50/P95/P99 latency tracking"
+    ],
+    outcomes: [
+      "Fully operational RAG assistant deployed on Kubernetes with independent service scaling",
+      "Zero hardcoded secrets — all credentials dynamically injected via HashiCorp Vault",
+      "Complete PLG observability stack with AI latency dashboards",
+      "Automated CI/CD pipeline with GitLab CI covering build, test, deploy, and rollback",
+      "Production-grade Kubernetes security: RBAC, NetworkPolicies, namespaced isolation"
+    ],
+    teamSize: 1,
+    duration: "Completed (January 2026)"
+  },
+  {
+    slug: "siem-open-source",
+    title: "SIEM Open Source — Blue Team Log Supervision",
+    description: "Deployed an OSSIM/AlienVault SIEM integrating 5+ log sources and 15+ custom correlation rules, validated by purple team attack simulations (Hydra, Nmap, SQLmap).",
+    longDescription: `
+Deployment and configuration of an open-source SIEM (Security Information and Event Management) solution based on OSSIM/AlienVault for centralized log supervision and threat detection.
+
+## 🎯 Project Overview
+
+Full SIEM lifecycle: architecture design, log source integration, correlation rule writing, dashboard creation, and detection validation through simulated attacks (purple team approach).
+
+## 🔌 Log Source Integration (5+ sources)
+
+- **Apache** — Web server access and error logs
+- **SSH** — Authentication events (success/failure, brute-force)
+- **Syslog** — System events from Linux hosts
+- **HIDS Agents** — Host Intrusion Detection System (file integrity, process monitoring)
+- **Network devices** — Firewall and switch logs
+
+## 📐 Correlation Rules (15+)
+
+| Rule | Attack Pattern Detected |
+|------|------------------------|
+| SSH Brute Force | >10 failed SSH authentications in 60 seconds |
+| Port Scan | Nmap SYN scan signature across 20+ ports |
+| Privilege Escalation | sudo/su events following failed logins |
+| Lateral Movement | Unusual SSH connections between internal hosts |
+| Web Exploitation | SQL injection patterns in Apache access logs |
+| HIDS Alert | Unexpected file modifications in /etc or /bin |
+
+## 🟣 Purple Team Validation
+
+Simulated attacks to validate detection coverage:
+
+- **Hydra SSH brute-force** → validated SSH Brute Force rule
+- **Nmap full-port scan** → validated Port Scan rule
+- **Manual privilege escalation** (sudo -l, SUID exploitation) → validated Priv Esc rule
+- **SQLmap** against test web app → validated Web Exploitation rule
+
+Post-exploitation analysis: log review, rule refinement, signature improvement.
+
+## 📊 Dashboards & Alerting
+
+- Real-time dashboards for event volume, top sources, and alert severity
+- Automated email/SMS alerts on CRITICAL rules
+- Incident timeline visualization for forensic analysis
+    `,
+    longDescriptionFr: `
+Déploiement et configuration d'une solution SIEM open source basée sur OSSIM/AlienVault pour la supervision centralisée des logs et la détection des menaces.
+
+## 🎯 Présentation du projet
+
+Cycle de vie complet d'un déploiement SIEM : conception de l'architecture, intégration des sources de logs, écriture de règles de corrélation, création de tableaux de bord et validation de la détection via des attaques simulées (approche purple team).
+
+## 🔌 Intégration des sources de logs (5+)
+
+- **Apache** — Logs d'accès et d'erreurs du serveur web
+- **SSH** — Événements d'authentification (succès/échec, brute-force)
+- **Syslog** — Événements système des hôtes Linux
+- **Agents HIDS** — Système de Détection d'Intrusion Hôte (intégrité des fichiers, surveillance des processus)
+- **Équipements réseau** — Logs de pare-feu et de commutateurs
+
+## 📐 Règles de corrélation (15+)
+
+| Règle | Pattern d'attaque détecté |
+|-------|--------------------------|
+| Brute Force SSH | >10 authentifications SSH échouées en 60 secondes |
+| Scan de ports | Signature de scan SYN nmap sur 20+ ports |
+| Élévation de privilèges | Événements sudo/su après des échecs de connexion |
+| Mouvement latéral | Connexions SSH inhabituelles entre hôtes internes |
+| Exploitation web | Patterns d'injection SQL dans les logs Apache |
+| Alerte HIDS | Modifications inattendues de fichiers dans /etc ou /bin |
+
+## 🟣 Validation Purple Team
+
+Attaques simulées pour valider la couverture de détection :
+
+- **Brute-force SSH Hydra** → validation de la règle Brute Force SSH
+- **Scan complet des ports Nmap** → validation de la règle Scan de ports
+- **Élévation de privilèges manuelle** → validation de la règle Priv Esc
+- **SQLmap** contre application web de test → validation de la règle Exploitation web
+
+Analyse post-exploitation : revue des logs, affinage des règles, amélioration des signatures.
+    `,
+    category: "Cybersecurity",
+    date: "2025",
+    technologies: ["OSSIM/AlienVault", "HIDS", "Syslog", "Apache", "SSH", "SIEM", "Blue Team", "Purple Team", "Hydra", "Nmap", "SQLmap"],
+    github: "",
+    demo: "",
+    featured: true,
+    images: [],
+    challenges: [
+      "Normalizing logs from 5+ heterogeneous sources into a unified SIEM format",
+      "Writing correlation rules with low false positive rates for common attack patterns",
+      "Validating detection coverage without a dedicated red team",
+      "Tuning alert thresholds to balance sensitivity and alert fatigue"
+    ],
+    solutions: [
+      "Used OSSIM built-in log parsers and custom syslog forwarding rules for normalization",
+      "Wrote time-windowed correlation rules (e.g., >10 events in 60s) with source/destination filters",
+      "Applied purple team methodology: simulated attacks to verify rule triggers",
+      "Iteratively adjusted thresholds based on baseline traffic and attack simulation results"
+    ],
+    outcomes: [
+      "SIEM with 5+ integrated log sources covering SSH, web, system, network, and HIDS",
+      "15+ custom correlation rules validated against real attack simulations",
+      "Real-time dashboards and automated alerting on critical events",
+      "Purple team validation confirming detection of brute-force, port scans, privesc, and SQLi",
+      "Documented incident response process from alert trigger to forensic analysis"
+    ],
+    teamSize: 1,
+    duration: "Completed (November 2025)"
+  },
+  {
+    slug: "owasp-juice-shop",
+    title: "OWASP Juice Shop — Web Penetration Testing & Audit",
+    description: "Full OWASP Top 10 penetration test on Juice Shop: SQL injection, XSS (reflected/stored), IDOR, JWT algorithm confusion — complete audit report with CVSS scores and ASVS remediations.",
+    longDescription: `
+Comprehensive penetration test and security audit of OWASP Juice Shop, a deliberately vulnerable web application. Covers identification, exploitation, and remediation of the full OWASP Top 10 vulnerability set.
+
+## 🎯 Project Overview
+
+Simulates a real-world web application security audit. Findings are documented with CVSS v3.1 scores and remediations aligned with the OWASP Application Security Verification Standard (ASVS).
+
+## 🔍 Vulnerability Coverage (OWASP Top 10)
+
+### A01 — Broken Access Control
+- **IDOR** — Accessing other users' orders by manipulating basket IDs
+- **Admin panel exposure** — Forced browsing to /administration without authentication
+
+### A02 — Cryptographic Failures
+- **JWT algorithm confusion** — Forging admin tokens by exploiting \`alg: none\` vulnerability using jwt-tool
+
+### A03 — Injection
+- **SQL Injection (login bypass)** — \`' OR 1=1--\` in login form
+- **SQLi (data extraction)** — UNION-based injection to extract user table via SQLmap
+
+### A07 — Authentication Failures
+- **Weak password policy** — Default admin credentials brute-forced
+- **Security question bypass** — Predictable answers enabling account takeover
+
+### A03 — XSS
+- **Reflected XSS** — Injected in search parameter
+- **Stored XSS** — Persistent payload in product reviews
+
+## 📋 Audit Report
+
+- Vulnerability inventory with CVSS v3.1 scores (Base, Temporal, Environmental)
+- Proof-of-Concept (PoC) steps for each finding
+- Risk prioritization matrix
+- Remediations aligned with OWASP ASVS
+
+**Severity distribution:** 2 Critical · 3 High · 4 Medium · 2 Low · 3 Informational
+
+## 🛠️ Tooling
+
+| Tool | Usage |
+|------|-------|
+| Burp Suite | HTTP proxy, request manipulation, repeater, intruder |
+| OWASP ZAP | Automated scanning baseline |
+| SQLmap | Automated SQL injection testing |
+| jwt-tool | JWT token analysis and manipulation |
+    `,
+    longDescriptionFr: `
+Test de pénétration et audit de sécurité complet d'OWASP Juice Shop, une application web délibérément vulnérable. Couvre l'identification, l'exploitation et la remédiation de l'ensemble des vulnérabilités OWASP Top 10.
+
+## 🎯 Présentation du projet
+
+Simule un audit de sécurité d'application web réel. Les findings sont documentés avec des scores CVSS v3.1 et des remédiations alignées sur l'OWASP ASVS.
+
+## 🔍 Couverture des vulnérabilités (OWASP Top 10)
+
+### A01 — Contrôle d'accès défaillant
+- **IDOR** — Accès aux commandes d'autres utilisateurs en manipulant les IDs de panier
+- **Exposition du panneau admin** — Navigation forcée vers /administration sans authentification
+
+### A02 — Défaillances cryptographiques
+- **Confusion d'algorithme JWT** — Forge de tokens admin en exploitant la vulnérabilité \`alg: none\`
+
+### A03 — Injection
+- **SQL Injection (bypass connexion)** — \`' OR 1=1--\` dans le formulaire de connexion
+- **SQLi (extraction de données)** — Injection UNION pour extraire la table utilisateurs via SQLmap
+
+### A07 — Authentification défaillante
+- **Politique de mot de passe faible** — Credentials admin par défaut brute-forcés
+- **Contournement de question de sécurité** — Réponses prévisibles permettant la prise de contrôle de compte
+
+### A03 — XSS
+- **XSS Réfléchi** — Injecté dans le paramètre de recherche
+- **XSS Stocké** — Payload persistant dans les avis sur les produits
+
+## 📋 Rapport d'audit
+
+- Inventaire des vulnérabilités avec scores CVSS v3.1
+- Étapes de Preuve de Concept (PoC) pour chaque finding
+- Matrice de priorisation des risques
+- Remédiations alignées sur l'OWASP ASVS
+
+**Distribution de sévérité :** 2 Critique · 3 Haute · 4 Moyenne · 2 Basse · 3 Informationnelle
+    `,
+    category: "Cybersecurity",
+    date: "2025",
+    technologies: ["Burp Suite", "OWASP ZAP", "SQLmap", "jwt-tool", "SQL Injection", "XSS", "IDOR", "JWT", "CVSS", "ASVS"],
+    github: "",
+    demo: "",
+    featured: true,
+    images: [],
+    challenges: [
+      "Systematically covering all OWASP Top 10 categories without missing attack surfaces",
+      "Chaining multiple vulnerabilities for higher-impact exploitation paths",
+      "Writing CVSS scores that accurately reflect business risk context",
+      "Writing remediations specific enough to be actionable for developers"
+    ],
+    solutions: [
+      "Followed a structured OWASP Top 10 checklist, documenting each test case before exploitation",
+      "Identified IDOR + privilege escalation chains and JWT + access control bypass combinations",
+      "Used CVSS v3.1 calculator with environmental metrics adjusted to web application context",
+      "Mapped each finding to OWASP ASVS verification requirements for precise remediation guidance"
+    ],
+    outcomes: [
+      "Complete OWASP Top 10 coverage with 14 validated findings across 6 vulnerability categories",
+      "Professional audit report with CVSS v3.1 scores, PoC steps, and ASVS-aligned remediations",
+      "Demonstrated practical exploitation: SQLi login bypass, XSS payloads, JWT alg:none, IDOR",
+      "Risk prioritization matrix enabling developer teams to address critical findings first"
+    ],
+    teamSize: 1,
+    duration: "Completed (October 2025)"
+  },
+  {
+    slug: "webstalker",
+    title: "WebStalker — Passive & Active Reconnaissance Tool",
+    description: "Modular Python OSINT framework: passive recon (WHOIS, DNS, subdomain enumeration via HackerTarget/OTX) + active scanning (nmap, HTTP headers, WAF/CMS detection) + directory fuzzing + automated JSON/TXT reports.",
+    longDescription: `
+A modular offensive reconnaissance tool written in 100% Python for authorized penetration tests and OSINT investigations. Combines passive and active information gathering into a unified, automated reporting pipeline.
+
+**Authorized use only** — designed for legal penetration testing engagements and security research.
+
+## 🔍 Passive Reconnaissance
+
+No direct interaction with the target — all data from public third-party services:
+
+- **WHOIS** — Domain registration data (registrar, creation/expiry dates, registrant)
+- **DNS Enumeration** — A, MX, NS, TXT, CNAME records via public resolvers
+- **Subdomain Discovery** — Passive enumeration via HackerTarget API and AlienVault OTX (no API key required)
+
+## 📡 Active Reconnaissance
+
+Direct interaction with the target:
+
+- **Port Scanning** — nmap integration for service/version detection
+- **HTTP Header Analysis** — Server, X-Powered-By, security headers (CSP, HSTS, X-Frame-Options)
+- **Technology Detection** — Fingerprinting of CMS (WordPress, Drupal), frameworks (Django, Laravel), WAF, and CDN
+
+## 🔓 Directory Fuzzing
+
+- Configurable wordlist-based path enumeration
+- Targeted checks for .env, .git, backup archives, admin panels, and config files
+
+## 📊 Automated Reporting
+
+- Structured **JSON** report for programmatic processing and SIEM integration
+- Human-readable **TXT** report for documentation and review
+
+## 🏗️ Architecture
+
+| Module | Responsibility |
+|--------|---------------|
+| \`passive.py\` | WHOIS, DNS, subdomain enumeration |
+| \`active.py\` | Port scan, HTTP headers, tech fingerprinting |
+| \`fuzzing.py\` | Directory brute-force and sensitive file detection |
+| \`report.py\` | JSON + TXT report generation |
+
+Multi-threaded execution for improved performance on large port ranges and wordlists.
+    `,
+    longDescriptionFr: `
+Outil de reconnaissance offensive modulaire écrit en 100% Python pour les tests de pénétration autorisés et les investigations OSINT. Combine la collecte d'informations passive et active dans un pipeline de reporting automatisé unifié.
+
+**Usage autorisé uniquement** — conçu pour les missions de pentest légales et la recherche en sécurité.
+
+## 🔍 Reconnaissance Passive
+
+Aucune interaction directe avec la cible — toutes les données proviennent de services tiers publics :
+
+- **WHOIS** — Données d'enregistrement de domaine
+- **Énumération DNS** — Enregistrements A, MX, NS, TXT, CNAME
+- **Découverte de sous-domaines** — Énumération passive via HackerTarget et AlienVault OTX (sans clé API)
+
+## 📡 Reconnaissance Active
+
+Interaction directe avec le système cible :
+
+- **Scan de ports** — Intégration nmap pour la détection de services/versions
+- **Analyse des en-têtes HTTP** — Server, X-Powered-By, en-têtes de sécurité (CSP, HSTS, X-Frame-Options)
+- **Détection de technologies** — Fingerprinting de CMS, frameworks, WAF et CDN
+
+## 🔓 Fuzzing de Répertoires
+
+- Fuzzing basé sur une wordlist configurable pour l'énumération de chemins
+- Vérifications ciblées pour .env, .git, archives de backup, panneaux d'administration
+
+## 📊 Reporting Automatisé
+
+- Rapport **JSON** structuré pour le traitement programmatique et l'intégration SIEM
+- Rapport **TXT** lisible pour la documentation et la revue
+
+## 🏗️ Architecture
+
+| Module | Responsabilité |
+|--------|---------------|
+| \`passive.py\` | WHOIS, DNS, énumération de sous-domaines |
+| \`active.py\` | Scan de ports, en-têtes HTTP, fingerprinting |
+| \`fuzzing.py\` | Brute-force de répertoires et détection de fichiers sensibles |
+| \`report.py\` | Génération de rapports JSON + TXT |
+    `,
+    category: "Cybersecurity",
+    date: "2025",
+    technologies: ["Python", "nmap", "WHOIS", "DNS", "OSINT", "HackerTarget API", "AlienVault OTX", "Reconnaissance"],
+    github: "https://github.com/AyGoub/WebStalker",
+    demo: "",
+    featured: true,
+    images: [],
+    challenges: [
+      "Integrating nmap programmatically with proper error handling",
+      "Performing passive subdomain enumeration without paid API keys",
+      "Designing a modular architecture that works both standalone and chained",
+      "Making fuzzing efficient on large wordlists via multi-threading"
+    ],
+    solutions: [
+      "Used Python subprocess to call nmap with argument escaping and timeout handling",
+      "Leveraged HackerTarget and AlienVault OTX free APIs for subdomain enumeration",
+      "Defined clean input/output contracts for each module, enabling both CLI and programmatic use",
+      "Implemented thread pools with configurable concurrency for fuzzing performance"
+    ],
+    outcomes: [
+      "Complete passive + active + fuzzing recon pipeline in a single Python tool",
+      "Zero external API key requirements for passive phase",
+      "Automated JSON and TXT report generation for professional documentation",
+      "Modular architecture enabling easy extension with new recon modules",
+      "Published on GitHub: github.com/AyGoub/WebStalker"
+    ],
+    teamSize: 1,
+    duration: "Completed (May 2025)"
+  },
+  {
     slug: "portfolio-website",
     title: "Personal Portfolio & Cybersecurity Showcase",
     description: "Modern portfolio website built with Next.js 14, showcasing cybersecurity projects, skills, and achievements with dynamic routing and static generation.",
@@ -818,6 +1529,300 @@ La simulation implémente le modèle SIR classique :
     ],
     teamSize: 4,
     duration: "4 months"
+  },
+  {
+    slug: "wumpus-world",
+    title: "Wumpus World — AI Agents & Reinforcement Learning",
+    description: "Classic Wumpus World simulation implementing 4 AI agents: random, human-interactive, rational (logical inference on 10×10 grid), and Q-learning reinforcement learning agent.",
+    longDescription: `
+Implementation of the classic Wumpus World problem from AI textbooks, featuring four distinct agent types. Built entirely in Python.
+
+## 🤖 Agent Implementations
+
+### 1. Random Agent
+- Basic agent selecting actions uniformly at random
+- Performance baseline for other agents
+
+### 2. Human Agent
+- Interactive mode allowing manual control for debugging
+
+### 3. Rational Agent
+- Logical inference-based agent on a 10×10 grid
+- Maintains a knowledge base of visited cells and breeze/stench perceptions
+- Applies propositional logic to infer safe and unsafe cells
+- Avoids pits and the Wumpus through logical deduction
+
+### 4. Learning Agent (Q-Learning)
+- Model-free reinforcement learning (Q-learning)
+- State space: agent position + perception vector
+- Action space: move (4 directions), shoot arrow, grab gold, climb
+- Training: 50 episodes with epsilon-greedy exploration
+- Policy stored as Q-table for exploitation at inference time
+
+## 🏗️ Architecture
+
+| File | Role |
+|------|------|
+| \`wumpusworld.py\` | Environment definition: grid, wumpus, pits, gold placement |
+| \`wumpus.py\` | Environment rules and perception generation |
+| \`agent.py\` | Agent base class and 4 implementations |
+| \`utils.py\` | Helper functions: grid display, performance metrics |
+    `,
+    longDescriptionFr: `
+Implémentation du problème classique du Wumpus World des manuels d'IA, avec quatre types d'agents distincts. Développé entièrement en Python.
+
+## 🤖 Implémentations des agents
+
+### 1. Agent Aléatoire
+- Agent basique sélectionnant les actions aléatoirement
+- Référence de performance pour les autres agents
+
+### 2. Agent Humain
+- Mode interactif permettant le contrôle manuel pour le débogage
+
+### 3. Agent Rationnel
+- Agent basé sur l'inférence logique sur une grille 10×10
+- Maintient une base de connaissances des cellules visitées et des perceptions de brise/odeur
+- Applique la logique propositionnelle pour inférer les cellules sûres et dangereuses
+- Évite les puits et le Wumpus par déduction logique
+
+### 4. Agent Apprenant (Q-Learning)
+- Apprentissage par renforcement sans modèle (Q-learning)
+- Espace d'états : position de l'agent + vecteur de perception
+- Espace d'actions : déplacement (4 directions), tirer la flèche, ramasser l'or, grimper
+- Entraînement : 50 épisodes avec exploration epsilon-greedy
+- Politique stockée comme table Q pour l'exploitation en inférence
+
+## 🏗️ Architecture
+
+| Fichier | Rôle |
+|---------|------|
+| \`wumpusworld.py\` | Définition de l'environnement |
+| \`wumpus.py\` | Règles de l'environnement et génération de perceptions |
+| \`agent.py\` | Classe de base des agents et 4 implémentations |
+| \`utils.py\` | Fonctions utilitaires : affichage de grille, métriques |
+    `,
+    category: "Artificial Intelligence",
+    date: "2024",
+    technologies: ["Python", "Q-Learning", "Reinforcement Learning", "Propositional Logic", "AI Agents"],
+    github: "https://github.com/AyGoub/Projet-Ia-Wampus",
+    demo: "",
+    featured: false,
+    images: [],
+    challenges: [
+      "Designing a knowledge base that correctly infers safe cells from limited perceptions",
+      "Defining an effective state representation for Q-learning in a partially observable environment",
+      "Balancing exploration vs. exploitation during training with only 50 episodes"
+    ],
+    solutions: [
+      "Used propositional logic with frontier-based cell safety inference for the rational agent",
+      "Represented state as (position, breeze, stench, glitter) tuple for compact Q-table",
+      "Epsilon-greedy strategy with decaying epsilon over training episodes"
+    ],
+    outcomes: [
+      "Four functional agent implementations with measurable performance differences",
+      "Q-learning agent outperforming random baseline after 50 training episodes",
+      "Complete environment simulation with all Wumpus World rules",
+      "Published on GitHub: github.com/AyGoub/Projet-Ia-Wampus"
+    ],
+    teamSize: 1,
+    duration: "Completed (2024)"
+  },
+  {
+    slug: "image-inversion",
+    title: "Image Inversion — KDTree Algorithm",
+    description: "C implementation comparing two image color inversion methods: naive pixel-by-pixel color table vs. KD-Tree nearest-neighbor search in color space, with benchmarked performance and Gnuplot visualization.",
+    longDescription: `
+Image inversion tools implemented in C comparing two algorithmic methods with different time complexities. Developed as a first-year algorithms project at ENSICAEN.
+
+## 🔧 Methods Compared
+
+### Method 1 — Naive Color Table
+- Builds a lookup table mapping each source color to its inverted value
+- O(n) table construction, O(1) per pixel lookup
+- Simple but memory-bound for large color spaces
+
+### Method 2 — KD-Tree Nearest Neighbor
+- Constructs a K-D Tree over the color space
+- For each pixel, finds the nearest neighbor using KD-Tree search
+- O(n log n) construction, O(log n) per query
+- More complex but generalizable to arbitrary color transformations
+
+## 🏗️ Architecture
+
+- \`test_table\` — Unit tests for color table method
+- \`test_kd_tree\` — Unit tests for KD-Tree method
+- Makefile — Build automation
+- Gnuplot scripts — Performance curve visualization
+
+## 📚 Learning Outcomes
+
+- Implemented KD-Tree data structure from scratch in C
+- Compared algorithmic complexity empirically with benchmarked measurements
+- Applied Makefile build automation
+- Visualized performance results with Gnuplot
+    `,
+    longDescriptionFr: `
+Outils d'inversion d'images implémentés en C comparant deux méthodes algorithmiques de complexités temporelles différentes. Développé comme projet d'algorithmique de première année à l'ENSICAEN.
+
+## 🔧 Méthodes comparées
+
+### Méthode 1 — Table de couleurs naïve
+- Construit une table de correspondance mappant chaque couleur source à sa valeur inversée
+- O(n) pour la construction de la table, O(1) par lookup de pixel
+- Simple mais limité en mémoire pour les grands espaces de couleurs
+
+### Méthode 2 — Plus Proche Voisin KD-Tree
+- Construit un K-D Tree sur l'espace des couleurs
+- Pour chaque pixel, trouve le plus proche voisin via la recherche KD-Tree
+- O(n log n) construction, O(log n) par requête
+- Plus complexe mais généralisable à des transformations arbitraires
+
+## 🏗️ Architecture
+
+- \`test_table\` — Tests unitaires pour la méthode de table de couleurs
+- \`test_kd_tree\` — Tests unitaires pour la méthode KD-Tree
+- Makefile — Automatisation du build
+- Scripts Gnuplot — Visualisation des courbes de performance
+    `,
+    category: "Algorithms",
+    date: "2023/2024",
+    technologies: ["C", "KD-Tree", "Algorithms", "Makefile", "Gnuplot", "Data Structures"],
+    github: "https://github.com/AyGoub/Projet-Algo-1A-ENSICAEN",
+    demo: "",
+    featured: false,
+    images: [],
+    challenges: [
+      "Implementing KD-Tree from scratch in C with correct nearest-neighbor search",
+      "Managing memory correctly for tree construction and traversal"
+    ],
+    solutions: [
+      "Implemented recursive KD-Tree construction with alternating split dimensions",
+      "Used careful pointer management and valgrind testing to ensure no memory leaks"
+    ],
+    outcomes: [
+      "Two functional image inversion implementations with comparative benchmarks",
+      "KD-Tree implementation validated with unit tests",
+      "Performance comparison visualized with Gnuplot"
+    ],
+    teamSize: 1,
+    duration: "Completed (2023/2024)"
+  },
+  {
+    slug: "advanced-algorithms",
+    title: "Advanced Algorithms — ENSICAEN Lab Work",
+    description: "Advanced algorithm implementations in C (sorting, graph traversal, dynamic programming, optimization) with Gnuplot performance benchmarking and Shell automation scripts.",
+    longDescription: `
+Advanced algorithms lab work (TP-eleve-2024) from ENSICAEN. A collection of algorithm implementations with empirical performance benchmarking and visualization.
+
+## 🔧 Topics Covered
+
+- **Sorting algorithms** — Comparison and benchmarking of multiple sorting strategies
+- **Graph traversal** — BFS, DFS, and shortest path algorithms
+- **Dynamic programming** — Optimal substructure problems
+- **Optimization** — Greedy and divide-and-conquer approaches
+
+## 🏗️ Build System
+
+- Makefile-based compilation for each lab
+- Shell scripts for automated benchmarking and data collection
+- Gnuplot integration for performance curve visualization
+
+## 📚 Learning Outcomes
+
+- Practical implementation of foundational algorithms in C
+- Performance analysis through empirical benchmarking
+- Build automation with Makefile and Shell scripting
+- Data visualization with Gnuplot
+    `,
+    longDescriptionFr: `
+Travaux pratiques d'algorithmique avancée (TP-eleve-2024) à l'ENSICAEN. Collection d'implémentations d'algorithmes couvrant des sujets fondamentaux d'informatique avec benchmarking des performances.
+
+## 🔧 Sujets couverts
+
+- **Algorithmes de tri** — Comparaison et benchmarking de multiples stratégies de tri
+- **Parcours de graphes** — BFS, DFS et algorithmes de plus court chemin
+- **Programmation dynamique** — Problèmes à sous-structure optimale
+- **Optimisation** — Approches gloutonnes et diviser-pour-régner
+
+## 🏗️ Système de build
+
+- Compilation basée sur Makefile pour chaque TP
+- Scripts Shell pour le benchmarking automatisé et la collecte de données
+- Intégration Gnuplot pour la visualisation des courbes de performance
+    `,
+    category: "Algorithms",
+    date: "2024",
+    technologies: ["C", "Makefile", "Gnuplot", "Shell", "Algorithms", "Data Structures"],
+    github: "https://github.com/AyGoub/Algo_Av",
+    demo: "",
+    featured: false,
+    images: [],
+    challenges: [],
+    solutions: [],
+    outcomes: [
+      "Complete set of algorithm implementations with empirical performance benchmarks",
+      "Build automation with Makefile and Shell scripts",
+      "Published on GitHub: github.com/AyGoub/Algo_Av"
+    ],
+    teamSize: 1,
+    duration: "Completed (2024)"
+  },
+  {
+    slug: "web-conception",
+    title: "Web Conception — JavaScript Animations",
+    description: "First-year web development project at ENSICAEN: interactive JavaScript animations including animated sheep physics simulation, interactive chat, and multi-animation sequences.",
+    longDescription: `
+Web conception project from the first year at ENSICAEN, focusing on interactive JavaScript animations and DOM manipulation.
+
+## 🎨 Implementations
+
+- **Multi-animation project** — Multiple animations running concurrently (ProjetMultipleAnimation.html)
+- **Interactive chat** — Animated cat responding to user interactions
+- **Animated sheep** — Physics-based sheep movement simulation
+- **Asset management** — Images and tool organization
+
+## 🛠️ Stack
+
+- **HTML** (62%) — Structure and layout
+- **JavaScript** (38%) — Animation logic, event handling, DOM manipulation
+
+## 📚 Learning Outcomes
+
+- JavaScript animation techniques (requestAnimationFrame, setInterval)
+- DOM manipulation and event-driven programming
+- Interactive web simulation design
+    `,
+    longDescriptionFr: `
+Projet de conception web de première année à l'ENSICAEN, axé sur les animations JavaScript interactives et la manipulation du DOM.
+
+## 🎨 Implémentations
+
+- **Projet multi-animations** — Plusieurs animations s'exécutant simultanément
+- **Chat interactif** — Chat animé répondant aux interactions utilisateur
+- **Moutons animés** — Simulation de mouvement de moutons basée sur la physique
+- **Gestion des assets** — Organisation des images et outils
+
+## 🛠️ Stack
+
+- **HTML** (62%) — Structure et mise en page
+- **JavaScript** (38%) — Logique d'animation, gestion des événements, manipulation DOM
+    `,
+    category: "Web Development",
+    date: "2023/2024",
+    technologies: ["HTML", "JavaScript", "CSS", "DOM Manipulation", "Animation"],
+    github: "https://github.com/AyGoub/Projet-Conception-Web-1A-ENSICAEN",
+    demo: "",
+    featured: false,
+    images: [],
+    challenges: [],
+    solutions: [],
+    outcomes: [
+      "Multiple interactive web animations with JavaScript",
+      "Published on GitHub: github.com/AyGoub/Projet-Conception-Web-1A-ENSICAEN"
+    ],
+    teamSize: 1,
+    duration: "Completed (2023/2024)"
   }
 ]
 
