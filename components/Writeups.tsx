@@ -40,7 +40,7 @@ const Writeups = () => {
     }
   }
 
-  const categoryValues = ['All', 'Web Exploitation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
+  const categoryValues = ['All', 'Web Exploitation', 'Privilege Escalation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
   const categories = categoryValues.map(v => ({ value: v, label: t(`writeups.categories.${v}`) }))
 
   const writeups = [
@@ -183,6 +183,26 @@ const Writeups = () => {
       tags: ["TryHackMe", "CTF", "Web", "Exploitation"],
       link: "/writeups/recruit_Writeup.pdf",
       featured: false,
+    },
+    {
+      key: 'jump',
+      title: "Jump - TryHackMe",
+      category: "Privilege Escalation",
+      difficulty: "Medium",
+      date: "2026-08-20",
+      tags: ["TryHackMe", "Linux", "Privilege Escalation", "FTP", "Cron", "PATH Hijacking", "GTFOBins"],
+      link: "/writeups/JUMP_Writeup.pdf",
+      featured: true,
+    },
+    {
+      key: 'windowsJump',
+      title: "Windows Jump - TryHackMe",
+      category: "Privilege Escalation",
+      difficulty: "Medium",
+      date: "2026-08-20",
+      tags: ["TryHackMe", "Windows", "Privilege Escalation", "SMB", "Registry", "Service Binary", "Scheduled Tasks"],
+      link: "/writeups/Windows_Jump_Writeup.pdf",
+      featured: true,
     }
   ]
 

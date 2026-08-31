@@ -140,6 +140,7 @@ const translations = {
       categories: {
         All: 'All',
         'Web Exploitation': 'Web Exploitation',
+        'Privilege Escalation': 'Privilege Escalation',
         Cryptography: 'Cryptography',
         'Active Directory': 'Active Directory',
         'Binary Exploitation': 'Binary Exploitation',
@@ -251,6 +252,8 @@ const translations = {
       xxeInjection: 'Complete writeup on XML External Entity (XXE) injection attacks and exploitation techniques.',
       injectics: 'Detailed walkthrough of the Injectics TryHackMe room with practical web injection exploitation steps.',
       recruit: 'Complete writeup of the Recruit TryHackMe room covering web exploitation techniques and challenge solutions.',
+      jump: 'Linux privilege escalation on the Jump TryHackMe room: a five-stage chain from anonymous FTP upload through cron abuse and PATH hijacking to a sudo/GTFOBins escape to root.',
+      windowsJump: 'Windows privilege escalation on the Windows Jump TryHackMe room: credentials leaked in an anonymous SMB share, Winlogon AutoLogon in the registry, a weak service binary, and a writable scheduled task leading to SYSTEM.',
     },
     projectDetail: {
       back: 'Back to Projects',
@@ -506,6 +509,7 @@ const translations = {
       categories: {
         All: 'Tous',
         'Web Exploitation': 'Exploitation Web',
+        'Privilege Escalation': 'Élévation de Privilèges',
         Cryptography: 'Cryptographie',
         'Active Directory': 'Active Directory',
         'Binary Exploitation': 'Exploitation Binaire',
@@ -618,6 +622,8 @@ const translations = {
       xxeInjection: "Writeup complet sur les attaques d'injection XML External Entity (XXE) et techniques d'exploitation.",
       injectics: "Guide détaillé de la salle TryHackMe Injectics avec des étapes pratiques d'exploitation d'injection web.",
       recruit: "Writeup complet de la salle TryHackMe Recruit couvrant les techniques d'exploitation web et les solutions du défi.",
+      jump: "Élévation de privilèges Linux sur la salle TryHackMe Jump : une chaîne en cinq étapes, du dépôt de fichiers en FTP anonyme à l'abus de cron et au détournement du PATH, jusqu'à une évasion sudo/GTFOBins vers root.",
+      windowsJump: "Élévation de privilèges Windows sur la salle TryHackMe Windows Jump : identifiants exposés dans un partage SMB anonyme, AutoLogon Winlogon dans le registre, binaire de service mal protégé et tâche planifiée modifiable menant à SYSTEM.",
     },
     projectDetail: {
       back: 'Retour aux projets',
