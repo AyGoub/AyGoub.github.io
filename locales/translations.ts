@@ -222,6 +222,7 @@ const translations = {
       'Artificial Intelligence': 'Artificial Intelligence',
     },
     projectDescriptions: {
+      'hash-identifier': 'Python tool identifying hash types by pure format analysis (prefix, alphabet, length, context) with no cryptographic computation — returns a ranked candidate list with hashcat/john modes, exposed as a CLI, a Python API and a Flask web app deployed on Render.',
       'portfolio-website': 'Modern portfolio website built with Next.js 14, showcasing cybersecurity projects, skills, and achievements with dynamic routing and static generation.',
       keylogger: 'Educational keylogger implementation in Python demonstrating keystroke capture, logging mechanisms, and security awareness for cybersecurity research.',
       'grand-prix-f1': 'Intelligent F1 racing bot using A* pathfinding algorithm in C for autonomous navigation, collision avoidance, and optimal race strategy in real-time competitions.',
@@ -592,6 +593,7 @@ const translations = {
       'Artificial Intelligence': 'Intelligence Artificielle',
     },
     projectDescriptions: {
+      'hash-identifier': "Outil Python identifiant le type d'un hash par pure analyse de format (préfixe, alphabet, longueur, contexte), sans aucun calcul cryptographique — retourne une liste classée de candidats avec les modes hashcat/john, exposée en CLI, en API Python et en application web Flask déployée sur Render.",
       'portfolio-website': "Site portfolio moderne développé avec Next.js 14, présentant les projets de cybersécurité, les compétences et les réalisations avec un routage dynamique et la génération statique.",
       keylogger: "Implémentation pédagogique d'un keylogger en Python démontrant la capture de frappes, les mécanismes de journalisation et la sensibilisation à la sécurité pour la recherche en cybersécurité.",
       'grand-prix-f1': "Bot de course F1 intelligent utilisant l'algorithme A* en C pour la navigation autonome, l'évitement de collisions et la stratégie de course optimale en compétitions en temps réel.",

@@ -21,6 +21,206 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "hash-identifier",
+    title: "Hash Identifier — Format-Based Hash Recognition",
+    description: "Python tool identifying hash types by pure format analysis (prefix, alphabet, length, context) — no cryptographic computation. Returns a ranked candidate list with hashcat/john modes, exposed as a CLI, a Python API and a Flask web app deployed on Render.",
+    longDescription: `
+A hash identification tool that determines the likely algorithm behind a hash string through **format analysis only** — prefix, alphabet, length and surrounding context. No cryptographic computation is ever performed: the tool is a pattern recognizer, not a cracker.
+
+## 🎯 Core Design Principle
+
+The result is **always a ranked list, never a single answer**. A 32-character hexadecimal string matches at least eight plausible algorithms (MD5, NTLM, MD4, RIPEMD-128, …), and claiming otherwise would simply be false. The tool ranks candidates by confidence instead of pretending to a certainty it cannot have.
+
+## 🔍 Detection Order
+
+| Step | Signal | Role |
+|------|--------|------|
+| 1 | **Prefix** | \`$2b$\`, \`{SSHA}\`, \`$argon2id$\`… unique signature, short-circuits everything else |
+| 2 | **Alphabet** | hex, standard base64, crypt base64 (\`./A-Za-z0-9\`), decimal |
+| 3 | **Length** | discriminates the family, rarely the algorithm |
+| 4 | **Context** | separators, salt, pwdump line, MySQL \`*\` prefix |
+
+Each candidate is returned with its **hashcat mode** and **john format** name, so the output feeds directly into the next step of a workflow.
+
+## 🏗️ Architecture
+
+Strict single-responsibility layering, with dependencies always pointing inward:
+
+\`\`\`
+cli.py      ┐
+web/app.py  ┼→ engine.py → normalize.py / charset.py → models.py
+\`\`\`
+
+| Path | Role | Never does |
+|------|------|-----------|
+| \`models.py\` | Shared types: \`Rule\`, \`Candidate\`, \`Parsed\` | no logic |
+| \`normalize.py\` | Dirty input → clean input | guesses no algorithm |
+| \`charset.py\` | Alphabet predicates | knows no algorithm name |
+| \`engine.py\` | Rules → candidates → scores → sort | no \`print()\` |
+| \`cli.py\` | Arguments, I/O, display | no identification logic |
+| \`data/rules.json\` | All domain knowledge | — |
+| \`web/app.py\` | Flask API: serves page + \`/api/identify\` | no identification logic |
+
+The CLI and the web API are two façades over the same \`engine.identify()\` — adding an interface means one new file and **zero changes to the engine**.
+
+## ⚙️ Data-Driven Rules
+
+Adding a new algorithm is a single JSON entry, zero lines of Python:
+
+\`\`\`json
+{
+  "name": "SHA-224",
+  "regex": "[a-fA-F0-9]{56}",
+  "hashcat": "1300",
+  "john": "raw-sha224",
+  "base_score": 50,
+  "confidence": "ambigu",
+  "exclusive": false
+}
+\`\`\`
+
+\`base_score\` is **uniform per length group** (50 for raw hex): it measures pattern precision, not popularity. Ties between same-length algorithms are broken by a separate \`POPULARITE\` map in \`engine.py\` — keeping "how specific is this pattern" and "how common is this algorithm" as two independent axes.
+
+## 💻 Interfaces
+
+\`\`\`bash
+hashid 5d41402abc4b2a76b9719d911017c592
+cat hashes.txt | hashid --json
+hashid -f hashes.txt --top 3
+\`\`\`
+
+\`\`\`python
+from hashid import identify
+identify("5d41402abc4b2a76b9719d911017c592")
+\`\`\`
+
+A Flask layer serves a terminal-styled front end and a JSON API on top of the same engine:
+
+- \`GET /\` — the page
+- \`GET /api/identify?hash=&top=\` — JSON \`{hash, count, candidates}\`
+
+## 📦 Packaging & Deployment
+
+- \`src/\` layout so tests run against the **installed package**, not the working directory
+- Editable install (\`pip install -e ".[dev]"\`) with \`dev\` and \`web\` extras
+- Deployed free on **Render** via a \`render.yaml\` Blueprint — every \`git push\` triggers a redeploy
+- Regression tests on real hashes: a new rule that breaks a test is a rule that is too broad
+    `,
+    longDescriptionFr: `
+Un outil d'identification de hash qui détermine l'algorithme probable derrière une chaîne par **analyse de format uniquement** — préfixe, alphabet, longueur et contexte. Aucun calcul cryptographique n'est effectué : l'outil est un reconnaisseur de motifs, pas un casseur de hash.
+
+## 🎯 Principe de conception
+
+Le résultat est **toujours une liste classée, jamais une réponse unique**. Une chaîne de 32 caractères hexadécimaux correspond à au moins huit algorithmes plausibles (MD5, NTLM, MD4, RIPEMD-128, …), et prétendre le contraire serait faux. L'outil classe les candidats par confiance plutôt que de simuler une certitude qu'il ne peut pas avoir.
+
+## 🔍 Ordre de détection
+
+| Étape | Signal | Rôle |
+|-------|--------|------|
+| 1 | **Préfixe** | \`$2b$\`, \`{SSHA}\`, \`$argon2id$\`… signature unique, court-circuite tout le reste |
+| 2 | **Alphabet** | hex, base64 standard, base64 crypt (\`./A-Za-z0-9\`), décimal |
+| 3 | **Longueur** | discrimine la famille, rarement l'algorithme |
+| 4 | **Contexte** | séparateurs, sel, ligne pwdump, préfixe \`*\` de MySQL |
+
+Chaque candidat est retourné avec son **mode hashcat** et son **format john**, afin que la sortie alimente directement l'étape suivante du workflow.
+
+## 🏗️ Architecture
+
+Responsabilité unique par module, avec des dépendances toujours dirigées vers l'intérieur :
+
+\`\`\`
+cli.py      ┐
+web/app.py  ┼→ engine.py → normalize.py / charset.py → models.py
+\`\`\`
+
+| Chemin | Rôle | Ne fait jamais |
+|--------|------|----------------|
+| \`models.py\` | Types partagés : \`Rule\`, \`Candidate\`, \`Parsed\` | aucune logique |
+| \`normalize.py\` | Entrée sale → entrée propre | ne devine aucun algorithme |
+| \`charset.py\` | Prédicats sur l'alphabet | ne connaît aucun nom d'algorithme |
+| \`engine.py\` | Règles → candidats → scores → tri | aucun \`print()\` |
+| \`cli.py\` | Arguments, E/S, affichage | aucune logique d'identification |
+| \`data/rules.json\` | Toute la connaissance métier | — |
+| \`web/app.py\` | API Flask : sert la page + \`/api/identify\` | aucune logique d'identification |
+
+Le CLI et l'API web sont deux façades sur le même \`engine.identify()\` — ajouter une interface, c'est un fichier de plus et **zéro modification du moteur**.
+
+## ⚙️ Règles pilotées par les données
+
+Ajouter un algorithme est une simple entrée JSON, zéro ligne de Python :
+
+\`\`\`json
+{
+  "name": "SHA-224",
+  "regex": "[a-fA-F0-9]{56}",
+  "hashcat": "1300",
+  "john": "raw-sha224",
+  "base_score": 50,
+  "confidence": "ambigu",
+  "exclusive": false
+}
+\`\`\`
+
+\`base_score\` est **uniforme par groupe de longueur** (50 pour du hex brut) : il mesure la précision du motif, pas la popularité. Ce qui départage deux algorithmes de même longueur, c'est le dictionnaire \`POPULARITE\` dans \`engine.py\` — deux axes indépendants : « à quel point ce motif est spécifique » et « à quel point cet algorithme est courant ».
+
+## 💻 Interfaces
+
+\`\`\`bash
+hashid 5d41402abc4b2a76b9719d911017c592
+cat hashes.txt | hashid --json
+hashid -f hashes.txt --top 3
+\`\`\`
+
+\`\`\`python
+from hashid import identify
+identify("5d41402abc4b2a76b9719d911017c592")
+\`\`\`
+
+Une couche Flask sert un front au style terminal et une API JSON par-dessus le même moteur :
+
+- \`GET /\` — la page
+- \`GET /api/identify?hash=&top=\` — JSON \`{hash, count, candidates}\`
+
+## 📦 Packaging & Déploiement
+
+- Layout \`src/\` pour que les tests s'exécutent sur le **paquet installé**, pas sur le dossier courant
+- Installation éditable (\`pip install -e ".[dev]"\`) avec les extras \`dev\` et \`web\`
+- Déployé gratuitement sur **Render** via un Blueprint \`render.yaml\` — chaque \`git push\` redéclenche le déploiement
+- Tests de non-régression sur des hashes réels : une nouvelle règle qui casse un test est une règle trop large
+    `,
+    category: "Cybersecurity",
+    date: "2026",
+    technologies: ["Python", "Flask", "REST API", "JSON", "pytest", "CLI", "Regex", "Render", "hashcat", "John the Ripper"],
+    github: "https://github.com/AyGoub/hash_identifier",
+    demo: "https://hash-identifier-9qwi.onrender.com/",
+    featured: true,
+    images: [],
+    challenges: [
+      "Hash identification is inherently ambiguous: a 32-character hex string matches at least eight algorithms, so any single-answer output would be dishonest",
+      "Keeping domain knowledge (which algorithm looks like what) out of the code, so new algorithms do not require Python changes",
+      "Ranking candidates fairly without conflating pattern precision with algorithm popularity",
+      "Serving the same identification logic from a CLI, a Python API and a web endpoint without duplicating the engine",
+      "Deploying on a free hosting tier where the service sleeps and cold-starts on the first request"
+    ],
+    solutions: [
+      "Designed the output as a ranked candidate list with confidence levels, plus hashcat mode and john format for each candidate",
+      "Externalized every rule into data/rules.json — adding an algorithm is one JSON entry and zero lines of Python",
+      "Split scoring into two independent axes: a base_score uniform per length group for pattern precision, and a separate POPULARITE map to break ties",
+      "Enforced an inward-only dependency direction (cli.py and web/app.py both depend on engine.py, never the reverse), making each interface a thin facade",
+      "Adopted a four-step detection order — prefix short-circuit, then alphabet, length and context — so unambiguous formats resolve immediately"
+    ],
+    outcomes: [
+      "Identification engine covering prefixed formats (bcrypt, SSHA, Argon2), raw hex, base64 and contextual formats (pwdump, MySQL)",
+      "Three interfaces over a single engine: CLI, importable Python API, and Flask JSON API",
+      "Zero-code extensibility — new algorithms added declaratively via rules.json",
+      "Live web demo deployed on Render with continuous deployment on every push",
+      "Regression test suite on real hashes acting as a guard against overly broad rules",
+      "Published on GitHub: github.com/AyGoub/hash_identifier"
+    ],
+    teamSize: 1,
+    duration: "Completed (2026)"
+  },
+  {
     slug: "dark-web-monitor",
     title: "Dark Web Monitor — CTI Passive Surveillance Tool",
     description: "Passive CTI surveillance tool monitoring .onion sources for threat intelligence, extracting IOCs, and auto-scoring threat criticality — deployed via Docker with strict OPSEC.",
