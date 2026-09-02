@@ -21,6 +21,569 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "security-headers-checker",
+    title: "Security HTTP Headers Checker — CLI, API & Web Grader",
+    description: "Command-line tool grading a site's HTTP security headers: one request, six headers evaluated, a 0–100 score and an A–F grade. Follows redirects to grade the final URL, distinguishes a missing header from a present-but-inert one, and returns a CI-usable exit code — the same engine exposed as a FastAPI web app deployed on Render.",
+    longDescription: `
+A command-line tool that grades the HTTP security headers of a website. One request, six headers evaluated, a score from 0 to 100 and a letter grade A–F.
+
+- Follows redirects and grades the **final URL** — the one the browser actually lands on.
+- Distinguishes a missing header from a present but inert one: a \`Strict-Transport-Security: max-age=0\` is reported as \`weak\`, not \`ok\`.
+- Returns an exit code usable in continuous integration.
+
+## 📦 Installation
+
+\`\`\`bash
+python -m venv .venv
+.venv\\Scripts\\activate          # Windows
+pip install -e .
+\`\`\`
+
+Or without installing the package:
+
+\`\`\`bash
+pip install -r requirements.txt
+python -m shhc.cli example.com
+\`\`\`
+
+## 💻 Usage
+
+\`\`\`bash
+shhc mozilla.org           # the https:// is optional
+shhc --quiet mozilla.org   # 80/100 B
+shhc --json mozilla.org    # machine-readable output
+\`\`\`
+
+### Sample output
+
+\`\`\`
+                Security headers - https://www.mozilla.org/
++-----------------------------------------------------------------------------+
+| Header                    | Status  | Value        | Points | Reason        |
+|---------------------------+---------+--------------+--------+---------------|
+| Strict-Transport-Security | ok      | max-age=3153 |  30/30 | max-age       |
+|                           |         | 6000         |        | directive ok  |
+| Content-Security-Policy   | weak    | font-src     |  15/30 | Permissive    |
+|                           |         | 'self' ...   |        | policy        |
+| X-Frame-Options           | ok      | DENY         |  15/15 | Correct value |
+| X-Content-Type-Options    | ok      | nosniff      |  15/15 | Correct value |
+| Referrer-Policy           | ok      | strict-origi |    5/5 | Correct value |
+|                           |         | n-when-cross |        |               |
+|                           |         | -origin      |        |               |
+| Permissions-Policy        | missing | -            |    0/5 | Header absent |
++-----------------------------------------------------------------------------+
++---- Grade ---+
+| B  -  80/100 |
++--------------+
+
+Recommendations
+  * Content-Security-Policy - Remove \`unsafe-inline\`, \`unsafe-eval\`.
+  * Permissions-Policy - Add the \`Permissions-Policy\` header.
+\`\`\`
+
+In a real terminal the table is colored: green for \`ok\`, yellow for \`weak\`, red for \`missing\`.
+
+## 📊 The scoring rubric
+
+| Header | Weight | \`ok\` when |
+|---|---:|---|
+| \`Strict-Transport-Security\` | 30 | \`max-age\` ≥ 6 months |
+| \`Content-Security-Policy\` | 30 | policy present and restrictive |
+| \`X-Frame-Options\` | 15 | \`DENY\` or \`SAMEORIGIN\` |
+| \`X-Content-Type-Options\` | 15 | \`nosniff\` |
+| \`Referrer-Policy\` | 5 | strict policy |
+| \`Permissions-Policy\` | 5 | present and non-empty |
+
+Weights total 100. A \`weak\` status earns half the points, \`missing\` none.
+
+**Grades:** ≥ 90 A · ≥ 80 B · ≥ 70 C · ≥ 60 D · otherwise F
+
+## 🚦 Exit codes
+
+| Code | Meaning |
+|---:|---|
+| \`0\` | grade A or B |
+| \`1\` | grade C or D |
+| \`2\` | grade F, network error, or invalid URL |
+
+Usable directly as a quality gate:
+
+\`\`\`bash
+shhc https://my-site.com || echo "insufficient headers"
+\`\`\`
+
+## 🌐 Web version and API
+
+The same engine is exposed over HTTP: a form page and a JSON endpoint. The business logic is not duplicated — \`api.py\` reuses \`fetch\`, \`rules\` and \`scoring\`, exactly like the CLI.
+
+### Running locally
+
+\`\`\`bash
+pip install -r requirements.txt
+uvicorn shhc.api:app --reload
+\`\`\`
+
+Then http://127.0.0.1:8000 for the page, http://127.0.0.1:8000/docs for the interactive API documentation, generated automatically by FastAPI.
+
+### The endpoints
+
+| Route | Response |
+|---|---|
+| \`GET /\` | the web page |
+| \`GET /api/check?url=<url>\` | the report in JSON |
+| \`GET /api/health\` | liveness probe |
+| \`GET /docs\` | interactive OpenAPI documentation |
+
+\`\`\`json
+{
+  "url": "https://www.mozilla.org/",
+  "score": 80,
+  "grade": "B",
+  "exit_code": 0,
+  "findings": [
+    {
+      "header": "Strict-Transport-Security",
+      "status": "ok",
+      "value": "max-age=31536000",
+      "weight": 30,
+      "points": 30,
+      "reason": "max-age directive correct: 31536000.",
+      "recommendation": null
+    }
+  ]
+}
+\`\`\`
+
+HTTP codes: \`400\` invalid URL or refused target · \`429\` rate limit exceeded · \`502\` target unreachable.
+
+### Protecting the public version
+
+A service that fetches a visitor-supplied URL is a door into the host's internal network. Two guardrails:
+
+**Anti-SSRF** (\`shhc/guards.py\`) — the domain name is resolved before the request, and any non-public address is refused: loopback, private ranges, link-local. Without this check, a visitor could make our own server query \`http://169.254.169.254/\` — the cloud provider metadata endpoint, which often holds credentials.
+
+**Rate limiting** — 20 scans per IP per minute, sliding window. Every call triggers an outbound request: without a limit, the service could be used as a relay to hammer a third party.
+
+*Known limitation:* the anti-SSRF check resolves the name, then httpx resolves it again. An attacker controlling a DNS server could return a public address on the first lookup and a private one on the second (*DNS rebinding*). Closing that window requires resolving once and connecting to the validated IP.
+
+## ☁️ Deployment on Render.com
+
+The \`render.yaml\` file describes the service. Two ways to proceed:
+
+**With the blueprint** — on Render.com, *New* → *Blueprint*, select the repository. Everything is read from \`render.yaml\`, nothing to type.
+
+**By hand** — *New* → *Web Service*, then:
+
+| Field | Value |
+|---|---|
+| Runtime | Python 3 |
+| Build command | \`pip install -r requirements.txt\` |
+| Start command | \`uvicorn shhc.api:app --host 0.0.0.0 --port $PORT\` |
+| Health check path | \`/api/health\` |
+
+\`$PORT\` is provided by Render.com and must be used as is — a hardcoded port prevents the service from starting. \`--host 0.0.0.0\` is mandatory too: with the default address, the container would accept no external connection.
+
+On the free plan the service sleeps after fifteen minutes of inactivity and takes about thirty seconds to restart on the next visit.
+
+## 🧰 Tech stack
+
+**Python 3.11** (3.10+ compatible). No heavy dependency: each library answers a precise need.
+
+| Role | Library | Version | Why this one |
+|---|---|---|---|
+| HTTP client | httpx | 0.28 | explicit redirect following, default timeouts, modern API |
+| Terminal rendering | rich | 15.0 | tables, panels and colors without hand-writing ANSI codes |
+| CLI interface | typer | 0.27 | options declared through type annotations, \`--help\` generated |
+| Web API | fastapi | 0.141 | validation by annotations, OpenAPI documentation generated |
+| ASGI server | uvicorn | 0.52 | lightweight production server, expected by Render.com |
+| Tests | pytest | 9.1 | case parametrization, readable failure output |
+| HTTP mocking | respx | 0.23 | intercepts httpx requests: the suite runs without network |
+
+The versions above are the tested ones. \`requirements.txt\` declares minimums (\`httpx>=0.27\`), not pinned versions.
+
+### The choices that shape the code
+
+**Why httpx and not requests.** Redirect following must be a visible choice, not an implicit behavior: it is the core of the "grade the final URL" rule. httpx requires \`follow_redirects=True\` explicitly, where requests does it silently. It also enforces an explicit timeout, avoiding the classic omission that leaves a program hanging forever.
+
+**Why respx.** Testing a network layer against real sites makes the suite slow, connection-dependent and flaky — a site changing its configuration breaks a test without the code having moved. respx replaces the httpx transport layer (\`httpcore\`) and serves responses declared in advance. All the httpx code really runs, redirect following included; only opening the socket is short-circuited. An unplanned network call fails the test instead of going out to the internet.
+
+**ASCII-only output.** The Windows console commonly uses code page 850, which contains neither em dash, nor bullet, nor Unicode ellipsis. Those characters would render as \`?\`. Since the tool also targets CI logs, rarely UTF-8, the whole rendering stays ASCII. Colors, on the other hand, work everywhere.
+
+## 🏗️ Architecture
+
+\`\`\`
+shhc/
+  models.py     Finding + the constants (weights, thresholds)   48 lines
+  fetch.py      network request, redirects, errors              43
+  rules.py      the 6 scoring rules -> Finding                 274
+  scoring.py    weighted sum -> score + grade                   37
+  render.py     Rich table, grade panel, recommendations       100
+  cli.py        orchestration and exit codes                    46
+  api.py        HTTP API + web page (FastAPI)                   60
+  guards.py     anti-SSRF guardrail                             25
+web/
+  index.html    the page, no external dependency
+\`\`\`
+
+### The flow
+
+\`\`\`
+   URL entered
+       |
+   cli.py ............ normalizes, orchestrates, picks the exit code
+       |
+   fetch.py .......... 1 request -> (final URL, lowercased headers)
+       |
+   rules.py .......... 6 rules -> list[Finding]
+       |
+   scoring.py ........ sum of points -> score + grade
+       |
+   render.py ......... table + panel + recommendations
+\`\`\`
+
+### The pivot: \`Finding\`
+
+A single dataclass travels between layers. \`rules.py\` produces a list of them, \`scoring.py\` consumes it, \`render.py\` displays it — no layer knows the others.
+
+\`\`\`python
+@dataclass
+class Finding:
+    header: str            # "Strict-Transport-Security"
+    status: Status         # "ok" | "weak" | "missing"
+    value: str | None      # the raw value received, None if absent
+    weight: int            # 30, 15 or 5
+    points: int            # weight x status factor
+    reason: str            # why this status, in one line
+    recommendation: str | None
+\`\`\`
+
+### Two design rules
+
+**Pure modules first.** \`rules.py\` and \`scoring.py\` do neither network nor display: a function takes a dictionary, returns an object. They make up 311 of the 548 lines of the package and are tested without mocking anything — hence the 80 tests running in a few seconds.
+
+**Normalization in a single place.** HTTP headers being case-insensitive, \`fetch.py\` lowercases every key on the way out of the request. All downstream code can then assume lowercase keys, instead of every rule testing several spellings.
+
+## 🧪 Development
+
+\`\`\`bash
+pip install -r requirements-dev.txt
+pytest                                    # the whole suite: 80 tests
+pytest tests/test_rules.py -v             # one file
+pytest tests/test_rules.py::TestHSTS      # one class
+pytest -k hsts                            # by pattern
+pytest --lf                               # replay the last failures
+\`\`\`
+
+### Test coverage
+
+| File | What it verifies |
+|---|---|
+| \`test_models.py\` | the invariants: weights totaling 100, decreasing thresholds |
+| \`test_fetch.py\` | URL normalization, key casing, redirects, 403, timeouts |
+| \`test_rules.py\` | the 6 rules, including \`max-age=0\` classified \`weak\` and not \`ok\` |
+| \`test_scoring.py\` | the exact grade boundaries (90 → A, 89 → B) and the exit codes |
+| \`test_guards.py\` | the refusal of private, local and cloud metadata addresses |
+| \`test_api.py\` | the HTTP routes, the 400/429/502 codes and the served page |
+    `,
+    longDescriptionFr: `
+Outil en ligne de commande qui note les en-têtes de sécurité HTTP d'un site. Une requête, six en-têtes évalués, une note de 0 à 100 et une lettre A–F.
+
+- Suit les redirections et note **l'URL finale**, celle où le navigateur atterrit.
+- Distingue un en-tête absent d'un en-tête présent mais inopérant — un \`Strict-Transport-Security: max-age=0\` est signalé comme \`weak\`, pas comme \`ok\`.
+- Renvoie un code de sortie exploitable en intégration continue.
+
+## 📦 Installation
+
+\`\`\`bash
+python -m venv .venv
+.venv\\Scripts\\activate          # Windows
+pip install -e .
+\`\`\`
+
+Ou sans installer le paquet :
+
+\`\`\`bash
+pip install -r requirements.txt
+python -m shhc.cli example.com
+\`\`\`
+
+## 💻 Utilisation
+
+\`\`\`bash
+shhc mozilla.org           # le https:// est optionnel
+shhc --quiet mozilla.org   # 80/100 B
+shhc --json mozilla.org    # sortie machine
+\`\`\`
+
+### Exemple de sortie
+
+\`\`\`
+                En-tetes de securite - https://www.mozilla.org/
++-----------------------------------------------------------------------------+
+| En-tete                   | Statut  | Valeur       | Points | Raison        |
+|---------------------------+---------+--------------+--------+---------------|
+| Strict-Transport-Security | ok      | max-age=3153 |  30/30 | Directive     |
+|                           |         | 6000         |        | \`max-age\`     |
+|                           |         |              |        | correcte.     |
+| Content-Security-Policy   | weak    | font-src     |  15/30 | Politique     |
+|                           |         | 'self' ...   |        | permissive.   |
+| X-Frame-Options           | ok      | DENY         |  15/15 | Valeur        |
+|                           |         |              |        | correcte.     |
+| X-Content-Type-Options    | ok      | nosniff      |  15/15 | Valeur        |
+|                           |         |              |        | correcte.     |
+| Referrer-Policy           | ok      | strict-origi |    5/5 | Valeur        |
+|                           |         | n-when-cross |        | correcte.     |
+|                           |         | -origin      |        |               |
+| Permissions-Policy        | missing | -            |    0/5 | En-tete       |
+|                           |         |              |        | absent.       |
++-----------------------------------------------------------------------------+
++---- Note ----+
+| B  -  80/100 |
++--------------+
+
+Recommandations
+  * Content-Security-Policy - Retirer \`unsafe-inline\`, \`unsafe-eval\`.
+  * Permissions-Policy - Ajouter l'en-tete \`Permissions-Policy\`.
+\`\`\`
+
+Dans un vrai terminal, la table est colorée : vert pour \`ok\`, jaune pour \`weak\`, rouge pour \`missing\`.
+
+## 📊 La rubrique de notation
+
+| En-tête | Poids | \`ok\` quand |
+|---|---:|---|
+| \`Strict-Transport-Security\` | 30 | \`max-age\` ≥ 6 mois |
+| \`Content-Security-Policy\` | 30 | politique présente et restrictive |
+| \`X-Frame-Options\` | 15 | \`DENY\` ou \`SAMEORIGIN\` |
+| \`X-Content-Type-Options\` | 15 | \`nosniff\` |
+| \`Referrer-Policy\` | 5 | politique stricte |
+| \`Permissions-Policy\` | 5 | présent et non vide |
+
+Les poids totalisent 100. Un statut \`weak\` rapporte la moitié des points, \`missing\` aucun.
+
+**Grades :** ≥ 90 A · ≥ 80 B · ≥ 70 C · ≥ 60 D · sinon F
+
+## 🚦 Codes de sortie
+
+| Code | Signification |
+|---:|---|
+| \`0\` | grade A ou B |
+| \`1\` | grade C ou D |
+| \`2\` | grade F, erreur réseau, ou URL invalide |
+
+Utilisable directement comme portail de qualité :
+
+\`\`\`bash
+shhc https://mon-site.com || echo "en-tetes insuffisants"
+\`\`\`
+
+## 🌐 Version web et API
+
+Le même moteur est exposé en HTTP : une page à remplir et un point d'entrée JSON. La logique métier n'est pas dupliquée — \`api.py\` réutilise \`fetch\`, \`rules\` et \`scoring\`, exactement comme la CLI.
+
+### Lancer en local
+
+\`\`\`bash
+pip install -r requirements.txt
+uvicorn shhc.api:app --reload
+\`\`\`
+
+Puis http://127.0.0.1:8000 pour la page, http://127.0.0.1:8000/docs pour la documentation interactive de l'API, générée automatiquement par FastAPI.
+
+### Les points d'entrée
+
+| Route | Réponse |
+|---|---|
+| \`GET /\` | la page web |
+| \`GET /api/check?url=<url>\` | le rapport en JSON |
+| \`GET /api/health\` | sonde de disponibilité |
+| \`GET /docs\` | documentation OpenAPI interactive |
+
+\`\`\`json
+{
+  "url": "https://www.mozilla.org/",
+  "score": 80,
+  "grade": "B",
+  "exit_code": 0,
+  "findings": [
+    {
+      "header": "Strict-Transport-Security",
+      "status": "ok",
+      "value": "max-age=31536000",
+      "weight": 30,
+      "points": 30,
+      "reason": "Directive \`max-age\` correcte : 31536000.",
+      "recommendation": null
+    }
+  ]
+}
+\`\`\`
+
+Codes HTTP : \`400\` URL invalide ou cible refusée · \`429\` quota dépassé · \`502\` site injoignable.
+
+### Protections de la version publique
+
+Un service qui va chercher une URL fournie par un visiteur est une porte d'entrée vers le réseau interne de l'hébergeur. Deux garde-fous :
+
+**Anti-SSRF** (\`shhc/guards.py\`) — le nom de domaine est résolu avant la requête, et toute adresse non publique est refusée : bouclage, plages privées, lien-local. Sans ce contrôle, un visiteur pourrait faire interroger \`http://169.254.169.254/\` — les métadonnées du fournisseur cloud, qui contiennent souvent des identifiants — par notre propre serveur.
+
+**Quota** — 20 analyses par IP et par minute, en fenêtre glissante. Chaque appel déclenche une requête sortante : sans limite, le service peut servir de relais pour marteler un tiers.
+
+*Limite connue :* le contrôle anti-SSRF résout le nom, puis httpx le résout à nouveau. Un attaquant contrôlant un serveur DNS pourrait renvoyer une adresse publique au premier appel et une adresse privée au second (*DNS rebinding*). Fermer cette fenêtre demande de résoudre une seule fois et de se connecter à l'IP validée.
+
+## ☁️ Déploiement sur Render.com
+
+Le fichier \`render.yaml\` décrit le service. Deux façons de procéder :
+
+**Avec le blueprint** — sur Render.com, *New* → *Blueprint*, sélectionner ce dépôt. Tout est lu depuis \`render.yaml\`, il n'y a rien à saisir.
+
+**À la main** — *New* → *Web Service*, puis :
+
+| Champ | Valeur |
+|---|---|
+| Runtime | Python 3 |
+| Build command | \`pip install -r requirements.txt\` |
+| Start command | \`uvicorn shhc.api:app --host 0.0.0.0 --port $PORT\` |
+| Health check path | \`/api/health\` |
+
+\`$PORT\` est fourni par Render.com : il faut l'utiliser tel quel, un port en dur empêche le service de démarrer. \`--host 0.0.0.0\` est également obligatoire — avec l'adresse par défaut, le conteneur n'accepterait aucune connexion externe.
+
+Sur le plan gratuit, le service s'endort après quinze minutes d'inactivité et met une trentaine de secondes à redémarrer à la visite suivante.
+
+## 🧰 Stack technique
+
+**Python 3.11** (compatible 3.10+). Aucune dépendance lourde : chaque bibliothèque répond à un besoin précis.
+
+| Rôle | Bibliothèque | Version | Pourquoi celle-ci |
+|---|---|---|---|
+| Client HTTP | httpx | 0.28 | suivi de redirections explicite, timeouts par défaut, API moderne |
+| Affichage terminal | rich | 15.0 | tables, panneaux et couleurs sans gérer les codes ANSI à la main |
+| Interface CLI | typer | 0.27 | les options se déclarent par annotations de type, \`--help\` généré |
+| API web | fastapi | 0.141 | validation par annotations, documentation OpenAPI générée |
+| Serveur ASGI | uvicorn | 0.52 | serveur de production léger, attendu par Render.com |
+| Tests | pytest | 9.1 | paramétrage des cas, sortie d'échec lisible |
+| Simulation HTTP | respx | 0.23 | intercepte les requêtes httpx : la suite tourne sans réseau |
+
+Les versions ci-dessus sont celles testées. \`requirements.txt\` déclare des minimums (\`httpx>=0.27\`), pas des versions figées.
+
+### Les choix qui structurent le code
+
+**Pourquoi httpx et pas requests.** Le suivi des redirections doit être un choix visible, pas un comportement implicite : c'est le cœur de la règle « noter l'URL finale ». httpx demande \`follow_redirects=True\` explicitement, là où requests le fait en silence. Il impose aussi un timeout explicite, ce qui évite l'oubli classique qui laisse un programme suspendu indéfiniment.
+
+**Pourquoi respx.** Tester une couche réseau contre de vrais sites rend la suite lente, dépendante de la connexion, et instable — un site qui change sa configuration casse un test sans que le code ait bougé. respx remplace la couche transport de httpx (\`httpcore\`) et sert des réponses déclarées à l'avance. Tout le code httpx s'exécute réellement, y compris le suivi des redirections ; seule l'ouverture de la socket est court-circuitée. Un appel réseau non prévu fait échouer le test au lieu de sortir sur internet.
+
+**Sortie ASCII uniquement.** La console Windows utilise couramment la page de codes 850, qui ne contient ni tiret cadratin, ni puce, ni points de suspension Unicode. Ces caractères s'afficheraient en \`?\`. Comme l'outil vise aussi les logs d'intégration continue, rarement en UTF-8, tout le rendu reste en ASCII. Les couleurs, elles, fonctionnent partout.
+
+## 🏗️ Architecture
+
+\`\`\`
+shhc/
+  models.py     Finding + les constantes (poids, seuils)      48 lignes
+  fetch.py      requête réseau, redirections, erreurs         43
+  rules.py      les 6 règles de notation -> Finding          274
+  scoring.py    somme pondérée -> score + grade               37
+  render.py     table Rich, panel de note, recommandations   100
+  cli.py        orchestration et codes de sortie              46
+  api.py        API HTTP + page web (FastAPI)                 60
+  guards.py     garde-fou anti-SSRF                           25
+web/
+  index.html    la page, sans dépendance externe
+\`\`\`
+
+### Le flux
+
+\`\`\`
+   URL saisie
+       |
+   cli.py ............ normalise, orchestre, choisit le code de sortie
+       |
+   fetch.py .......... 1 requête -> (URL finale, en-têtes en minuscules)
+       |
+   rules.py .......... 6 règles -> list[Finding]
+       |
+   scoring.py ........ somme des points -> score + grade
+       |
+   render.py ......... table + panel + recommandations
+\`\`\`
+
+### Le pivot : \`Finding\`
+
+Une seule dataclass circule entre les couches. \`rules.py\` en produit une liste, \`scoring.py\` la consomme, \`render.py\` l'affiche — aucune couche ne connaît les autres.
+
+\`\`\`python
+@dataclass
+class Finding:
+    header: str            # "Strict-Transport-Security"
+    status: Status         # "ok" | "weak" | "missing"
+    value: str | None      # la valeur brute reçue, None si absent
+    weight: int            # 30, 15 ou 5
+    points: int            # poids x facteur du statut
+    reason: str            # pourquoi ce statut, en une ligne
+    recommendation: str | None
+\`\`\`
+
+### Deux règles de conception
+
+**Les modules purs d'abord.** \`rules.py\` et \`scoring.py\` ne font ni réseau ni affichage : une fonction reçoit un dictionnaire, renvoie un objet. Ils constituent 311 des 548 lignes du paquet et se testent sans simuler quoi que ce soit — d'où les 80 tests qui s'exécutent en quelques secondes.
+
+**La normalisation en un seul endroit.** Les en-têtes HTTP étant insensibles à la casse, \`fetch.py\` met toutes les clés en minuscules à la sortie de la requête. Tout le code en aval peut alors supposer des clés en minuscules, au lieu que chaque règle teste plusieurs orthographes.
+
+## 🧪 Développement
+
+\`\`\`bash
+pip install -r requirements-dev.txt
+pytest                                    # toute la suite : 80 tests
+pytest tests/test_rules.py -v             # un fichier
+pytest tests/test_rules.py::TestHSTS      # une classe
+pytest -k hsts                            # par motif
+pytest --lf                               # rejouer les derniers échecs
+\`\`\`
+
+### Couverture des tests
+
+| Fichier | Ce qu'il vérifie |
+|---|---|
+| \`test_models.py\` | les invariants : poids totalisant 100, seuils décroissants |
+| \`test_fetch.py\` | normalisation d'URL, casse des clés, redirections, 403, timeouts |
+| \`test_rules.py\` | les 6 règles, dont \`max-age=0\` classé \`weak\` et non \`ok\` |
+| \`test_scoring.py\` | les bornes exactes des grades (90 → A, 89 → B) et les codes de sortie |
+| \`test_guards.py\` | le refus des adresses privées, locales et de métadonnées cloud |
+| \`test_api.py\` | les routes HTTP, les codes 400/429/502 et la page servie |
+    `,
+    category: "Cybersecurity",
+    date: "2026",
+    technologies: ["Python", "httpx", "FastAPI", "uvicorn", "typer", "rich", "pytest", "respx", "REST API", "Render", "CI/CD"],
+    demo: "https://shhc.onrender.com/",
+    featured: true,
+    images: [],
+    challenges: [
+      "Grading the page the browser actually lands on, not the URL typed: a site redirecting HTTP to HTTPS would otherwise be scored on headers nobody ever receives",
+      "A header being present says nothing about it being effective — Strict-Transport-Security: max-age=0 disables HSTS while looking like a correct configuration",
+      "Exposing the same engine as a CLI, a JSON API and a web page without duplicating the scoring logic in three places",
+      "A public service fetching a visitor-supplied URL is a doorway into the host's internal network (SSRF) and a free relay to hammer third-party sites",
+      "Testing a network layer without depending on real sites, whose configuration can change and break a test the code never touched",
+      "Rendering readable tables in Windows consoles on code page 850 and in CI logs that are rarely UTF-8"
+    ],
+    solutions: [
+      "Used httpx with an explicit follow_redirects=True and an explicit timeout, then graded the final URL returned by the response",
+      "Made the status a three-value verdict — ok / weak / missing — where weak scores half the weight, so an inert header is visibly distinguished from a correct one",
+      "Kept rules.py and scoring.py pure (no network, no display) so cli.py and api.py are thin facades over the same functions: 311 of the package's 548 lines are pure and testable with no mocking",
+      "Added shhc/guards.py: the domain is resolved before the request and every non-public address is refused (loopback, private ranges, link-local, cloud metadata at 169.254.169.254), plus a 20-scans-per-IP-per-minute sliding window",
+      "Used respx to replace the httpx transport layer: the whole HTTP code path really runs, only the socket is short-circuited, and an unplanned network call fails the test",
+      "Restricted all rendering to ASCII while keeping Rich colors, which work on every terminal"
+    ],
+    outcomes: [
+      "Six headers scored on a 100-point weighted rubric (HSTS 30, CSP 30, X-Frame-Options 15, X-Content-Type-Options 15, Referrer-Policy 5, Permissions-Policy 5) with an A–F grade",
+      "CI-usable exit codes: 0 for A/B, 1 for C/D, 2 for F, network error or invalid URL — the tool works as a quality gate in a single shell line",
+      "Three interfaces over one engine: CLI (plain, --quiet, --json), FastAPI JSON API with generated OpenAPI docs, and a dependency-free web page",
+      "80 tests running in seconds with zero network access, covering the rubric invariants, the grade boundaries (90 → A, 89 → B), the SSRF refusals and the 400/429/502 API codes",
+      "Deployed publicly on Render.com via a render.yaml blueprint, with an anti-SSRF guard and per-IP rate limiting",
+      "Documented a known DNS-rebinding limitation rather than hiding it: the guard resolves the name and httpx resolves it again"
+    ],
+    teamSize: 1,
+    duration: "Completed (2026)"
+  },
+  {
     slug: "hash-identifier",
     title: "Hash Identifier — Format-Based Hash Recognition",
     description: "Python tool identifying hash types by pure format analysis (prefix, alphabet, length, context) — no cryptographic computation. Returns a ranked candidate list with hashcat/john modes, exposed as a CLI, a Python API and a Flask web app deployed on Render.",
