@@ -1,413 +1,119 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
-import { 
-  FileText,
-  Calendar,
-  Tag,
-  ExternalLink,
-  Code,
-  Eye,
-  Download,
-  Trophy
-} from 'lucide-react'
+import { useState } from 'react'
+import { ExternalLink, Star } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { sortedWriteups } from '@/data/writeups'
+
+const FILTERS: { flag: string; category: string | null }[] = [
+  { flag: '--all', category: null },
+  { flag: '--web', category: 'Web Exploitation' },
+  { flag: '--privesc', category: 'Privilege Escalation' },
+  { flag: '--active-directory', category: 'Active Directory' },
+]
+
+const diffClass = (d: string) =>
+  d === 'Hard'
+    ? 'bg-red-900/70 text-red-300'
+    : d === 'Medium'
+    ? 'bg-amber-900/70 text-amber-300'
+    : 'bg-green-900/70 text-green-300'
+
+const platform = (tags: string[]) =>
+  tags.includes('picoCTF') ? 'picoCTF' : tags.includes('TryHackMe') ? 'TryHackMe' : 'CTF'
 
 const Writeups = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
-  const [selectedCategory, setSelectedCategory] = useState('All')
   const { t } = useLanguage()
+  const [filter, setFilter] = useState<string | null>(null)
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  }
-
-  const categoryValues = ['All', 'Web Exploitation', 'Privilege Escalation', 'Cryptography', 'Active Directory', 'Binary Exploitation', 'Reverse Engineering', 'OSINT']
-  const categories = categoryValues.map(v => ({ value: v, label: t(`writeups.categories.${v}`) }))
-
-  const writeups = [
-    {
-      key: 'basicPentesting',
-      title: "Basic Pentesting",
-      category: "Web Exploitation",
-      difficulty: "Easy",
-      date: "2025-10-28",
-      tags: ["TryHackMe", "Pentesting", "Reconnaissance", "Exploitation","Web"],
-      link: "/writeups/Basic_Pentesting_Report.pdf",
-      featured: false,
-    },
-    {
-      key: 'bookmarklet',
-      title: "Bookmarklet - picoCTF",
-      category: "Web Exploitation",
-      difficulty: "Easy",
-      date: "2025-01-01",
-      tags: ["picoCTF", "JavaScript", "Bookmarklet"],
-      link: "/writeups/Bookmarklet_picoCTF.pdf",
-      featured: false,
-    },
-    {
-      key: 'getAHead',
-      title: "GET aHEAD",
-      category: "Web Exploitation",
-      difficulty: "Easy",
-      date: "2025-01-02",
-      tags: ["picoCTF", "HTTP", "Headers", "Web"],
-      link: "/writeups/GET_aHEAD.pdf",
-      featured: false,
-    },
-    {
-      key: 'hammer',
-      title: "Hammer - TryHackMe",
-      category: "Web Exploitation",
-      difficulty: "Medium",
-      date: "2025-10-26",
-      tags: ["TryHackMe", "CTF", "Web", "Exploitation"],
-      link: "/writeups/Hammer_report.pdf",
-      featured: true,
-    },
-    {
-      key: 'includes',
-      title: "Includes - picoCTF",
-      category: "Web Exploitation",
-      difficulty: "Easy",
-      date: "2025-01-03",
-      tags: ["picoCTF", "Web", "Includes"],
-      link: "/writeups/Includes_picoCTF.pdf",
-      featured: false,
-    },
-    {
-      key: 'introToBurp',
-      title: "Intro to Burp - picoCTF",
-      category: "Web Exploitation",
-      difficulty: "Easy",
-      date: "2025-01-04",
-      tags: ["Burp Suite", "Proxy", "picoCTF"],
-      link: "/writeups/introtoburp_picoctf.pdf",
-      featured: false,
-    },
-    {
-      key: 'owaspJuiceShop',
-      title: "OWASP Juice Shop",
-      category: "Web Exploitation",
-      difficulty: "Medium",
-      date: "2025-01-05",
-      tags: ["TryHackMe", "OWASP", "Juice Shop", "Web"],
-      link: "/writeups/OWASP_Juice_Shop.pdf",
-      featured: false,
-    },
-    {
-      key: 'breachingAD',
-      title: "Breaching Active Directory",
-      category: "Active Directory",
-      difficulty: "Medium",
-      date: "2025-01-06",
-      tags: ["TryHackMe", "Active Directory", "Windows", "Red Team"],
-      link: "/writeups/Report_Breaching_Active_Directory.pdf",
-      featured: true,
-    },
-    {
-      key: 'pickleRick',
-      title: "PickleRick - TryHackMe",
-      category: "Web Exploitation",
-      difficulty: "Medium",
-      date: "2025-01-07",
-      tags: ["TryHackMe", "CTF", "Web"],
-      link: "/writeups/Report_PickleRick_Challenge_TryHackMe.pdf",
-      featured: true,
-    },
-    {
-      key: 'webDecode',
-      title: "WebDecode - picoCTF",
-      category: "Web Exploitation",
-      difficulty: "Medium",
-      date: "2025-01-08",
-      tags: ["picoCTF", "Decode", "Web"],
-      link: "/writeups/WebDecode_picoCTF.pdf",
-      featured: false,
-    },
-    {
-      key: 'noSqlInjection',
-      title: "NoSQL Injection",
-      category: "Web Exploitation",
-      difficulty: "Hard",
-      date: "2025-12-16",
-      tags: ["TryHackMe", "NoSQL", "Injection", "Database", "Security"],
-      link: "/writeups/NOSql_injection_Writeup.pdf",
-      featured: true,
-    },
-    {
-      key: 'xxeInjection',
-      title: "XXE Injection",
-      category: "Web Exploitation",
-      difficulty: "Hard",
-      date: "2025-12-16",
-      tags: ["XXE", "XML", "Injection", "Web", "Security"],
-      link: "/writeups/xxe_injection.pdf",
-      featured: false,
-    },
-    {
-      key: 'injectics',
-      title: "Injectics - TryHackMe",
-      category: "Web Exploitation",
-      difficulty: "Medium",
-      date: "2026-04-06",
-      tags: ["TryHackMe", "Injection", "Web", "CTF","SSTI","Information Disclosure"],
-      link: "/writeups/Injectics_Writeup.pdf",
-      featured: false,
-    },
-    {
-      key: 'recruit',
-      title: "Recruit - TryHackMe",
-      category: "Web Exploitation",
-      difficulty: "Medium",
-      date: "2026-06-11",
-      tags: ["TryHackMe", "CTF", "Web", "Exploitation"],
-      link: "/writeups/recruit_Writeup.pdf",
-      featured: false,
-    },
-    {
-      key: 'jump',
-      title: "Jump - TryHackMe",
-      category: "Privilege Escalation",
-      difficulty: "Medium",
-      date: "2026-08-20",
-      tags: ["TryHackMe", "Linux", "Privilege Escalation", "FTP", "Cron", "PATH Hijacking", "GTFOBins"],
-      link: "/writeups/JUMP_Writeup.pdf",
-      featured: true,
-    },
-    {
-      key: 'windowsJump',
-      title: "Windows Jump - TryHackMe",
-      category: "Privilege Escalation",
-      difficulty: "Medium",
-      date: "2026-08-20",
-      tags: ["TryHackMe", "Windows", "Privilege Escalation", "SMB", "Registry", "Service Binary", "Scheduled Tasks"],
-      link: "/writeups/Windows_Jump_Writeup.pdf",
-      featured: true,
-    }
-  ]
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Easy': return 'text-green-400 bg-green-400/20'
-      case 'Medium': return 'text-yellow-400 bg-yellow-400/20'
-      case 'Hard': return 'text-red-400 bg-red-400/20'
-      default: return 'text-gray-400 bg-gray-400/20'
-    }
-  }
-
-  const filteredWriteups = selectedCategory === 'All' 
-    ? writeups 
-    : writeups.filter(writeup => writeup.category === selectedCategory)
+  const list = sortedWriteups.filter(w => !filter || w.category === filter)
 
   return (
     <section id="writeups" className="py-20 bg-dark-900">
       <div className="container mx-auto px-4">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-7xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              {t('writeups.title')}
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-              {t('writeups.subtitle')}
-            </p>
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h2 className="section-title mb-4">{t('writeups.title')}</h2>
+            <p className="section-lead">{t('writeups.subtitle')}</p>
+          </div>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
-              {categories.map((category) => (
-                <motion.button
-                  key={category.value}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedCategory(category.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedCategory === category.value
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-dark-700 text-gray-300 hover:bg-dark-600'
+          {/* Filters as command flags */}
+          <div className="flex flex-wrap items-center gap-2 mb-8 font-mono text-sm" role="group" aria-label="Filter">
+            <span className="text-dark-500 mr-1">ls ./writeups</span>
+            {FILTERS.map(f => {
+              const count = sortedWriteups.filter(w => !f.category || w.category === f.category).length
+              const on = filter === f.category
+              return (
+                <button
+                  key={f.flag}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => setFilter(f.category)}
+                  className={`px-3 py-1.5 rounded border transition-colors ${
+                    on
+                      ? 'bg-primary-500 border-primary-500 text-dark-900 font-bold'
+                      : 'border-dark-600 text-gray-400 hover:border-primary-500 hover:text-primary-400'
                   }`}
                 >
-                  {category.label}
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
+                  {f.flag} <span className={on ? 'text-dark-800' : 'text-dark-500'}>{count}</span>
+                </button>
+              )
+            })}
+          </div>
 
-          {/* Featured Writeups */}
-          <motion.div variants={itemVariants} className="mb-16">
-            <h3 className="text-2xl font-bold text-primary-400 mb-8">
-              {t('writeups.featured')}
-            </h3>
-            <div className="grid md:grid-cols-2 gap-8">
-              {writeups.filter(w => w.featured).map((writeup, index) => (
-                <motion.div
-                  key={writeup.title}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="bg-dark-800 rounded-lg p-6 border border-dark-700 hover:border-primary-500 transition-all duration-300 relative overflow-hidden"
-                >
-                  <div className="absolute top-4 right-4 flex items-center space-x-2">
-                    <Trophy className="w-5 h-5 text-yellow-500" />
-                    <span className="text-yellow-500 text-sm font-medium">{t('writeups.featuredLabel')}</span>
-                  </div>
-                  
-                  <div className="flex items-start justify-between mb-4">
-                    <h4 className="text-xl font-semibold text-white pr-8">
-                      {writeup.title}
-                    </h4>
-                  </div>
-                  
-                  <p className="text-gray-400 mb-4 leading-relaxed">
-                    {t(`writeupsData.${writeup.key}`)}
-                  </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {list.map(w => (
+              <article
+                key={w.key}
+                className="group flex flex-col gap-3 rounded-lg border border-dark-700 bg-dark-800/70 p-4 hover:border-primary-500 transition-colors"
+              >
+                <div className="flex items-center justify-between gap-2 font-mono text-xs text-dark-400">
+                  <span className="flex items-center gap-1.5">
+                    {w.featured && <Star size={12} className="text-amber-300 fill-amber-300" aria-label={t('writeups.featuredLabel')} />}
+                    {platform(w.tags)} · {w.date.slice(0, 7)}
+                  </span>
+                  <span className={`font-bold px-1.5 py-0.5 rounded ${diffClass(w.difficulty)}`}>
+                    {t(`writeups.difficulty.${w.difficulty}`).toUpperCase()}
+                  </span>
+                </div>
 
-                  <div className="flex items-center space-x-4 mb-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(writeup.difficulty)}`}>
-                      {t(`writeups.difficulty.${writeup.difficulty}`)}
-                    </span>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {writeup.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-1 bg-dark-700 text-gray-300 text-xs rounded"
-                      >
+                <h3 className="font-mono font-bold text-white leading-snug">
+                  {w.title.replace(/ - (TryHackMe|picoCTF)$/, '')}
+                </h3>
+
+                <p className="text-sm text-gray-400 line-clamp-3">{t(`writeupsData.${w.key}`)}</p>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {w.tags
+                    .filter(tag => tag !== 'TryHackMe' && tag !== 'picoCTF')
+                    .slice(0, 4)
+                    .map(tag => (
+                      <span key={tag} className="font-mono text-[11px] text-primary-300 bg-primary-900/40 px-1.5 py-0.5 rounded">
                         {tag}
                       </span>
                     ))}
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">
-                      {writeup.date}
-                    </span>
-                    <motion.a
-                      href={writeup.link}
-                      whileHover={{ scale: 1.05 }}
-                      className="flex items-center space-x-2 text-primary-400 hover:text-primary-300 transition-colors"
-                    >
-                      <span className="text-sm font-medium">{t('writeups.readWriteup')}</span>
-                      <ExternalLink size={16} />
-                    </motion.a>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+                </div>
 
-          {/* All Writeups Grid */}
-          <motion.div variants={itemVariants} className="mb-16">
-            <h3 className="text-2xl font-bold text-primary-400 mb-8">
-              {t('writeups.allWriteups')} ({filteredWriteups.length})
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredWriteups.map((writeup, index) => (
-                <motion.div
-                  key={writeup.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ delay: 0.5 + index * 0.05 }}
-                  whileHover={{ scale: 1.02, y: -3 }}
-                  className="bg-dark-800 rounded-lg p-6 border border-dark-700 hover:border-primary-500 transition-all duration-300"
+                <a
+                  href={w.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-auto pt-1 inline-flex items-center gap-1.5 font-mono text-sm text-primary-400 hover:text-primary-300"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-primary-400 font-medium">
-                      {t(`writeups.categories.${writeup.category}`)}
-                    </span>
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${getDifficultyColor(writeup.difficulty)}`}>
-                      {t(`writeups.difficulty.${writeup.difficulty}`)}
-                    </span>
-                  </div>
+                  → {t('writeups.readWriteup').toLowerCase()}.pdf <ExternalLink size={13} />
+                </a>
+              </article>
+            ))}
+          </div>
 
-                  <h4 className="text-lg font-semibold text-white mb-2 line-clamp-2">
-                    {writeup.title}
-                  </h4>
-
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                    {t(`writeupsData.${writeup.key}`)}
-                  </p>
-                  
-                  <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-                    <span>{writeup.date}</span>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {writeup.tags.slice(0, 3).map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-1 bg-dark-700 text-gray-400 text-xs rounded"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                    {writeup.tags.length > 3 && (
-                      <span className="px-2 py-1 bg-dark-700 text-gray-500 text-xs rounded">
-                        +{writeup.tags.length - 3}
-                      </span>
-                    )}
-                  </div>
-                  
-                  <motion.a
-                    href={writeup.link}
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center justify-center space-x-2 w-full py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
-                  >
-                    <Eye size={16} />
-                    <span>{t('writeups.readMore')}</span>
-                  </motion.a>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Writing Philosophy */}
-          <motion.div
-            variants={itemVariants}
-            className="text-center"
-          >
-            <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                {t('writeups.philosophyTitle')}
-              </h3>
-              <p className="text-lg text-white/90 leading-relaxed">
-                {t('writeups.philosophy')}
-              </p>
-            </div>
-          </motion.div>
-        </motion.div>
+          <div className="mt-12 rounded-lg border border-primary-500/30 bg-dark-800 p-6 md:p-8">
+            <h3 className="section-subtitle mb-3">{t('writeups.philosophyTitle').replace(/^\W+\s*/, '')}</h3>
+            <p className="text-gray-300 leading-relaxed max-w-4xl">{t('writeups.philosophy')}</p>
+          </div>
+        </div>
       </div>
     </section>
   )
 }
 
 export default Writeups
-
-

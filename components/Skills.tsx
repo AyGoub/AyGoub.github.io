@@ -172,11 +172,11 @@ const Skills = () => {
           className="max-w-7xl mx-auto"
         >
           {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
+          <motion.div variants={itemVariants} className="mb-12">
+            <h2 className="section-title mb-4">
               {t('skills.title')}
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="section-lead">
               {t('skills.subtitle')}
             </p>
           </motion.div>
@@ -229,7 +229,7 @@ const Skills = () => {
 
           {/* Certifications */}
           <motion.div variants={itemVariants} className="mb-16">
-            <h3 className="text-3xl font-bold text-center gradient-text mb-8">
+            <h3 className="section-subtitle mb-8">
               {t('skills.certTitle')}
             </h3>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -262,7 +262,7 @@ const Skills = () => {
             variants={itemVariants}
             className="text-center"
           >
-            <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
+            <div className="bg-dark-800 border border-primary-500/30 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
                 {t('skills.learningPhilosophyTitle')}
               </h3>

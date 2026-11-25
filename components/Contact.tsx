@@ -135,11 +135,11 @@ const Contact = () => {
           className="max-w-6xl mx-auto"
         >
           {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
+          <motion.div variants={itemVariants} className="mb-12">
+            <h2 className="section-title mb-4">
               {t('contact.title')}
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
+            <p className="section-lead mb-8">
               {t('contact.subtitle')}
             </p>
           </motion.div>
@@ -198,7 +198,7 @@ const Contact = () => {
               </div>
 
               {/* Availability */}
-              <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-6">
+              <div className="bg-dark-800 border border-primary-500/30 rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-white mb-2">
                   {t('contact.available')}
                 </h4>

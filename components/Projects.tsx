@@ -43,7 +43,7 @@ const Projects = () => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'Cybersecurity': return 'text-red-400 bg-red-400/20'
+      case 'Cybersecurity': return 'text-primary-300 bg-primary-500/15'
       case 'Web Development': return 'text-blue-400 bg-blue-400/20'
       case 'Network Security': return 'text-purple-400 bg-purple-400/20'
       case 'System Programming': return 'text-green-400 bg-green-400/20'
@@ -62,11 +62,11 @@ const Projects = () => {
           className="max-w-7xl mx-auto"
         >
           {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
+          <motion.div variants={itemVariants} className="mb-12">
+            <h2 className="section-title mb-4">
               {t('projects.title')}
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="section-lead">
               {t('projects.subtitle')}
             </p>
           </motion.div>
@@ -239,7 +239,7 @@ const Projects = () => {
             variants={itemVariants}
             className="text-center mt-16"
           >
-            <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-8 max-w-4xl mx-auto">
+            <div className="bg-dark-800 border border-primary-500/30 rounded-lg p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-white mb-4">
                 {t('projects.philosophyTitle')}
               </h3>

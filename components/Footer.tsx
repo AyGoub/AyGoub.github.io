@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Shield, Heart, ArrowUp } from 'lucide-react'
+import { Heart, ArrowUp } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const Footer = () => {
@@ -22,8 +22,7 @@ const Footer = () => {
                 whileHover={{ scale: 1.05 }}
                 className="flex items-center space-x-2 mb-4"
               >
-                <Shield className="w-8 h-8 text-primary-500" />
-                <span className="text-xl font-bold gradient-text">AyGoub</span>
+                <span className="font-mono text-xl"><span className="text-primary-400 font-bold">ayoub@kali</span><span className="text-gray-500">:~$ exit</span></span>
               </motion.div>
               <p className="text-gray-400 leading-relaxed">
                 {t('footer.desc')}

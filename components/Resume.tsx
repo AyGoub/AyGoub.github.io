@@ -61,10 +61,10 @@ const Resume = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
+            <h2 className="section-title mb-4">
               {t('resume.title')}
             </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+            <p className="section-lead">
               {t('resume.subtitle')}
             </p>
           </motion.div>
@@ -206,7 +206,7 @@ const Resume = () => {
               </div>
 
               {/* Contact CTA */}
-              <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-6">
+              <div className="bg-dark-800 border border-primary-500/30 rounded-lg p-6">
                 <h4 className="text-lg font-semibold text-white mb-2">
                   {t('resume.ctaTitle')}
                 </h4>

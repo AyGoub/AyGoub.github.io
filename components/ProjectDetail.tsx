@@ -40,7 +40,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'Cybersecurity': return 'text-red-400 bg-red-400/20'
+      case 'Cybersecurity': return 'text-primary-300 bg-primary-500/15'
       case 'Web Development': return 'text-blue-400 bg-blue-400/20'
       case 'Network Security': return 'text-purple-400 bg-purple-400/20'
       case 'System Programming': return 'text-green-400 bg-green-400/20'
@@ -106,7 +106,7 @@ const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
             )}
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
+          <h1 className="section-title mb-4">
             {project.title}
           </h1>
 
