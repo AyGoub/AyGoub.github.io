@@ -1,201 +1,110 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Shield, Terminal, Code, ArrowDown, Github, Linkedin, Mail } from 'lucide-react'
 import Image from 'next/image'
+import { ArrowDown, Download, Mail } from 'lucide-react'
+import Terminal from '@/components/Terminal'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { projects } from '@/data/projects'
+import { writeups } from '@/data/writeups'
 
 const Hero = () => {
   const { t } = useLanguage()
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.3,
-        staggerChildren: 0.2
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  }
+  const facts = [
+    ['Top 2%', 'TryHackMe'],
+    [String(writeups.length), t('ui.writeupsLabel')],
+    [String(projects.length), t('ui.projectsLabel')],
+  ]
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.1),transparent_50%)]" />
-      
-      {/* Floating Elements - Simplified */}
-      <div className="absolute top-20 left-10 w-20 h-20 border border-primary-500/20 rounded-full opacity-50" />
-      <div className="absolute bottom-20 right-10 w-16 h-16 border border-primary-400/10 rounded-full opacity-30" />
+    <section id="home" className="relative overflow-hidden pt-24 pb-16 lg:pt-28 lg:min-h-screen lg:flex lg:items-center">
+      {/* faint grid + scanlines */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.07] pointer-events-none"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(74,222,128,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(74,222,128,.6) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+          maskImage: 'radial-gradient(ellipse at 40% 40%, black 30%, transparent 75%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 40% 40%, black 30%, transparent 75%)',
+        }}
+      />
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="max-w-6xl mx-auto"
-        >
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side - Profile Picture */}
-            <motion.div 
-              variants={itemVariants}
-              className="flex justify-center lg:justify-start"
-            >
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="relative"
-              >
-                {/* Profile Picture Container */}
-                <div className="relative w-80 h-80 lg:w-96 lg:h-96">
-                  {/* Placeholder for profile picture */}
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center border-4 border-primary-400/30 shadow-2xl">
-                    {/* You can replace this with your actual image */}
-                    
-                    {/* Alternative: Use your actual image */}
-                    {
-                    <Image
-                      src="/profile-picture.jpg"
-                      alt="AyGoub - Cybersecurity Professional"
-                      fill
-                      className="rounded-full object-cover"
-                      priority
-                    />
-                    }
-                  </div>
-                  
-                  {/* Floating Elements - Static for Performance */}
-                  <div className="absolute -top-4 -right-4 w-12 h-12 bg-primary-500 rounded-full flex items-center justify-center border-4 border-dark-900">
-                    <Shield className="w-6 h-6 text-white" />
-                  </div>
-                  
-                  <div className="absolute -bottom-4 -left-4 w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center border-4 border-dark-900">
-                    <Terminal className="w-5 h-5 text-white" />
-                  </div>
+        <h1 className="sr-only">Ayoub Goubraim — {t('hero.subtitle')}</h1>
+
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] gap-6 lg:gap-8 items-start">
+          <Terminal />
+
+          {/* ID card */}
+          <aside className="flex flex-col gap-4 font-mono">
+            <div className="relative rounded-xl overflow-hidden border border-dark-600 bg-[#050806] aspect-[4/3] lg:aspect-square">
+              <Image
+                src="/profile-picture.jpg"
+                alt="Ayoub Goubraim"
+                fill
+                priority
+                sizes="(min-width: 1024px) 400px, 100vw"
+                className="object-cover object-top grayscale contrast-110 opacity-90"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 mix-blend-multiply"
+                style={{ background: 'linear-gradient(rgba(74,222,128,.35), rgba(74,222,128,.25))' }}
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{ background: 'repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 1px, transparent 1px 3px)' }}
+              />
+              <span className="absolute left-3 bottom-3 text-xs bg-black/70 text-primary-400 px-2 py-0.5 rounded">
+                target: ayoub.jpg
+              </span>
+              <span className="absolute right-3 top-3 flex items-center gap-2 text-xs bg-black/70 text-primary-300 px-2 py-1 rounded">
+                <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
+                {t('ui.openToWork')}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 rounded-xl border border-dark-600 divide-x divide-dark-600 bg-dark-800/60">
+              {facts.map(([v, l]) => (
+                <div key={l} className="p-3">
+                  <div className="text-xl font-bold text-white">{v}</div>
+                  <div className="text-xs text-gray-500">{l}</div>
                 </div>
-              </motion.div>
-            </motion.div>
+              ))}
+            </div>
 
-            {/* Right Side - Text Content */}
-            <motion.div variants={itemVariants} className="text-center lg:text-left">
-              {/* Main Title */}
-              <motion.div className="mb-6">
-                <motion.h1 
-                  className="text-5xl md:text-7xl font-bold mb-4"
-                  initial={{ scale: 0.5 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
-                >
-                  <span className="gradient-text">Ayoub Goubraim</span>
-                </motion.h1>
-                <motion.div
-                  className="flex items-center justify-center lg:justify-start space-x-4 mb-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <Terminal className="w-8 h-8 text-primary-500" />
-                  <Shield className="w-8 h-8 text-primary-500" />
-                  <Code className="w-8 h-8 text-primary-500" />
-                </motion.div>
-              </motion.div>
-
-              {/* Subtitle */}
-              <motion.h2
-                variants={itemVariants}
-                className="text-2xl md:text-3xl font-semibold text-gray-300 mb-6"
+            <div className="grid grid-cols-2 gap-3">
+              <a
+                href={t('resume.cvFile')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary-500 text-dark-900 font-bold hover:bg-primary-400 transition-colors"
               >
-                {t('hero.subtitle')}
-              </motion.h2>
-
-              {/* Description */}
-              <motion.p
-                variants={itemVariants}
-                className="text-lg md:text-xl text-gray-400 mb-8 leading-relaxed"
+                <Download size={16} /> cv.pdf
+              </a>
+              <a
+                href="#contact"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-primary-500 text-primary-400 hover:bg-primary-500/10 transition-colors"
               >
-                {t('hero.description')}
-              </motion.p>
-
-              {/* CTA Buttons */}
-              <motion.div
-                variants={itemVariants}
-                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6 mb-12"
-              >
-                <motion.a
-                  href="#about"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors duration-200 cyber-border"
-                >
-                  {t('hero.learnMore')}
-                </motion.a>
-                <motion.a
-                  href="#resume"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-3 border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white font-semibold rounded-lg transition-all duration-200"
-                >
-                  {t('hero.viewResume')}
-                </motion.a>
-              </motion.div>
-
-              {/* Social Links */}
-              <motion.div 
-                variants={itemVariants}
-                className="flex items-center justify-center lg:justify-start space-x-6"
-              >
-                <motion.a
-                  href="https://github.com/AyGoub"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="p-3 bg-dark-800 hover:bg-primary-600 rounded-full transition-colors duration-200"
-                >
-                  <Github size={24} className="text-gray-300" />
-                </motion.a>
-                <motion.a
-                  href="https://linkedin.com/in/ayoubgoubraim"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="p-3 bg-dark-800 hover:bg-primary-600 rounded-full transition-colors duration-200"
-                >
-                  <Linkedin size={24} className="text-gray-300" />
-                </motion.a>
-                <motion.a
-                  href="mailto:ayoub.goubraim@ecole.ensicaen.fr"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="p-3 bg-dark-800 hover:bg-primary-600 rounded-full transition-colors duration-200"
-                >
-                  <Mail size={24} className="text-gray-300" />
-                </motion.a>
-              </motion.div>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Scroll Indicator - Simplified */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-          <a
-            href="#about"
-            className="text-primary-400 hover:text-primary-300 transition-colors"
-          >
-            <ArrowDown size={32} />
-          </a>
+                <Mail size={16} /> contact
+              </a>
+            </div>
+          </aside>
         </div>
+
+        <a
+          href="#about"
+          aria-label={t('ui.scrollDown')}
+          className="hidden lg:flex mt-10 mx-auto w-fit items-center gap-2 font-mono text-sm text-gray-500 hover:text-primary-400 transition-colors"
+        >
+          <ArrowDown size={16} /> cd ./about
+        </a>
       </div>
     </section>
   )
 }
 
 export default Hero
-
-

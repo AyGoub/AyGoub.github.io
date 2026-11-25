@@ -1,15 +1,31 @@
 'use client'
 
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import translations, { Language } from '@/locales/translations'
+
+type Vars = Record<string, string | number>
 
 interface LanguageContextType {
   language: Language
+  setLanguage: (l: Language) => void
   toggleLanguage: () => void
-  t: (key: string) => string
+  /** Translate a dotted key; `{name}` placeholders are filled from `vars`. */
+  t: (key: string, vars?: Vars) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+
+const STORAGE_KEY = 'lang'
+
+export function translate(language: Language, key: string, vars?: Vars): string {
+  let result: unknown = translations[language]
+  for (const k of key.split('.')) {
+    if (typeof result !== 'object' || result === null) return key
+    result = (result as Record<string, unknown>)[k]
+  }
+  if (typeof result !== 'string') return key
+  return vars ? result.replace(/\{(\w+)\}/g, (m, v) => (v in vars ? String(vars[v]) : m)) : result
+}
 
 export function useLanguage() {
   const ctx = useContext(LanguageContext)
@@ -18,22 +34,35 @@ export function useLanguage() {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en')
+  const [language, setLang] = useState<Language>('en')
 
-  const toggleLanguage = () => setLanguage(l => (l === 'en' ? 'fr' : 'en'))
+  // Restore the visitor's choice, or follow the browser language on first visit
+  useEffect(() => {
+    let saved: string | null = null
+    try {
+      saved = localStorage.getItem(STORAGE_KEY)
+    } catch {}
+    if (saved === 'en' || saved === 'fr') setLang(saved)
+    else if (navigator.language?.toLowerCase().startsWith('fr')) setLang('fr')
+  }, [])
 
-  const t = (key: string): string => {
-    const keys = key.split('.')
-    let result: unknown = translations[language]
-    for (const k of keys) {
-      if (typeof result !== 'object' || result === null) return key
-      result = (result as Record<string, unknown>)[k]
-    }
-    return typeof result === 'string' ? result : key
+  useEffect(() => {
+    document.documentElement.lang = language
+  }, [language])
+
+  const setLanguage = (l: Language) => {
+    setLang(l)
+    try {
+      localStorage.setItem(STORAGE_KEY, l)
+    } catch {}
   }
 
+  const toggleLanguage = () => setLanguage(language === 'en' ? 'fr' : 'en')
+
+  const t = (key: string, vars?: Vars) => translate(language, key, vars)
+
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   )

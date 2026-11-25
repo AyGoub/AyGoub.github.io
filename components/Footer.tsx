@@ -1,115 +1,65 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { Shield, Heart, ArrowUp } from 'lucide-react'
+import { ArrowUp } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
+
+const links = ['about', 'skills', 'projects', 'tryhackme', 'writeups', 'resume'] as const
 
 const Footer = () => {
   const { t } = useLanguage()
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
   return (
-    <footer className="bg-dark-800 border-t border-dark-700">
+    <footer className="bg-[#050806] border-t border-dark-700">
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            {/* Brand */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] gap-8 mb-10">
             <div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                className="flex items-center space-x-2 mb-4"
-              >
-                <Shield className="w-8 h-8 text-primary-500" />
-                <span className="text-xl font-bold gradient-text">AyGoub</span>
-              </motion.div>
-              <p className="text-gray-400 leading-relaxed">
-                {t('footer.desc')}
+              <p className="font-mono text-lg mb-3">
+                <span className="text-primary-400 font-bold">ayoub@kali</span>
+                <span className="text-gray-500">:~$ exit</span>
               </p>
+              <p className="text-gray-400 leading-relaxed max-w-md">{t('footer.desc')}</p>
             </div>
 
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">{t('footer.quickLinks')}</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#about" className="text-gray-400 hover:text-primary-400 transition-colors">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a href="#skills" className="text-gray-400 hover:text-primary-400 transition-colors">
-                    Skills
-                  </a>
-                </li>
-                <li>
-                  <a href="#projects" className="text-gray-400 hover:text-primary-400 transition-colors">
-                    Projects
-                  </a>
-                </li>
-                <li>
-                  <a href="#tryhackme" className="text-gray-400 hover:text-primary-400 transition-colors">
-                    TryHackMe
-                  </a>
-                </li>
-                <li>
-                  <a href="#writeups" className="text-gray-400 hover:text-primary-400 transition-colors">
-                    Writeups
-                  </a>
-                </li>
-                <li>
-                  <a href="#resume" className="text-gray-400 hover:text-primary-400 transition-colors">
-                    Resume
-                  </a>
-                </li>
+            <nav aria-label={t('footer.quickLinks')}>
+              <h3 className="font-mono text-sm text-dark-400 mb-3"># {t('footer.quickLinks')}</h3>
+              <ul className="grid grid-cols-2 gap-y-1.5 font-mono text-sm">
+                {links.map(id => (
+                  <li key={id}>
+                    <a href={`#${id}`} className="text-gray-400 hover:text-primary-400 transition-colors">
+                      <span className="text-dark-500">./</span>
+                      {t(`nav.${id}`)}
+                    </a>
+                  </li>
+                ))}
               </ul>
-            </div>
+            </nav>
 
-            {/* Contact Info */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">{t('footer.getInTouch')}</h3>
-              <div className="space-y-2 text-gray-400">
-                <p>ayoub.goubraim@ecole.ensicaen.fr</p>
-                <p>{t('footer.available')}</p>
-                <p>{t('footer.availableDate')}</p>
+              <h3 className="font-mono text-sm text-dark-400 mb-3"># {t('footer.getInTouch')}</h3>
+              <div className="space-y-1.5 text-sm text-gray-400">
+                <a href="mailto:ayoub.goubraim@ecole.ensicaen.fr" className="block font-mono text-sky-400 hover:text-sky-300 break-all">
+                  ayoub.goubraim@ecole.ensicaen.fr
+                </a>
+                <p className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary-400" /> {t('footer.available')}
+                </p>
+                <p className="font-mono">{t('footer.availableDate')}</p>
               </div>
             </div>
           </div>
 
-          {/* Bottom Section */}
-          <div className="border-t border-dark-700 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <div className="flex items-center space-x-2 text-gray-400">
-                <span>Made with</span>
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                >
-                  <Heart className="w-4 h-4 text-red-500 fill-current" />
-                </motion.div>
-                <span>by AyGoub</span>
-              </div>
-
-              <div className="flex items-center space-x-6">
-                <motion.button
-                  onClick={scrollToTop}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="flex items-center space-x-2 text-gray-400 hover:text-primary-400 transition-colors"
-                >
-                  <ArrowUp className="w-4 h-4" />
-                  <span>{t('footer.backToTop')}</span>
-                </motion.button>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-dark-700">
-              <p className="text-center text-gray-500 text-sm">
-                {t('footer.copyright')}
-              </p>
-            </div>
+          <div className="border-t border-dark-700 pt-6 flex flex-col md:flex-row gap-4 justify-between items-center font-mono text-xs text-dark-500">
+            <p>
+              {t('ui.madeWith')} <span className="text-primary-400">&lt;3</span> {t('ui.by')} · {t('footer.copyright')}
+            </p>
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-2 text-gray-400 hover:text-primary-400 transition-colors"
+            >
+              <ArrowUp className="w-4 h-4" /> cd ~ · {t('footer.backToTop')}
+            </button>
           </div>
         </div>
       </div>
@@ -118,5 +68,3 @@ const Footer = () => {
 }
 
 export default Footer
-
-

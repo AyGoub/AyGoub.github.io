@@ -1,228 +1,107 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Download, Eye, FileText, User, Mail, Phone, MapPin, Github, Linkedin } from 'lucide-react'
+import { Download, ExternalLink, Github, Linkedin } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { SectionHeader, Window } from '@/components/term'
+
+const personalInfo = {
+  name: 'Ayoub Goubraim',
+  email: 'ayoub.goubraim@ecole.ensicaen.fr',
+  phone: '+33 7 53 44 54 36',
+  location: 'Caen, France',
+  github: 'https://github.com/AyGoub',
+  linkedin: 'https://linkedin.com/in/ayoubgoubraim',
+}
 
 const Resume = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
   const { t } = useLanguage()
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  }
-
-  const personalInfo = {
-    name: "Ayoub Goubraim",
-    title: "Cybersecurity & Pentester Student",
-    email: "ayoub.goubraim@ecole.ensicaen.fr",
-    phone: "+33 7 53 44 54 36",
-    location: "Caen, France",
-    github: "https://github.com/AyGoub",
-    linkedin: "https://linkedin.com/in/ayoubgoubraim",
-    website: "https://aygoub.github.io"
-  }
-
   const cvPath = t('resume.cvFile')
+  const cvName = cvPath.split('/').pop()
 
-  const handleDownload = () => {
-    const link = document.createElement('a')
-    link.href = cvPath
-    link.download = t('resume.downloadFilename')
-    link.click()
-  }
+  const json: [string, string][] = [
+    ['name', personalInfo.name],
+    ['role', t('hero.subtitle')],
+    ['email', personalInfo.email],
+    ['phone', personalInfo.phone],
+    ['location', personalInfo.location],
+  ]
+
+  const quick: [string, string][] = [
+    [t('resume.experienceLevel'), t('resume.studentLabel')],
+    [t('resume.specialization'), t('resume.cybersecurityLabel')],
+    [t('resume.thmRank'), t('resume.top2Label')],
+    [t('resume.availability'), t('resume.availabilityDate')],
+  ]
 
   return (
-    <section id="resume" className="py-20 bg-dark-900">
+    <section id="resume" className="py-20 bg-dark-800/40 border-t border-dark-700">
       <div className="container mx-auto px-4">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-7xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-              {t('resume.title')}
-            </h2>
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              {t('resume.subtitle')}
-            </p>
-          </motion.div>
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader cmd={`open ${cvName}`} title={t('resume.title')} lead={t('resume.subtitle')} />
 
-          {/* Contact Info Card */}
-          <motion.div 
-            variants={itemVariants}
-            className="bg-dark-800 rounded-lg p-8 mb-8 border border-dark-700"
-          >
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8 mb-6 md:mb-0">
-                <div className="flex items-center space-x-3">
-                  <User className="w-6 h-6 text-primary-500" />
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">{personalInfo.name}</h3>
-                    <p className="text-primary-400">{personalInfo.title}</p>
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-6 items-start">
+            <Window
+              title={`${cvName} — ${t('resume.preview')}`}
+              right={
+                <a href={cvPath} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary-400 hover:text-primary-300">
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              }
+              bodyClassName="bg-white"
+            >
+              <iframe
+                src={`${cvPath}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                className="w-full h-[70vh] min-h-[520px] max-h-[860px] border-0 block"
+                title={t('resume.cvPreviewTitle')}
+              />
+            </Window>
+
+            <div className="space-y-5 lg:sticky lg:top-24">
+              <Window title="whoami.json" bodyClassName="p-4 bg-[#050806] font-mono text-sm leading-6">
+                <div className="text-gray-500">{'{'}</div>
+                {json.map(([k, v], i) => (
+                  <div key={k} className="pl-4 py-0.5 break-words">
+                    <span className="text-sky-400">&quot;{k}&quot;</span>
+                    <span className="text-gray-500">: </span>
+                    <span className="text-amber-300">&quot;{v}&quot;</span>
+                    {i < json.length - 1 && <span className="text-gray-500">,</span>}
                   </div>
-                </div>
-                <div className="flex flex-wrap items-center space-x-6">
-                  <div className="flex items-center space-x-2">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-300 text-sm">{personalInfo.email}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-300 text-sm">{personalInfo.phone}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-300 text-sm">{personalInfo.location}</span>
-                  </div>
-                </div>
+                ))}
+                <div className="text-gray-500">{'}'}</div>
+              </Window>
+
+              <div className="rounded-lg border border-dark-700 bg-dark-900/60 p-4">
+                <h3 className="section-subtitle !text-lg mb-3">{t('resume.quickInfo')}</h3>
+                <dl className="space-y-2 text-sm">
+                  {quick.map(([k, v]) => (
+                    <div key={k} className="flex justify-between gap-4">
+                      <dt className="text-dark-400">{k}</dt>
+                      <dd className="font-mono text-primary-400 text-right">{v}</dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
-              
-              {/* Social Links */}
-              <div className="flex items-center space-x-4">
-                <a
-                  href={personalInfo.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-dark-700 hover:bg-primary-600 rounded-full transition-colors duration-200"
-                >
-                  <Github size={20} className="text-gray-300" />
+
+              <div className="grid grid-cols-[1fr_auto_auto] gap-2">
+                <a href={cvPath} download={t('resume.downloadFilename')} className="btn-primary">
+                  <Download className="w-4 h-4" /> {t('resume.downloadBtn')}
                 </a>
-                <a
-                  href={personalInfo.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-dark-700 hover:bg-primary-600 rounded-full transition-colors duration-200"
-                >
-                  <Linkedin size={20} className="text-gray-300" />
+                <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" className="btn-ghost !px-3" aria-label="GitHub">
+                  <Github className="w-4 h-4" />
                 </a>
+                <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="btn-ghost !px-3" aria-label="LinkedIn">
+                  <Linkedin className="w-4 h-4" />
+                </a>
+              </div>
+
+              <div className="border-l-2 border-primary-500/50 pl-4">
+                <p className="font-mono text-sm text-primary-400 mb-1">{'// '}{t('resume.ctaTitle')}</p>
+                <p className="text-sm text-gray-400 mb-2">{t('resume.ctaDesc')}</p>
+                <a href="#contact" className="font-mono text-sm text-primary-400 hover:text-primary-300">→ {t('resume.ctaBtn')}</a>
               </div>
             </div>
-          </motion.div>
-
-          {/* PDF Viewer and Download */}
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* PDF Preview */}
-            <motion.div 
-              variants={itemVariants}
-              className="lg:col-span-2"
-            >
-              <div className="bg-dark-800 rounded-lg border border-dark-700 overflow-hidden">
-                <div className="bg-dark-700 px-6 py-4 border-b border-dark-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <FileText className="w-5 h-5 text-primary-500" />
-                      <h3 className="text-lg font-semibold text-white">{t('resume.cvPreviewTitle')}</h3>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Eye className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-400 text-sm">{t('resume.preview')}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* PDF Embed */}
-                <div className="h-[800px] w-full">
-                  <iframe
-                    src={`${cvPath}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
-                    className="w-full h-full border-0"
-                    title="AyGoub CV Preview"
-                  />
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Download Section */}
-            <motion.div 
-              variants={itemVariants}
-              className="space-y-6"
-            >
-              {/* Download Card */}
-              <div className="bg-dark-800 rounded-lg p-6 border border-dark-700">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-primary-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Download className="w-8 h-8 text-primary-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">
-                    {t('resume.downloadTitle')}
-                  </h3>
-                  <p className="text-gray-400 mb-6">
-                    {t('resume.downloadDesc')}
-                  </p>
-                  <button
-                    onClick={handleDownload}
-                    className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-                  >
-                    <Download className="w-5 h-5" />
-                    <span>{t('resume.downloadBtn')}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Quick Info */}
-              <div className="bg-dark-800 rounded-lg p-6 border border-dark-700">
-                <h4 className="text-lg font-semibold text-white mb-4">
-                  {t('resume.quickInfo')}
-                </h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">{t('resume.experienceLevel')}</span>
-                    <span className="text-primary-400">{t('resume.studentLabel')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">{t('resume.specialization')}</span>
-                    <span className="text-primary-400">{t('resume.cybersecurityLabel')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">{t('resume.thmRank')}</span>
-                    <span className="text-primary-400">{t('resume.top2Label')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">{t('resume.availability')}</span>
-                    <span className="text-primary-400">{t('resume.availabilityDate')}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contact CTA */}
-              <div className="bg-gradient-to-r from-primary-600 to-primary-800 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-white mb-2">
-                  {t('resume.ctaTitle')}
-                </h4>
-                <p className="text-white/90 text-sm mb-4">
-                  {t('resume.ctaDesc')}
-                </p>
-                <a
-                  href="#contact"
-                  className="block w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-center"
-                >
-                  {t('resume.ctaBtn')}
-                </a>
-              </div>
-            </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

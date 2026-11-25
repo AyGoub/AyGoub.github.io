@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Menu, X, Shield } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { language, toggleLanguage, t } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,14 +19,11 @@ const Header = () => {
   }, [])
 
   const navItems = [
-    { name: t('nav.home'), href: '#home' },
     { name: t('nav.about'), href: '#about' },
     { name: t('nav.skills'), href: '#skills' },
-    { name: t('nav.certifications'), href: '#certifications' },
     { name: t('nav.projects'), href: '#projects' },
     { name: t('nav.tryhackme'), href: '#tryhackme' },
     { name: t('nav.writeups'), href: '#writeups' },
-    { name: t('nav.resume'), href: '#resume' },
     { name: t('nav.contact'), href: '#contact' },
   ]
 
@@ -47,34 +44,45 @@ const Header = () => {
             whileHover={{ scale: 1.05 }}
             className="flex items-center space-x-2"
           >
-            <Shield className="w-8 h-8 text-primary-500" />
-            <span className="text-xl font-bold gradient-text">AyGoub</span>
+            <a href="#home" className="font-mono text-base">
+              <span className="text-primary-400 font-bold">ayoub@kali</span>
+              <span className="text-gray-500">:~$</span>
+              <span className="inline-block w-2 h-4 ml-1 align-[-2px] bg-primary-400 animate-pulse" />
+            </a>
           </motion.div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6 font-mono text-sm">
             {navItems.map((item) => (
               <motion.a
                 key={item.href}
                 href={item.href}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="text-gray-300 hover:text-primary-400 transition-colors duration-200 font-medium"
+                className="text-gray-400 hover:text-primary-400 transition-colors duration-200"
               >
-                {item.name}
+                <span className="text-dark-500">./</span>{item.name}
               </motion.a>
             ))}
           </div>
 
           {/* Right side: Language toggle + Mobile menu button */}
           <div className="flex items-center space-x-3">
+            <a
+              href={t('resume.cvFile')}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-block font-mono text-sm px-3 py-1 rounded border border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-dark-900 transition-colors"
+            >
+              cv.pdf
+            </a>
             {/* Language Toggle */}
-            <div className="flex items-center border border-dark-600 rounded-full overflow-hidden text-sm font-medium">
+            <div className="flex items-center border border-dark-600 rounded overflow-hidden text-xs font-mono">
               <button
-                onClick={() => language !== 'en' && toggleLanguage()}
+                onClick={() => setLanguage('en')}
                 className={`px-3 py-1 transition-colors duration-200 ${
                   language === 'en'
-                    ? 'bg-primary-600 text-white'
+                    ? 'bg-primary-500 text-dark-900'
                     : 'text-gray-400 hover:text-primary-400'
                 }`}
                 aria-label="Switch to English"
@@ -82,10 +90,10 @@ const Header = () => {
                 EN
               </button>
               <button
-                onClick={() => language !== 'fr' && toggleLanguage()}
+                onClick={() => setLanguage('fr')}
                 className={`px-3 py-1 transition-colors duration-200 ${
                   language === 'fr'
-                    ? 'bg-primary-600 text-white'
+                    ? 'bg-primary-500 text-dark-900'
                     : 'text-gray-400 hover:text-primary-400'
                 }`}
                 aria-label="Passer en français"
@@ -98,7 +106,7 @@ const Header = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-300 hover:text-primary-400 transition-colors"
+              className="lg:hidden p-2 text-gray-300 hover:text-primary-400 transition-colors"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </motion.button>
@@ -112,7 +120,7 @@ const Header = () => {
             opacity: isMenuOpen ? 1 : 0,
             height: isMenuOpen ? 'auto' : 0,
           }}
-          className="md:hidden overflow-hidden"
+          className="lg:hidden overflow-hidden"
         >
           <div className="py-4 space-y-2">
             {navItems.map((item) => (
@@ -120,9 +128,9 @@ const Header = () => {
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="block py-2 text-gray-300 hover:text-primary-400 transition-colors"
+                className="block py-2 font-mono text-gray-300 hover:text-primary-400 transition-colors"
               >
-                {item.name}
+                <span className="text-dark-500">./</span>{item.name}
               </a>
             ))}
           </div>

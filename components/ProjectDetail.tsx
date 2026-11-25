@@ -1,364 +1,251 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useState } from 'react'
-import { 
+import {
   ArrowLeft,
   Calendar,
   Users,
   Clock,
   Github,
   ExternalLink,
-  Code,
   CheckCircle,
   Target,
   Lightbulb,
   TrendingUp,
   X,
   ZoomIn,
-  FileText
+  FileText,
+  Star,
 } from 'lucide-react'
 import { Project } from '@/data/projects'
 import ReactMarkdown from 'react-markdown'
 import { useLanguage } from '@/contexts/LanguageContext'
 import translations from '@/locales/translations'
+import { PromptLine, Tag, Window } from '@/components/term'
+
+const FR_MONTHS: Record<string, string> = {
+  January: 'janvier', February: 'février', March: 'mars', April: 'avril', May: 'mai', June: 'juin',
+  July: 'juillet', August: 'août', September: 'septembre', October: 'octobre', November: 'novembre', December: 'décembre',
+}
+
+// Durations are stored in English in data/projects.ts ("Completed (May 2025)", "3 months")
+const localizeDuration = (d: string, lang: string) =>
+  lang !== 'fr'
+    ? d
+    : d
+        .replace('Completed', 'Terminé')
+        .replace(/\bmonths?\b/, 'mois')
+        .replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/, m => FR_MONTHS[m])
 
 interface ProjectDetailProps {
   project: Project
 }
 
 const ProjectDetailClient = ({ project }: ProjectDetailProps) => {
-  const router = useRouter()
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const { t, language } = useLanguage()
-
+  const { t, language, setLanguage } = useLanguage()
   const tr = translations[language] as typeof translations['en']
   const challenges = (tr.projectChallenges as Record<string, string[]>)[project.slug] ?? project.challenges ?? []
   const solutions = (tr.projectSolutions as Record<string, string[]>)[project.slug] ?? project.solutions ?? []
   const outcomes = (tr.projectOutcomes as Record<string, string[]>)[project.slug] ?? project.outcomes ?? []
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'Cybersecurity': return 'text-red-400 bg-red-400/20'
-      case 'Web Development': return 'text-blue-400 bg-blue-400/20'
-      case 'Network Security': return 'text-purple-400 bg-purple-400/20'
-      case 'System Programming': return 'text-green-400 bg-green-400/20'
-      default: return 'text-gray-400 bg-gray-400/20'
-    }
-  }
+  const placeholder = `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300"><rect fill="#0f1712" width="400" height="300"/><text fill="#5f7a64" font-family="monospace" font-size="16" x="50%" y="50%" text-anchor="middle" dominant-baseline="middle">${t('ui.imageSoon')}</text></svg>`
+  )}`
+
+  const panels: { key: string; title: string; icon: typeof Target; color: string; items: string[] }[] = [
+    { key: 'challenges', title: t('projectDetail.challenges'), icon: Target, color: 'text-red-400', items: challenges },
+    { key: 'solutions', title: t('projectDetail.solutions'), icon: Lightbulb, color: 'text-amber-300', items: solutions },
+    { key: 'outcomes', title: t('projectDetail.outcomes'), icon: TrendingUp, color: 'text-primary-400', items: outcomes },
+  ].filter(p => p.items.length > 0)
 
   return (
-    <div className="min-h-screen bg-dark-900 pt-24 pb-20">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div className="min-h-screen bg-dark-900">
+      {/* Top bar */}
+      <header className="sticky top-0 z-40 bg-dark-900/95 backdrop-blur border-b border-dark-700">
+        <div className="container mx-auto px-4 max-w-6xl py-3 flex items-center justify-between gap-4">
+          <Link href="/#projects" className="font-mono text-sm flex items-center gap-2 text-gray-400 hover:text-primary-400 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline text-primary-400 font-bold">ayoub@kali</span>
+            <span>cd ../projects</span>
+          </Link>
+          <div className="flex items-center border border-dark-600 rounded overflow-hidden text-xs font-mono">
+            {(['en', 'fr'] as const).map(l => (
+              <button
+                key={l}
+                type="button"
+                onClick={() => setLanguage(l)}
+                aria-pressed={language === l}
+                className={`px-3 py-1 transition-colors ${language === l ? 'bg-primary-500 text-dark-900' : 'text-gray-400 hover:text-primary-400'}`}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 max-w-6xl pt-10 pb-20">
         {/* Image Modal */}
         {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             onClick={() => setSelectedImage(null)}
             className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-pointer"
           >
             <button
+              type="button"
               onClick={() => setSelectedImage(null)}
+              aria-label={t('ui.close')}
               className="absolute top-4 right-4 text-white hover:text-primary-400 transition-colors"
             >
               <X className="w-8 h-8" />
             </button>
-            <motion.img
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={selectedImage}
-              alt="Full size preview"
+              alt={t('ui.imagePreview')}
               className="max-w-full max-h-full object-contain"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             />
-          </motion.div>
+          </div>
         )}
-
-        {/* Back Button */}
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.push('/#projects')}
-          className="flex items-center space-x-2 text-gray-400 hover:text-primary-400 mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>{t('projectDetail.back')}</span>
-        </motion.button>
 
         {/* Project Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-12"
-        >
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <span className={`px-4 py-2 rounded-full text-sm font-medium ${getCategoryColor(project.category)}`}>
-              {t(`projectCategories.${project.category.trim()}`)}
-            </span>
+        <div className="mb-10">
+          <PromptLine path={`~/projects/${project.slug}`} cmd="cat README.md" />
+          <h1 className="section-title mt-3 mb-4">{project.title}</h1>
+          <p className="text-lg text-gray-400 mb-6 max-w-4xl">{t(`projectDescriptions.${project.slug}`)}</p>
+
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-sm text-dark-400">
+            <span className="tag !text-xs">{t(`projectCategories.${project.category.trim()}`)}</span>
             {project.featured && (
-              <span className="px-4 py-2 rounded-full text-sm font-medium text-yellow-400 bg-yellow-400/20">
-                ⭐ {t('projectDetail.featured')}
+              <span className="flex items-center gap-1.5 text-amber-300">
+                <Star className="w-4 h-4 fill-amber-300" /> {t('projectDetail.featured')}
               </span>
             )}
-          </div>
-
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-6">
-            {project.title}
-          </h1>
-
-          <p className="text-xl text-gray-400 mb-8">
-            {t(`projectDescriptions.${project.slug}`)}
-          </p>
-
-          {/* Project Meta Info */}
-          <div className="flex flex-wrap gap-6 text-gray-400">
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-primary-500" />
-              <span>{project.date}</span>
-            </div>
+            <span className="flex items-center gap-1.5">
+              <Calendar className="w-4 h-4 text-primary-400" /> {project.date}
+            </span>
             {project.duration && (
-              <div className="flex items-center space-x-2">
-                <Clock className="w-5 h-5 text-primary-500" />
-                <span>{project.duration}</span>
-              </div>
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-primary-400" /> {localizeDuration(project.duration, language)}
+              </span>
             )}
             {project.teamSize && (
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-primary-500" />
-                <span>{project.teamSize} {project.teamSize > 1 ? t('projectDetail.members') : t('projectDetail.member')}</span>
-              </div>
+              <span className="flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-primary-400" /> {project.teamSize}{' '}
+                {project.teamSize > 1 ? t('projectDetail.members') : t('projectDetail.member')}
+              </span>
             )}
           </div>
 
-          {/* Links */}
-          <div className="flex flex-wrap gap-4 mt-6">
-            {project.github && (
-              <motion.a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="flex items-center space-x-2 px-6 py-3 bg-dark-800 border border-dark-700 hover:border-primary-500 rounded-lg text-white transition-all"
-              >
-                <Github className="w-5 h-5" />
-                <span>{t('projectDetail.viewCode')}</span>
-              </motion.a>
-            )}
+          <div className="flex flex-wrap gap-3 mt-6">
             {project.demo && (
-              <motion.a
-                href={project.demo}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="flex items-center space-x-2 px-6 py-3 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-all"
-              >
-                <ExternalLink className="w-5 h-5" />
-                <span>{t('projectDetail.viewDemo')}</span>
-              </motion.a>
+              <a href={project.demo} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                <ExternalLink className="w-4 h-4" /> {t('projectDetail.viewDemo')}
+              </a>
+            )}
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                <Github className="w-4 h-4" /> {t('projectDetail.viewCode')}
+              </a>
             )}
             {project.report && (
-              <motion.a
-                href={project.report}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05 }}
-                className="flex items-center space-x-2 px-6 py-3 bg-dark-800 border border-dark-700 hover:border-primary-500 rounded-lg text-white transition-all"
-              >
-                <FileText className="w-5 h-5" />
-                <span>{t('projectDetail.viewReport')}</span>
-              </motion.a>
+              <a href={project.report} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                <FileText className="w-4 h-4" /> {t('projectDetail.viewReport')}
+              </a>
             )}
           </div>
-        </motion.div>
-
-        {/* Technologies */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-bold text-white mb-4 flex items-center space-x-2">
-            <Code className="w-6 h-6 text-primary-500" />
-            <span>{t('projectDetail.technologies')}</span>
-          </h2>
-          <div className="flex flex-wrap gap-3">
-            {project.technologies.map((tech) => (
-              <span
-                key={tech}
-                className="px-4 py-2 bg-dark-800 border border-dark-700 text-gray-300 rounded-lg hover:border-primary-500 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Project Images */}
-        {project.images && project.images.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-12"
-          >
-            <div className="grid md:grid-cols-2 gap-4">
-              {project.images.map((image, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ scale: 1.02 }}
-                  onClick={() => setSelectedImage(image)}
-                  className="relative aspect-video bg-dark-800 rounded-lg overflow-hidden border border-dark-700 cursor-pointer group"
-                >
-                  <img
-                    src={image}
-                    alt={`${project.title} screenshot ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // Fallback to placeholder if image doesn't exist
-                      e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23374151" width="400" height="300"/%3E%3Ctext fill="%239ca3af" font-family="sans-serif" font-size="18" x="50%25" y="50%25" text-anchor="middle" dominant-baseline="middle"%3EImage coming soon%3C/text%3E%3C/svg%3E'
-                    }}
-                  />
-                  {/* Zoom overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <ZoomIn className="w-12 h-12 text-white" />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Long Description */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-12"
-        >
-          <div className="prose prose-invert prose-lg max-w-none">
-            <ReactMarkdown
-              components={{
-                h1: ({ children }) => (
-                  <h1 className="text-3xl font-bold text-white mb-6">{children}</h1>
-                ),
-                h2: ({ children }) => (
-                  <h2 className="text-2xl font-bold text-white mb-4 mt-8">{children}</h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="text-xl font-bold text-white mb-3 mt-6">{children}</h3>
-                ),
-                p: ({ children }) => (
-                  <p className="text-gray-400 mb-4 leading-relaxed">{children}</p>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-disc list-inside text-gray-400 mb-4 space-y-2">{children}</ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className="list-decimal list-inside text-gray-400 mb-4 space-y-2">{children}</ol>
-                ),
-                li: ({ children }) => (
-                  <li className="text-gray-400">{children}</li>
-                ),
-                code: ({ children }) => (
-                  <code className="bg-dark-800 px-2 py-1 rounded text-primary-400">{children}</code>
-                ),
-              }}
-            >
-              {language === 'fr' && project.longDescriptionFr ? project.longDescriptionFr : project.longDescription}
-            </ReactMarkdown>
-          </div>
-        </motion.div>
-
-        {/* Challenges, Solutions, Outcomes */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {/* Challenges */}
-          {challenges.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-dark-800 rounded-lg p-6 border border-dark-700"
-            >
-              <div className="flex items-center space-x-2 mb-4">
-                <Target className="w-6 h-6 text-red-400" />
-                <h3 className="text-xl font-bold text-white">{t('projectDetail.challenges')}</h3>
-              </div>
-              <ul className="space-y-3">
-                {challenges.map((challenge, index) => (
-                  <li key={index} className="text-gray-400 text-sm leading-relaxed">
-                    {challenge}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-
-          {/* Solutions */}
-          {solutions.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-dark-800 rounded-lg p-6 border border-dark-700"
-            >
-              <div className="flex items-center space-x-2 mb-4">
-                <Lightbulb className="w-6 h-6 text-yellow-400" />
-                <h3 className="text-xl font-bold text-white">{t('projectDetail.solutions')}</h3>
-              </div>
-              <ul className="space-y-3">
-                {solutions.map((solution, index) => (
-                  <li key={index} className="text-gray-400 text-sm leading-relaxed">
-                    {solution}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
-
-          {/* Outcomes */}
-          {outcomes.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="bg-dark-800 rounded-lg p-6 border border-dark-700"
-            >
-              <div className="flex items-center space-x-2 mb-4">
-                <TrendingUp className="w-6 h-6 text-green-400" />
-                <h3 className="text-xl font-bold text-white">{t('projectDetail.outcomes')}</h3>
-              </div>
-              <ul className="space-y-3">
-                {outcomes.map((outcome, index) => (
-                  <li key={index} className="flex items-start space-x-2 text-gray-400 text-sm">
-                    <CheckCircle className="w-4 h-4 text-green-400 mt-1 flex-shrink-0" />
-                    <span className="leading-relaxed">{outcome}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
         </div>
 
-        {/* Back to Projects CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="text-center"
-        >
-          <button
-            onClick={() => router.push('/#projects')}
-            className="inline-flex items-center space-x-2 px-8 py-4 bg-primary-600 hover:bg-primary-700 rounded-lg text-white font-semibold transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>{t('projectDetail.backToAll')}</span>
-          </button>
-        </motion.div>
+        {/* Technologies */}
+        <div className="mb-10">
+          <h2 className="section-subtitle !text-xl mb-4">{t('projectDetail.technologies')}</h2>
+          <div className="flex flex-wrap gap-2">
+            {project.technologies.map(tech => (
+              <Tag key={tech}>{tech}</Tag>
+            ))}
+          </div>
+        </div>
+
+        {/* Images */}
+        {project.images && project.images.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-4 mb-10">
+            {project.images.map((image, index) => (
+              <button
+                key={image}
+                type="button"
+                onClick={() => setSelectedImage(image)}
+                className="relative aspect-video bg-dark-800 rounded-lg overflow-hidden border border-dark-700 hover:border-primary-500 transition-colors group"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={image}
+                  alt={`${project.title} — ${index + 1}`}
+                  className="w-full h-full object-cover"
+                  onError={e => {
+                    e.currentTarget.src = placeholder
+                  }}
+                />
+                <span className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <ZoomIn className="w-10 h-10 text-white" />
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Long description */}
+        <Window title="README.md" className="mb-10" bodyClassName="p-6 md:p-8">
+          <div className="max-w-none">
+            <ReactMarkdown
+              components={{
+                h1: ({ children }) => <h2 className="font-mono text-2xl font-bold text-white mb-5"><span className="text-primary-400"># </span>{children}</h2>,
+                h2: ({ children }) => <h3 className="font-mono text-xl font-bold text-white mb-4 mt-8"><span className="text-primary-400">## </span>{children}</h3>,
+                h3: ({ children }) => <h4 className="font-mono text-lg font-bold text-white mb-3 mt-6"><span className="text-primary-400">### </span>{children}</h4>,
+                p: ({ children }) => <p className="text-gray-400 mb-4 leading-relaxed">{children}</p>,
+                ul: ({ children }) => <ul className="list-disc pl-5 marker:text-primary-500 text-gray-400 mb-4 space-y-1.5">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal pl-5 marker:text-primary-500 text-gray-400 mb-4 space-y-1.5">{children}</ol>,
+                li: ({ children }) => <li className="text-gray-400">{children}</li>,
+                strong: ({ children }) => <strong className="text-gray-200 font-semibold">{children}</strong>,
+                code: ({ children }) => <code className="bg-dark-900 px-1.5 py-0.5 rounded text-primary-300 font-mono text-[0.9em]">{children}</code>,
+                a: ({ children, href }) => <a href={href} className="text-sky-400 underline underline-offset-4" target="_blank" rel="noopener noreferrer">{children}</a>,
+              }}
+            >
+              {(language === 'fr' && project.longDescriptionFr ? project.longDescriptionFr : project.longDescription).replace(/(?:[\uD83C-\uD83E][\uDC00-\uDFFF]|[\u2600-\u27BF])\uFE0F?\s*/g, '')}
+            </ReactMarkdown>
+          </div>
+        </Window>
+
+        {/* Challenges, solutions, outcomes */}
+        {panels.length > 0 && (
+          <div className={`grid gap-4 mb-12 ${panels.length === 3 ? 'md:grid-cols-3' : panels.length === 2 ? 'md:grid-cols-2' : ''}`}>
+            {panels.map(panel => (
+              <Window key={panel.key} title={`${panel.key}.log`} bodyClassName="p-5">
+                <h3 className="font-mono font-bold text-white mb-4 flex items-center gap-2">
+                  <panel.icon className={`w-5 h-5 ${panel.color}`} /> {panel.title}
+                </h3>
+                <ul className="space-y-3">
+                  {panel.items.map((item, i) => (
+                    <li key={i} className="flex gap-2 text-sm text-gray-400 leading-relaxed">
+                      {panel.key === 'outcomes' ? (
+                        <CheckCircle className="w-4 h-4 text-primary-400 mt-0.5 shrink-0" />
+                      ) : (
+                        <span className={`font-mono ${panel.color} shrink-0`}>{panel.key === 'challenges' ? '[!]' : '[+]'}</span>
+                      )}
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Window>
+            ))}
+          </div>
+        )}
+
+        <Link href="/#projects" className="btn-ghost">
+          <ArrowLeft className="w-4 h-4" /> {t('projectDetail.backToAll')}
+        </Link>
       </div>
     </div>
   )
