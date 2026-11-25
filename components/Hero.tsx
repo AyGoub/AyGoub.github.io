@@ -8,13 +8,12 @@ import { projects } from '@/data/projects'
 import { writeups } from '@/data/writeups'
 
 const Hero = () => {
-  const { t, language } = useLanguage()
-  const fr = language === 'fr'
+  const { t } = useLanguage()
 
   const facts = [
     ['Top 2%', 'TryHackMe'],
-    [String(writeups.length), 'writeups'],
-    [String(projects.length), fr ? 'projets' : 'projects'],
+    [String(writeups.length), t('ui.writeupsLabel')],
+    [String(projects.length), t('ui.projectsLabel')],
   ]
 
   return (
@@ -64,7 +63,7 @@ const Hero = () => {
               </span>
               <span className="absolute right-3 top-3 flex items-center gap-2 text-xs bg-black/70 text-primary-300 px-2 py-1 rounded">
                 <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
-                {fr ? 'Dispo stage · sept. 2026' : 'Open to internship · Sept 2026'}
+                {t('ui.openToWork')}
               </span>
             </div>
 
@@ -98,7 +97,7 @@ const Hero = () => {
 
         <a
           href="#about"
-          aria-label={fr ? 'Défiler vers la suite' : 'Scroll down'}
+          aria-label={t('ui.scrollDown')}
           className="hidden lg:flex mt-10 mx-auto w-fit items-center gap-2 font-mono text-sm text-gray-500 hover:text-primary-400 transition-colors"
         >
           <ArrowDown size={16} /> cd ./about

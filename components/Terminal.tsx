@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState, KeyboardEvent, ReactNode } from 'react'
 import { projects } from '@/data/projects'
 import { sortedWriteups } from '@/data/writeups'
-import { useLanguage } from '@/contexts/LanguageContext'
+import { useLanguage, translate } from '@/contexts/LanguageContext'
+import type { Language } from '@/locales/translations'
 
 /* ------------------------------------------------------------------ */
 /* Static data shown by the terminal                                   */
@@ -32,7 +33,7 @@ const CERTS = [
 ]
 
 const SKILLS: [string, string, string[]][] = [
-  ['pentest', 'Pentesting', ['Nmap', 'Burp Suite', 'Metasploit', 'Hydra', 'John the Ripper', 'SQLmap', 'Gobuster', 'Netcat']],
+  ['pentesting', 'Pentesting', ['Nmap', 'Burp Suite', 'Metasploit', 'Hydra', 'John the Ripper', 'SQLmap', 'Gobuster', 'Netcat']],
   ['programming', 'Programming', ['Python', 'C/C++', 'Java', 'JavaScript', 'HTML/CSS', 'Bash']],
   ['systems', 'Systems', ['Linux/Unix', 'Windows', 'PostgreSQL', 'UNIX multi-process']],
   ['network', 'Network', ['TCP/IP', 'SSL/TLS', 'Wireshark']],
@@ -110,8 +111,7 @@ const Prompt = ({ path = '~' }: { path?: string }) => (
 /* ------------------------------------------------------------------ */
 
 export default function Terminal() {
-  const { language, toggleLanguage, t } = useLanguage()
-  const L = useCallback((en: ReactNode, fr: ReactNode) => (language === 'fr' ? fr : en), [language])
+  const { language, setLanguage, t } = useLanguage()
 
   const [lines, setLines] = useState<Line[]>([])
   const [input, setInput] = useState('')
@@ -171,7 +171,7 @@ export default function Terminal() {
     <button
       type="button"
       onClick={() => runRef.current(c)}
-      className="text-primary-400 underline decoration-dotted underline-offset-4 hover:text-primary-300 hover:decoration-solid focus:outline-none focus-visible:ring-1 focus-visible:ring-primary-400"
+      className="text-left text-primary-400 underline decoration-dotted underline-offset-4 hover:text-primary-300 hover:decoration-solid focus:outline-none focus-visible:ring-1 focus-visible:ring-primary-400"
     >
       {children ?? c}
     </button>
@@ -210,23 +210,23 @@ export default function Terminal() {
       push(
         <div className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)] gap-x-4 gap-y-0.5">
           {([
-            ['whoami', 'whoami', L('who I am, in one line', 'qui je suis, en une ligne')],
-            ['about', 'about', L('my story and goals', 'mon parcours et mes objectifs')],
-            ['neofetch', 'neofetch', L('system info… about me', 'infos système… sur moi')],
-            ['skills', 'skills', L('tools and languages', 'outils et langages')],
-            ['projects', 'projects', L('list my projects', 'liste mes projets')],
-            ['open <n>', 'open 1', L('details of a project', "détails d'un projet")],
-            ['writeups [web|privesc|ad]', 'writeups', L('my CTF reports', 'mes rapports CTF')],
-            ['read <n>', 'writeups', L('open a writeup PDF', 'ouvre un writeup PDF')],
-            ['thm', 'thm', L('TryHackMe progress', 'progression TryHackMe')],
-            ['certs', 'certs', L('certifications', 'certifications')],
-            ['contact', 'contact', L('how to reach me', 'me contacter')],
-            ['cv', 'cv', L('download my resume', 'télécharger mon CV')],
-            ['ls / cd <dir>', 'ls', L('browse the page sections', 'naviguer dans les sections')],
-            ['nmap ayoub', 'nmap ayoub', L('scan me', 'scanne-moi')],
-            ['sudo hire-me', 'sudo hire-me', L('you know what to do', 'tu sais quoi faire')],
-            ['lang fr|en', 'lang', L('switch language', 'changer de langue')],
-            ['clear', 'clear', L('clear the screen', "nettoie l'écran")],
+            ['whoami', 'whoami', t('terminal.help.whoami')],
+            ['about', 'about', t('terminal.help.about')],
+            ['neofetch', 'neofetch', t('terminal.help.neofetch')],
+            ['skills', 'skills', t('terminal.help.skills')],
+            ['projects', 'projects', t('terminal.help.projects')],
+            ['open <n>', 'open 1', t('terminal.help.open')],
+            ['writeups [web|privesc|ad]', 'writeups', t('terminal.help.writeups')],
+            ['read <n>', 'writeups', t('terminal.help.read')],
+            ['thm', 'thm', t('terminal.help.thm')],
+            ['certs', 'certs', t('terminal.help.certs')],
+            ['contact', 'contact', t('terminal.help.contact')],
+            ['cv', 'cv', t('terminal.downloadCv')],
+            ['ls / cd <dir>', 'ls', t('terminal.help.nav')],
+            ['nmap ayoub', 'nmap ayoub', t('terminal.help.nmap')],
+            ['sudo hire-me', 'sudo hire-me', t('terminal.help.sudo')],
+            ['lang fr|en', 'lang', t('terminal.help.lang')],
+            ['clear', 'clear', t('terminal.help.clear')],
           ] as [string, string, ReactNode][]).map(([label, c, d]) => (
             <div key={label} className="contents">
               <span><C c={c}>{label}</C></span>
@@ -234,7 +234,7 @@ export default function Terminal() {
             </div>
           ))}
           <div className="col-span-2 text-gray-500 mt-2">
-            {L('Tip: Tab completes, ↑/↓ browse history. Some files are hidden…', "Astuce : Tab complète, ↑/↓ parcourt l'historique. Certains fichiers sont cachés…")}
+            {t('terminal.tip')}
           </div>
         </div>
       ),
@@ -253,7 +253,7 @@ export default function Terminal() {
         <div className="max-w-2xl space-y-2 text-gray-300">
           <p>{t('about.intro')}</p>
           <p><span className="text-amber-300"># {t('about.goalsTitle')}</span><br />{t('about.goals')}</p>
-          <p className="text-gray-500">→ <C c="cd about">cd about</C> {L('for the full section', 'pour la section complète')}</p>
+          <p className="text-gray-500">→ <C c="cd about">cd about</C> {t('terminal.fullSection')}</p>
         </div>
       ),
 
@@ -273,13 +273,13 @@ export default function Terminal() {
             <div><span className="text-primary-400 font-bold">ayoub</span>@<span className="text-primary-400 font-bold">aygoub.github.io</span></div>
             <div className="text-gray-600">-------------------------</div>
             {([
-              ['OS', L('ENSICAEN engineering · cybersecurity track', 'ENSICAEN ingénieur · filière cybersécurité')],
+              ['OS', t('terminal.neofetch.os')],
               ['Role', t('hero.subtitle')],
-              ['Uptime', L(`${THM.streak}-day TryHackMe streak`, `série TryHackMe de ${THM.streak} jours`)],
-              ['Packages', L(`${projects.length} projects, ${sortedWriteups.length} writeups`, `${projects.length} projets, ${sortedWriteups.length} writeups`)],
-              ['Rank', L('Top 2% TryHackMe', 'Top 2 % TryHackMe')],
+              ['Uptime', t('terminal.neofetch.uptime', { n: THM.streak })],
+              ['Packages', t('terminal.neofetch.packages', { p: projects.length, w: sortedWriteups.length })],
+              ['Rank', t('terminal.neofetch.rank')],
               ['Shell', 'zsh + burpsuite + nmap'],
-              ['Seeking', L('6-month internship · Sept 2026 → Feb 2027 · Pentest / Red Team', 'stage 6 mois · sept. 2026 → fév. 2027 · Pentest / Red Team')],
+              ['Seeking', t('terminal.neofetch.seeking')],
             ] as [string, ReactNode][]).map(([k, v]) => (
               <div key={k}><span className="text-primary-400 font-bold">{k}</span>: <span className="text-gray-300">{v}</span></div>
             ))}
@@ -296,10 +296,10 @@ export default function Terminal() {
       push(
         <div>
           <div className="text-sky-400">~/skills</div>
-          {SKILLS.map(([id, name, items], i) => (
+          {SKILLS.map(([id, , items], i) => (
             <div key={id}>
               <span className="text-gray-600">{i === SKILLS.length - 1 ? '└── ' : '├── '}</span>
-              <span className="text-amber-300">{name}</span>
+              <span className="text-amber-300">{t(`skills.categories.${id}`)}</span>
               <span className="text-gray-400"> → {items.join(' · ')}</span>
             </div>
           ))}
@@ -309,34 +309,34 @@ export default function Terminal() {
     projects: () =>
       push(
         <div>
-          <div className="text-gray-500">{L(`total ${projects.length} — type `, `total ${projects.length} — tape `)}<span className="text-primary-400">open &lt;n&gt;</span></div>
+          <div className="text-gray-500">{t('terminal.projectsTotal', { n: projects.length }) + ' '}<span className="text-primary-400">open &lt;n&gt;</span></div>
           {projects.map((p, i) => (
             <div key={p.slug} className="flex gap-3">
               <span className="text-gray-600 w-6 text-right shrink-0">{i + 1}</span>
               <span className="text-gray-600 hidden sm:inline shrink-0">drwxr-xr-x</span>
               <span className="shrink-0"><C c={`open ${i + 1}`}>{p.slug}/</C></span>
-              <span className="text-gray-500 truncate hidden md:inline">{p.category.trim()} · {p.date}</span>
+              <span className="text-gray-500 truncate hidden md:inline">{t(`projectCategories.${p.category.trim()}`)} · {p.date}</span>
             </div>
           ))}
         </div>
       ),
 
     open: ([arg]) => {
-      if (!arg) return push(<span className="text-amber-300">usage: open &lt;n|slug&gt; — {L('see', 'voir')} <C c="projects" /></span>)
+      if (!arg) return push(<span className="text-amber-300">usage: open &lt;n|slug&gt; — {t('terminal.see')} <C c="projects" /></span>)
       const p = findProject(arg)
-      if (!p) return push(<span className="text-red-400">open: {arg}: {L('no such project', 'projet introuvable')}</span>)
+      if (!p) return push(<span className="text-red-400">open: {arg}: {t('terminal.noProject')}</span>)
       push(
         <div className="border-l-2 border-primary-500 pl-4 max-w-2xl space-y-1">
           <div className="text-white font-bold text-lg">{p.title}</div>
-          <div className="text-gray-500">{p.category.trim()} · {p.date}{p.duration ? ` · ${p.duration}` : ''}</div>
-          <div className="text-gray-300">{p.description}</div>
+          <div className="text-gray-500">{t(`projectCategories.${p.category.trim()}`)} · {p.date}{p.duration ? ` · ${p.duration}` : ''}</div>
+          <div className="text-gray-300">{t(`projectDescriptions.${p.slug}`)}</div>
           <div className="flex flex-wrap gap-1.5 pt-1">
             {p.technologies.slice(0, 8).map(tech => (
               <span key={tech} className="text-xs bg-primary-900/50 text-primary-300 px-1.5 rounded">{tech}</span>
             ))}
           </div>
           <div className="pt-1 flex flex-wrap gap-4">
-            <A href={`/projects/${p.slug}/`}>{L('→ full write-up', '→ fiche complète')}</A>
+            <A href={`/projects/${p.slug}/`}>{t('terminal.fullWriteup')}</A>
             {p.github && <A href={p.github}>→ GitHub</A>}
             {p.demo && <A href={p.demo}>→ demo</A>}
           </div>
@@ -346,11 +346,11 @@ export default function Terminal() {
 
     writeups: ([filter]) => {
       const cat = filter ? WRITEUP_FILTERS[filter.replace(/^--/, '')] : undefined
-      if (filter && !cat) return push(<span className="text-amber-300">writeups: {L('filters', 'filtres')}: <C c="writeups web">web</C> · <C c="writeups privesc">privesc</C> · <C c="writeups ad">ad</C></span>)
+      if (filter && !cat) return push(<span className="text-amber-300">writeups: {t('terminal.filters')}: <C c="writeups web">web</C> · <C c="writeups privesc">privesc</C> · <C c="writeups ad">ad</C></span>)
       const list = sortedWriteups.map((w, i) => ({ w, n: i + 1 })).filter(({ w }) => !cat || w.category === cat)
       push(
         <div>
-          <div className="text-gray-500">{list.length} {L('reports — type', 'rapports — tape')} <span className="text-primary-400">read &lt;n&gt;</span> · {L('filter', 'filtre')}: <C c="writeups web">web</C> <C c="writeups privesc">privesc</C> <C c="writeups ad">ad</C></div>
+          <div className="text-gray-500">{t('terminal.reportsCount', { n: list.length })} <span className="text-primary-400">read &lt;n&gt;</span> · {t('terminal.filter')}: <C c="writeups web">web</C> <C c="writeups privesc">privesc</C> <C c="writeups ad">ad</C></div>
           {list.map(({ w, n }) => (
             <div key={w.key} className="flex gap-3 items-baseline">
               <span className="text-gray-600 w-6 text-right shrink-0">{n}</span>
@@ -364,16 +364,16 @@ export default function Terminal() {
     },
 
     read: ([arg]) => {
-      if (!arg) return push(<span className="text-amber-300">usage: read &lt;n&gt; — {L('see', 'voir')} <C c="writeups" /></span>)
+      if (!arg) return push(<span className="text-amber-300">usage: read &lt;n&gt; — {t('terminal.see')} <C c="writeups" /></span>)
       const w = findWriteup(arg)
-      if (!w) return push(<span className="text-red-400">read: {arg}: {L('no such writeup', 'writeup introuvable')}</span>)
+      if (!w) return push(<span className="text-red-400">read: {arg}: {t('terminal.noWriteup')}</span>)
       openUrl(w.link)
       push(
         <div className="max-w-2xl">
           <div className="text-white font-bold">{w.title} <span className={`text-[11px] px-1.5 rounded ${diffClass(w.difficulty)}`}>{w.difficulty.toUpperCase()}</span></div>
           <div className="text-gray-300">{t(`writeupsData.${w.key}`)}</div>
           <div className="text-gray-500">{w.tags.join(' · ')}</div>
-          <div>{L('Opening', 'Ouverture de')} <A href={w.link}>{w.link.split('/').pop()}</A> …</div>
+          <div>{t('terminal.opening')} <A href={w.link}>{w.link.split('/').pop()}</A> …</div>
         </div>
       )
     },
@@ -382,7 +382,7 @@ export default function Terminal() {
       push(
         <div>
           <div className="text-gray-300">
-            TryHackMe · {L('rank', 'rang')} <span className="text-white font-bold">#{THM.rank}</span> (top 2%) · <span className="text-white font-bold">{THM.rooms}</span> rooms · <span className="text-white font-bold">{THM.streak}</span> {L('day streak', 'jours de série')} · <span className="text-white font-bold">{THM.badges}</span> badges
+            TryHackMe · {t('terminal.rank')} <span className="text-white font-bold">#{THM.rank}</span> (top 2%) · <span className="text-white font-bold">{THM.rooms}</span> rooms · <span className="text-white font-bold">{THM.streak}</span> {t('terminal.dayStreak')} · <span className="text-white font-bold">{THM.badges}</span> badges
           </div>
           <div className="mt-1">
             {THM.paths.map(([name, d, total]) => (
@@ -411,14 +411,14 @@ export default function Terminal() {
           <div><span className="text-amber-300 w-20 inline-block">email</span><A href={`mailto:${CONTACT.email}`}>{CONTACT.email}</A></div>
           <div><span className="text-amber-300 w-20 inline-block">linkedin</span><A href={CONTACT.linkedin}>linkedin.com/in/ayoubgoubraim</A></div>
           <div><span className="text-amber-300 w-20 inline-block">github</span><A href={CONTACT.github}>github.com/AyGoub</A></div>
-          <div className="text-gray-500 pt-1">{L('or', 'ou')} <C c="cd contact">cd contact</C> {L('to send a message', 'pour envoyer un message')}</div>
+          <div className="text-gray-500 pt-1">{t('terminal.or')} <C c="cd contact">cd contact</C> {t('terminal.toSend')}</div>
         </div>
       ),
 
     cv: () => {
       const file = t('resume.cvFile')
       openUrl(file)
-      push(<span>{L('Opening', 'Ouverture de')} <A href={file}>{file.split('/').pop()}</A> …</span>)
+      push(<span>{t('terminal.opening')} <A href={file}>{file.split('/').pop()}</A> …</span>)
     },
 
     ls: ([flag]) =>
@@ -440,24 +440,24 @@ export default function Terminal() {
         return
       }
       const id = DIRS[d]
-      if (!id) return push(<span className="text-red-400">cd: {dir}: {L('no such directory', 'dossier introuvable')} — <C c="ls" /></span>)
-      push(<span className="text-gray-500">{L('jumping to', 'direction')} #{id} ↓</span>)
+      if (!id) return push(<span className="text-red-400">cd: {dir}: {t('terminal.noDir')} — <C c="ls" /></span>)
+      push(<span className="text-gray-500">{t('terminal.jumping')} #{id} ↓</span>)
       setTimeout(() => scrollTo(id), 250)
     },
 
     cat: ([file]) => {
       if (!file) return push(<span className="text-amber-300">usage: cat &lt;file&gt;</span>)
       if (file === 'README.md') return cmd.about([])
-      if (file === 'cv.pdf') return push(<span className="text-gray-400">cat: cv.pdf: {L('binary file — try', 'fichier binaire — essaie')} <C c="cv" /></span>)
+      if (file === 'cv.pdf') return push(<span className="text-gray-400">cat: cv.pdf: {t('terminal.binary')} <C c="cv" /></span>)
       if (file === '.flag.txt' || file === 'flag.txt') {
         return push(
           <div>
             <div className="text-primary-300 font-bold">THM{'{'}y0u_r34d_th3_s0urc3_0f_my_curi0s1ty{'}'}</div>
-            <div className="text-gray-400">{L('Nice enumeration. People who find hidden files are exactly who I like working with →', 'Belle énumération. Ceux qui trouvent les fichiers cachés sont ceux avec qui j\'aime travailler →')} <C c="contact" /></div>
+            <div className="text-gray-400">{t('terminal.flag')} <C c="contact" /></div>
           </div>
         )
       }
-      push(<span className="text-red-400">cat: {file}: {L('No such file or directory', 'Aucun fichier ou dossier de ce nom')}</span>)
+      push(<span className="text-red-400">cat: {file}: {t('terminal.noFile')}</span>)
     },
 
     nmap: ([target]) => {
@@ -472,9 +472,9 @@ export default function Terminal() {
       ]
       stream(
         [
-          <span key="a" className="text-gray-400">Starting Nmap 7.94 ( https://nmap.org ) {L('against', 'contre')} {tgt}</span>,
+          <span key="a" className="text-gray-400">Starting Nmap 7.94 ( https://nmap.org ) {t('terminal.against')} {tgt}</span>,
           <span key="b" className="text-gray-400">Nmap scan report for {tgt} (aygoub.github.io)</span>,
-          <span key="c" className="text-gray-500">Host is up (0.0013s latency). {L('Motivation: high.', 'Motivation : élevée.')}</span>,
+          <span key="c" className="text-gray-500">Host is up (0.0013s latency). {t('terminal.motivation')}</span>,
           <span key="d" className="text-gray-300 whitespace-pre">{'PORT       STATE  SERVICE            VERSION'}</span>,
           ...rows.map(([port, svc, ver]) => (
             <span key={port} className="whitespace-pre-wrap">
@@ -485,7 +485,7 @@ export default function Terminal() {
             </span>
           )),
           <span key="e" className="text-gray-400">
-            {L('Service Info: OS: student; available for internship Sept 2026 → Feb 2027 —', 'Service Info : OS : étudiant ; dispo en stage sept. 2026 → fév. 2027 —')} <C c="sudo hire-me" />
+            {t('terminal.serviceInfo')} <C c="sudo hire-me" />
           </span>,
         ],
         160
@@ -494,15 +494,15 @@ export default function Terminal() {
 
     hack: () => {
       const steps = [
-        L('[*] Initialising exploit framework…', '[*] Initialisation du framework d\'exploitation…'),
-        L('[*] Bypassing firewall… (it was a portfolio)', '[*] Contournement du pare-feu… (c\'était un portfolio)'),
-        L('[*] Cracking hash with john… password = "hire-me"', '[*] Cassage du hash avec john… password = "hire-me"'),
-        L('[*] Escalating privileges… ████████████ 100%', '[*] Élévation de privilèges… ████████████ 100%'),
+        t('terminal.hack1'),
+        t('terminal.hack2'),
+        t('terminal.hack3'),
+        t('terminal.hack4'),
       ]
       stream(
         [
           ...steps.map((s, i) => <span key={i} className="text-gray-400">{s}</span>),
-          <span key="ok" className="text-primary-300 font-bold">{L('[+] root obtained. Just kidding — real exploits are documented in', '[+] root obtenu. Je plaisante — les vrais exploits sont dans')} <C c="writeups" /></span>,
+          <span key="ok" className="text-primary-300 font-bold">{t('terminal.hackDone')} <C c="writeups" /></span>,
         ],
         420
       )
@@ -510,7 +510,7 @@ export default function Terminal() {
 
     matrix: () => {
       setMatrix(true)
-      push(<span className="text-primary-400">{L('Wake up, visitor…', 'Réveille-toi, visiteur…')}</span>)
+      push(<span className="text-primary-400">{t('terminal.wakeUp')}</span>)
       setTimeout(() => setMatrix(false), 6000)
     },
 
@@ -520,39 +520,39 @@ export default function Terminal() {
         return stream(
           [
             <span key="p" className="text-gray-500">[sudo] password for visitor: ********</span>,
-            <div key="g" className="inline-block my-1 px-6 py-2 border-2 border-primary-400 text-primary-300 font-bold tracking-widest">ACCESS GRANTED · WELCOME ;)</div>,
-            <span key="t" className="text-gray-300">{L('Excellent decision. Next steps:', 'Excellente décision. Prochaines étapes :')}</span>,
+            <div key="g" className="inline-block my-1 px-6 py-2 border-2 border-primary-400 text-primary-300 font-bold tracking-widest">{t('terminal.granted')}</div>,
+            <span key="t" className="text-gray-300">{t('terminal.decision')}</span>,
             <span key="m">  1. <A href={`mailto:${CONTACT.email}`}>{CONTACT.email}</A></span>,
-            <span key="c">  2. <C c="cv">{L('download my resume', 'télécharger mon CV')}</C></span>,
+            <span key="c">  2. <C c="cv">{t('terminal.downloadCv')}</C></span>,
             <span key="l">  3. <A href={CONTACT.linkedin}>LinkedIn</A></span>,
           ],
           200
         )
       }
-      push(<span className="text-red-400">{L('visitor is not in the sudoers file. This incident will be reported.', "visitor n'est pas dans le fichier sudoers. Cet incident sera signalé.")} <span className="text-gray-500">({L('try', 'essaie')} <C c="sudo hire-me" />)</span></span>)
+      push(<span className="text-red-400">{t('terminal.notSudoer')} <span className="text-gray-500">({t('terminal.try')} <C c="sudo hire-me" />)</span></span>)
     },
 
-    rm: () => push(<span className="text-red-400">rm: {L('Permission denied. Nice try — that is exactly the mindset I like.', 'Permission refusée. Bien essayé — c\'est exactement l\'état d\'esprit que j\'aime.')}</span>),
+    rm: () => push(<span className="text-red-400">rm: {t('terminal.rmDenied')}</span>),
 
     history: () =>
       push(
         <div>
           {historyRef.current.length === 0
-            ? <span className="text-gray-500">{L('(empty)', '(vide)')}</span>
+            ? <span className="text-gray-500">{t('terminal.empty')}</span>
             : historyRef.current.map((h, i) => <div key={i}><span className="text-gray-600 inline-block w-8 text-right mr-3">{i + 1}</span><C c={h}>{h}</C></div>)}
         </div>
       ),
 
     lang: ([l]) => {
-      const target = l === 'fr' || l === 'en' ? l : language === 'fr' ? 'en' : 'fr'
-      if (target !== language) toggleLanguage()
-      push(<span className="text-gray-400">{target === 'fr' ? 'Langue : français' : 'Language: English'}</span>)
+      const target: Language = l === 'fr' || l === 'en' ? l : language === 'fr' ? 'en' : 'fr'
+      setLanguage(target)
+      push(<span className="text-gray-400">{translate(target, 'terminal.langSet')}</span>)
     },
 
     date: () => push(<span className="text-gray-300">{new Date().toString()}</span>),
     echo: args => push(<span className="text-gray-300">{args.join(' ')}</span>),
     clear: () => setLines([]),
-    exit: () => push(<span className="text-gray-400">logout… {L("just kidding, you can't leave without", 'je plaisante, tu ne pars pas sans')} <C c="contact" /></span>),
+    exit: () => push(<span className="text-gray-400">{t('terminal.logout')} <C c="contact" /></span>),
   }
 
   // aliases
@@ -583,8 +583,8 @@ export default function Terminal() {
     else
       push(
         <span>
-          <span className="text-red-400">zsh: command not found: {name}</span>
-          <span className="text-gray-500"> — {L('try', 'essaie')} </span>
+          <span className="text-red-400">zsh: {t('terminal.notFound')}: {name}</span>
+          <span className="text-gray-500"> — {t('terminal.try')} </span>
           <C c="help" />
         </span>
       )
@@ -622,18 +622,37 @@ export default function Terminal() {
   useEffect(() => {
     if (!busy && !bootFired.current && input === 'whoami' && lines.length === 0) {
       bootFired.current = true
-      run('whoami')
-      push(
-        <div className="text-gray-400 mt-1">
-          {L('This terminal is interactive. Type ', 'Ce terminal est interactif. Tape ')}
-          <C c="help" />
-          {L(' or try: ', ' ou essaie : ')}
-          <C c="projects" /> · <C c="writeups" /> · <C c="neofetch" /> · <C c="nmap ayoub" />
-        </div>
-      )
+      greet()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [busy, input])
+
+  // Switching language restarts the session so every line is in the new language
+  const lastLang = useRef(language)
+  useEffect(() => {
+    if (lastLang.current === language) return
+    lastLang.current = language
+    if (!bootFired.current) return
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+    setBusy(false)
+    busyRef.current = false
+    setLines([])
+    greet()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [language])
+
+  function greet() {
+    run('whoami')
+    push(
+      <div className="text-gray-400 mt-1">
+        {t('terminal.intro') + ' '}
+        <C c="help" />
+        {' ' + t('terminal.introTry') + ' '}
+        <C c="projects" /> · <C c="writeups" /> · <C c="neofetch" /> · <C c="nmap ayoub" />
+      </div>
+    )
+  }
 
   /* -------------------------------------------------------------- */
   /* Keyboard                                                        */
@@ -713,7 +732,7 @@ export default function Terminal() {
         <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
         <span className="w-3 h-3 rounded-full bg-[#28c840]" />
         <span className="ml-3 truncate">{PROMPT_USER}: ~ — zsh</span>
-        <span className="ml-auto hidden sm:inline text-gray-600">{L('interactive', 'interactif')} · help</span>
+        <span className="ml-auto hidden sm:inline text-gray-600">{t('terminal.interactive')} · help</span>
       </div>
 
       {matrix && <MatrixRain />}
@@ -739,7 +758,7 @@ export default function Terminal() {
             onChange={e => !busy && setInput(e.target.value)}
             onKeyDown={onKey}
             className="flex-1 min-w-0 bg-transparent outline-none text-white caret-primary-400"
-            aria-label={language === 'fr' ? 'Commande du terminal' : 'Terminal command'}
+            aria-label={t('terminal.inputLabel')}
             autoComplete="off"
             autoCapitalize="off"
             autoCorrect="off"

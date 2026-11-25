@@ -1,37 +1,12 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Award, ExternalLink, Calendar, CheckCircle, Clock, Download } from 'lucide-react'
-import Image from 'next/image'
+import { CheckCircle, Download, ExternalLink } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { SectionHeader, Tag } from '@/components/term'
 
 const Certifications = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
   const { t } = useLanguage()
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  }
-
-  // Mis à jour pour utiliser vos PDF ajoutés dans public/certifications
   const certifications = [
     {
       id: 1,
@@ -79,178 +54,56 @@ const Certifications = () => {
     }
   ]
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-500/20 text-green-400 border-green-500/30'
-      case 'in_progress':
-        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
-      case 'planned':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-      default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30'
-    }
+  // Skill tags are stored in English; use the translation when there is one
+  const skillLabel = (skill: string) => {
+    const key = `certSkills.${skill}`
+    const v = t(key)
+    return v === key ? skill : v
   }
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return CheckCircle
-      case 'in_progress':
-        return Clock
-      case 'planned':
-        return Calendar
-      default:
-        return Award
-    }
-  }
+  const completed = certifications.filter(c => c.status === 'completed').length
 
   return (
-    <section id="certifications" className="py-20 bg-dark-900">
+    <section id="certifications" className="py-20 bg-dark-800/40 border-t border-dark-700">
       <div className="container mx-auto px-4">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-7xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="mb-12">
-            <h2 className="section-title mb-4">
-              {t('certifications.title')}
-            </h2>
-            <p className="section-lead">
-              {t('certifications.subtitle')}
-            </p>
-          </motion.div>
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader cmd="ls -l ~/certs" title={t('certifications.title')} lead={t('certifications.subtitle')} />
 
-          {/* Certifications Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {certifications.map((cert, index) => {
-              const StatusIcon = getStatusIcon(cert.status)
-              
-              return (
-                <motion.div
-                  key={cert.id}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="bg-dark-800 rounded-lg p-6 border border-dark-700 hover:border-primary-500 transition-all duration-300 group"
-                >
-                  {/* Badge */}
-                  <div className="flex justify-center mb-6">
-                    {cert.badge ? (
-                      <div className="relative w-24 h-24 group-hover:scale-110 transition-transform duration-300">
-                        <Image
-                          src={cert.badge}
-                          alt={`${cert.name} badge`}
-                          fill
-                          className="object-contain"
-                          sizes="96px"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-24 h-24 rounded-full bg-dark-700 flex items-center justify-center border border-dark-600">
-                        <Award className="w-10 h-10 text-primary-500" />
-                      </div>
-                    )}
-                  </div>
+          <p className="font-mono text-sm text-dark-400 mb-3">
+            total {certifications.length} · <span className="text-primary-400">{completed} {t('ui.certsCompleted')}</span> · TryHackMe Top 2%
+          </p>
 
-                  {/* Certification Info */}
-                  <div className="text-center mb-4">
-                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-primary-400 transition-colors">
-                      {cert.name}
-                    </h3>
-                    <p className="text-primary-400 font-medium mb-2">
-                      {cert.issuer}
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      {t('certifications.description')}
+          <ul className="rounded-lg border border-dark-700 divide-y divide-dark-700 bg-dark-900/60">
+            {certifications.map(cert => (
+              <li key={cert.id} className="grid md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_auto] gap-3 md:gap-6 items-center p-4 hover:bg-dark-800/60 transition-colors">
+                <div className="flex items-start gap-3 min-w-0">
+                  <CheckCircle className="w-5 h-5 text-primary-400 shrink-0 mt-0.5" />
+                  <div className="min-w-0">
+                    <h3 className="font-mono font-bold text-white">{cert.name}</h3>
+                    <p className="text-sm text-dark-400">
+                      {cert.issuer} · {cert.date} · {t(`certifications.status.${cert.status}`)}
                     </p>
                   </div>
-
-                  {/* Status */}
-                  <div className="flex justify-center mb-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(cert.status)}`}>
-                      <StatusIcon className="w-4 h-4" />
-                      <span>{t(`certifications.status.${cert.status}`)}</span>
-                    </span>
-                  </div>
-
-                  {/* Skills */}
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-1 justify-center">
-                      {cert.skills.map((skill, skillIndex) => (
-                        <span
-                          key={skillIndex}
-                          className="px-2 py-1 bg-dark-700 text-gray-300 text-xs rounded-full"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex justify-center space-x-2">
-                    {cert.credential && (
-                      <a
-                        href={cert.credential}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center space-x-1 px-3 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm rounded-lg transition-colors"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        <span>{t('certifications.viewPdf')}</span>
-                      </a>
-                    )}
-                    {cert.credential && (
-                      <a
-                        href={cert.credential}
-                        download
-                        className="flex items-center space-x-1 px-3 py-2 bg-dark-700 hover:bg-dark-600 text-gray-300 text-sm rounded-lg transition-colors"
-                      >
-                        <Download className="w-4 h-4" />
-                        <span>{t('certifications.download')}</span>
-                      </a>
-                    )}
-                  </div>
-                </motion.div>
-              )
-            })}
-          </div>
-
-          {/* Stats Summary */}
-          <motion.div 
-            variants={itemVariants}
-            className="bg-dark-800 border border-primary-500/30 rounded-lg p-8"
-          >
-            <div className="grid md:grid-cols-4 gap-6 text-center">
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">
-                  {certifications.filter(c => c.status === 'completed').length}
                 </div>
-                <div className="text-white/80">{t('certifications.stats.completed')}</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">
-                  {certifications.filter(c => c.status === 'in_progress').length}
+                <div className="flex flex-wrap gap-1.5">
+                  {cert.skills.map(skill => (
+                    <Tag key={skill}>{skillLabel(skill)}</Tag>
+                  ))}
                 </div>
-                <div className="text-white/80">{t('certifications.stats.inProgress')}</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">
-                  {certifications.filter(c => c.status === 'planned').length}
-                </div>
-                <div className="text-white/80">{t('certifications.stats.planned')}</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-white mb-2">Top 2%</div>
-                <div className="text-white/80">{t('certifications.stats.rank')}</div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
+                {cert.credential && (
+                  <div className="flex gap-2">
+                    <a href={cert.credential} target="_blank" rel="noopener noreferrer" className="btn-ghost !px-3 !py-1.5 text-sm">
+                      <ExternalLink className="w-4 h-4" /> {t('certifications.viewPdf')}
+                    </a>
+                    <a href={cert.credential} download className="btn-ghost !px-3 !py-1.5 text-sm" aria-label={t('certifications.download')}>
+                      <Download className="w-4 h-4" />
+                    </a>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )

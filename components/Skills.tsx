@@ -1,76 +1,15 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
 import Image from 'next/image'
 import { useLanguage } from '@/contexts/LanguageContext'
-import {
-  Shield,
-  Terminal, 
-  Network, 
-  Database, 
-  Code, 
-  Lock, 
-  Search, 
-  Bug,
-  Cpu,
-  Globe,
-  Key,
-  Eye,
-  Award,
-  Zap,
-  Monitor,
-  Server,
-  FileCode,
-  GitBranch,
-  ShieldCheck,
-  Target,
-  SearchCheck,
-  Hammer,
-  LockKeyhole,
-  Wifi,
-  HardDrive,
-  MousePointer,
-  Settings,
-  Layers,
-  Smartphone,
-  CreditCard,
-  Euro,
-  FileText,
-  BarChart3,
-  Ruler,
-  TrendingUp,
-  Coffee
-} from 'lucide-react'
+import { Comment, SectionHeader, Window } from '@/components/term'
 
 const Skills = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
   const { t } = useLanguage()
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.1,
-        staggerChildren: 0.05
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1
-    }
-  }
 
   const skillCategories = [
     {
-      titleKey: 'skills.categories.programming',
-      icon: Code,
+      dir: 'programming',
       skills: [
         { name: "Python", logo: "/logos/python.png" },
         { name: "C/C++", logo: "/logos/cpp.png" },
@@ -79,43 +18,35 @@ const Skills = () => {
         { name: "HTML/CSS", logo: "/logos/html-css.png" },
         { name: "Bash", logo: "/logos/bash.png" }
       ],
-      color: "from-blue-500 to-cyan-500"
     },
     {
-      titleKey: 'skills.categories.frameworks',
-      icon: Globe,
+      dir: 'frameworks',
       skills: [
         { name: "Qt", logo: "/logos/qt.png" },
         { name: "JavaFX", logo: "/logos/javafx.png" },
         { name: "React", logo: "/logos/react.png" },
         { name: "SDL2", logo: "/logos/sdl.png" }
       ],
-      color: "from-green-500 to-emerald-500"
     },
     {
-      titleKey: 'skills.categories.systems',
-      icon: Database,
+      dir: 'systems',
       skills: [
         { name: "Linux/Unix", logo: "/logos/linux.png" },
         { name: "Windows", logo: "/logos/windows.png" },
         { name: "PostgreSQL", logo: "/logos/postgresql.jpg" },
         { name: "UNIX Multi-process", logo: "/logos/unix.jpg" }
-      ],
-      color: "from-purple-500 to-pink-500"
+      ]
     },
     {
-      titleKey: 'skills.categories.network',
-      icon: Network,
+      dir: 'network',
       skills: [
         { name: "TCP/IP", logo: "/logos/tcp-ip.png" },
         { name: "SSL/TLS", logo: "/logos/SSL-TLC.png" },
         { name: "Wireshark", logo: "/logos/Wireshark_Icon.png" },
-      ],
-      color: "from-blue-500 to-blue-600"
+      ]
     },
     {
-      titleKey: 'skills.categories.pentesting',
-      icon: Shield,
+      dir: 'pentesting',
       skills: [
         { name: "Nmap", logo: "/logos/nmap.png" },
         { name: "Burp Suite", logo: "/logos/burpsuite.jpg" },
@@ -125,158 +56,67 @@ const Skills = () => {
         { name: "SQLmap", logo: "/logos/sqlmap.png" },
         { name: "Gobuster", logo: "/logos/gobuster.png" },
         { name: "Netcat", logo: "/logos/netcat_v3.png" }
-      ],
-      color: "from-red-500 to-red-600"
+      ]
     },
     
     {
-      titleKey: 'skills.categories.fintech',
-      icon: Key,
+      dir: 'fintech',
       skills: [
         { name: "EMV", logo: "/logos/emv.png" },
         { name: "NFC", logo: "/logos/nfc.jpg" },
         { name: "SEPA", logo: "/logos/sepa.jpg" },
         { name: "ISO 7816", logo: "/logos/iso.png" }
-      ],
-      color: "from-yellow-500 to-orange-500"
+      ]
     },
     {
-      titleKey: 'skills.categories.devtools',
-      icon: Terminal,
+      dir: 'devtools',
       skills: [
         { name: "Git", logo: "/logos/git.png" },
         { name: "UML", logo: "/logos/uml.png" },
         { name: "Gnuplot", logo: "/logos/gnuplot.png" },
         { name: "pandas", logo: "/logos/pandas.png" }
-      ],
-      color: "from-indigo-500 to-purple-500"
+      ]
     }
   ]
 
-  const certifications = [
-    { name: "TryHackMe Pre Security", status: "Completed", descKey: 'skills.certs.preSecurity.description' },
-    { name: "TryHackMe Cyber Security 101", status: "Completed", descKey: 'skills.certs.cyberSec101.description' },
-    { name: "TryHackMe Jr Penetration Tester", status: "Completed", descKey: 'skills.certs.jrPentest.description' },
-    { name: "TryHackMe Web Fundamentals", status: "Completed", descKey: 'skills.certs.webFund.description' },
-    { name: "TryHackMe Top 2% Global Ranking", status: "Achievement", descKey: 'skills.certs.top2.description' },
-  ]
-
   return (
-    <section id="skills" className="py-20 bg-dark-900">
+    <section id="skills" className="py-20 bg-dark-900 border-t border-dark-700">
       <div className="container mx-auto px-4">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-7xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="mb-12">
-            <h2 className="section-title mb-4">
-              {t('skills.title')}
-            </h2>
-            <p className="section-lead">
-              {t('skills.subtitle')}
-            </p>
-          </motion.div>
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader cmd="tree ~/skills" title={t('skills.title')} lead={t('skills.subtitle')} />
 
-          {/* Skills Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {skillCategories.map((category, categoryIndex) => (
-              <motion.div
-                key={category.titleKey}
-                variants={itemVariants}
-                whileHover={{ scale: 1.02 }}
-                className="bg-dark-800 rounded-lg p-6 border border-dark-700 hover:border-primary-500 transition-all duration-300"
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[...skillCategories].sort((a, b) => Number(b.dir === 'pentesting') - Number(a.dir === 'pentesting')).map(category => (
+              <Window
+                key={category.dir}
+                className={category.dir === 'pentesting' ? 'md:col-span-2' : ''}
+                title={`~/skills/${category.dir}/`}
+                right={<span className="text-dark-500">{category.skills.length}</span>}
+                bodyClassName="p-4"
               >
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className={`p-3 rounded-lg bg-gradient-to-r ${category.color}`}>
-                    <category.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white">
-                    {t(category.titleKey)}
-                  </h3>
-                </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {category.skills.map((skill, skillIndex) => (
-                      <motion.div
-                        key={skill.name}
-                        whileHover={{ scale: 1.05, y: -2 }}
-                        className="bg-dark-700 hover:bg-dark-600 rounded-lg p-3 border border-dark-600 hover:border-primary-500/50 transition-all duration-200 group"
-                      >
-                        <div className="flex flex-col items-center text-center space-y-2">
-                          <div className="w-12 h-12 relative group-hover:scale-110 transition-transform duration-200">
-                            <Image
-                              src={skill.logo}
-                              alt={`${skill.name} logo`}
-                              fill
-                              className="object-contain"
-                              sizes="48px"
-                            />
-                          </div>
-                          <span className="text-gray-300 font-medium text-sm">
-                            {skill.name}
-                          </span>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-              </motion.div>
+                <h3 className="font-mono font-bold text-white mb-3">{t(`skills.categories.${category.dir}`)}</h3>
+                <ul className={`grid grid-cols-2 gap-2 ${category.dir === 'pentesting' ? 'sm:grid-cols-4' : ''}`}>
+                  {category.skills.map(skill => (
+                    <li
+                      key={skill.name}
+                      className="flex items-center gap-2 rounded-md border border-dark-700 bg-dark-900/60 px-2 py-1.5 hover:border-primary-500/60 transition-colors"
+                    >
+                      <span className="relative w-6 h-6 shrink-0 rounded bg-white/90 p-0.5">
+                        <Image src={skill.logo} alt="" fill className="object-contain p-0.5" sizes="24px" />
+                      </span>
+                      <span className="font-mono text-xs text-gray-300 truncate">{skill.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Window>
             ))}
           </div>
 
-          {/* Certifications */}
-          <motion.div variants={itemVariants} className="mb-16">
-            <h3 className="section-subtitle mb-8">
-              {t('skills.certTitle')}
-            </h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {certifications.map((cert, index) => (
-                <motion.div
-                  key={cert.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-dark-800 rounded-lg p-6 border border-dark-700 hover:border-primary-500 transition-all duration-300 text-center"
-                >
-                  <Award className="w-12 h-12 text-primary-500 mx-auto mb-4" />
-                  <h4 className="text-xl font-semibold text-white mb-2">
-                    {cert.name}
-                  </h4>
-                  <p className="text-primary-400 font-medium mb-3">
-                    {t(`skills.certStatus.${cert.status}`)}
-                  </p>
-                  <p className="text-gray-400 text-sm">
-                    {t(cert.descKey)}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Learning Philosophy */}
-          <motion.div
-            variants={itemVariants}
-            className="text-center"
-          >
-            <div className="bg-dark-800 border border-primary-500/30 rounded-lg p-8 max-w-4xl mx-auto">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                {t('skills.learningPhilosophyTitle')}
-              </h3>
-              <p className="text-lg text-white/90 leading-relaxed">
-                {t('skills.learningPhilosophy')}
-              </p>
-            </div>
-          </motion.div>
-        </motion.div>
+          <Comment title={t('skills.learningPhilosophyTitle')}>{t('skills.learningPhilosophy')}</Comment>
+        </div>
       </div>
     </section>
   )
 }
 
 export default Skills
-
-

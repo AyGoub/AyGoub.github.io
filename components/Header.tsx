@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext'
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { language, toggleLanguage, t } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,7 +79,7 @@ const Header = () => {
             {/* Language Toggle */}
             <div className="flex items-center border border-dark-600 rounded overflow-hidden text-xs font-mono">
               <button
-                onClick={() => language !== 'en' && toggleLanguage()}
+                onClick={() => setLanguage('en')}
                 className={`px-3 py-1 transition-colors duration-200 ${
                   language === 'en'
                     ? 'bg-primary-500 text-dark-900'
@@ -90,7 +90,7 @@ const Header = () => {
                 EN
               </button>
               <button
-                onClick={() => language !== 'fr' && toggleLanguage()}
+                onClick={() => setLanguage('fr')}
                 className={`px-3 py-1 transition-colors duration-200 ${
                   language === 'fr'
                     ? 'bg-primary-500 text-dark-900'

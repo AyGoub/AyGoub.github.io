@@ -1,26 +1,14 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import emailjs from '@emailjs/browser'
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-  Linkedin,
-  Twitter,
-  Send,
-  MessageSquare,
-  Calendar,
-  CheckCircle
-} from 'lucide-react'
+import { Github, Linkedin, Twitter, Send, CheckCircle, Calendar } from 'lucide-react'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { SectionHeader, Window } from '@/components/term'
+
+const EMAIL = 'ayoub.goubraim@ecole.ensicaen.fr'
 
 const Contact = () => {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true })
   const { t } = useLanguage()
   const [formData, setFormData] = useState({
     name: '',
@@ -30,25 +18,7 @@ const Contact = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1
-    }
-  }
+  const [error, setError] = useState(false)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -60,6 +30,7 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(false)
     
     try {
       
@@ -93,243 +64,141 @@ const Contact = () => {
     } catch (error) {
       console.error('Send error:', error)
       setIsSubmitting(false)
-      alert(t('contact.errorMsg'))
+      setError(true)
     }
   }
 
-  const contactInfo = [
-    { icon: Mail, labelKey: 'contact.email', value: 'ayoub.goubraim@ecole.ensicaen.fr', link: 'mailto:ayoub.goubraim@ecole.ensicaen.fr' },
-    { icon: Phone, labelKey: 'contact.phoneLabel', value: '+33 7 53 44 54 36', link: 'tel:+33753445436' },
-    { icon: MapPin, labelKey: 'contact.locationLabel', value: 'Caen, France', link: '#' },
+  const contactInfo: [string, string, string][] = [
+    ['email', EMAIL, `mailto:${EMAIL}`],
+    ['phone', '+33 7 53 44 54 36', 'tel:+33753445436'],
+    ['location', 'Caen, France', ''],
   ]
 
   const socialLinks = [
-    {
-      icon: Github,
-      label: "GitHub",
-      link: "https://github.com/AyGoub",
-      color: "hover:text-gray-300"
-    },
-    {
-      icon: Linkedin,
-      label: "LinkedIn",
-      link: "https://linkedin.com/in/ayoubgoubraim",
-      color: "hover:text-blue-400"
-    },
-    {
-      icon: Twitter,
-      label: "Twitter",
-      link: "https://twitter.com/aygoub",
-      color: "hover:text-blue-400"
-    }
+    { icon: Github, label: 'GitHub', link: 'https://github.com/AyGoub' },
+    { icon: Linkedin, label: 'LinkedIn', link: 'https://linkedin.com/in/ayoubgoubraim' },
+    { icon: Twitter, label: 'Twitter', link: 'https://twitter.com/aygoub' },
+  ]
+
+  const fields: { name: 'name' | 'email' | 'subject'; type: string; label: string; placeholder: string }[] = [
+    { name: 'name', type: 'text', label: t('contact.name'), placeholder: t('contact.namePlaceholder') },
+    { name: 'email', type: 'email', label: t('contact.email'), placeholder: t('contact.emailPlaceholder') },
+    { name: 'subject', type: 'text', label: t('contact.subject'), placeholder: t('contact.subjectPlaceholder') },
   ]
 
   return (
-    <section id="contact" className="py-20 bg-dark-900">
+    <section id="contact" className="py-20 bg-dark-900 border-t border-dark-700">
       <div className="container mx-auto px-4">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-6xl mx-auto"
-        >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="mb-12">
-            <h2 className="section-title mb-4">
-              {t('contact.title')}
-            </h2>
-            <p className="section-lead mb-8">
-              {t('contact.subtitle')}
-            </p>
-          </motion.div>
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader cmd="./contact.sh" title={t('contact.title')} lead={t('contact.subtitle')} />
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Information */}
-            <motion.div variants={itemVariants} className="space-y-8">
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] gap-6 items-start">
+            <div className="space-y-5">
               <div>
-                <h3 className="text-2xl font-semibold text-white mb-6">
-                  {t('contact.connectTitle')}
-                </h3>
-                <p className="text-gray-400 leading-relaxed mb-8">
-                  {t('contact.connectDesc')}
-                </p>
+                <h3 className="section-subtitle !text-xl mb-2">{t('contact.connectTitle')}</h3>
+                <p className="text-gray-400 leading-relaxed">{t('contact.connectDesc')}</p>
               </div>
 
-              {/* Contact Details */}
-              <div className="space-y-4">
-                {contactInfo.map((info, index) => (
-                  <motion.a
-                    key={info.labelKey}
-                    href={info.link}
-                    whileHover={{ scale: 1.02, x: 10 }}
-                    className="flex items-center space-x-4 p-4 bg-dark-800 rounded-lg border border-dark-700 hover:border-primary-500 transition-all duration-300"
-                  >
-                    <div className="p-3 bg-primary-600 rounded-lg">
-                      <info.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">{t(info.labelKey)}</p>
-                      <p className="text-white font-medium">{info.value}</p>
-                    </div>
-                  </motion.a>
+              <Window title="cat ~/.contact" bodyClassName="p-4 bg-[#050806] font-mono text-sm space-y-2">
+                {contactInfo.map(([key, value, link]) => (
+                  <div key={key} className="grid grid-cols-[7.5rem_minmax(0,1fr)] gap-2">
+                    <span className="text-amber-300">{t(`contact.${key === 'email' ? 'email' : key === 'phone' ? 'phoneLabel' : 'locationLabel'}`).toLowerCase()}</span>
+                    {link ? (
+                      <a href={link} className="text-sky-400 hover:text-sky-300 underline underline-offset-4 break-all">{value}</a>
+                    ) : (
+                      <span className="text-gray-300">{value}</span>
+                    )}
+                  </div>
                 ))}
-              </div>
+              </Window>
 
-              {/* Social Links */}
               <div>
-                <h4 className="text-lg font-semibold text-white mb-4">
-                  {t('contact.followMe')}
-                </h4>
-                <div className="flex space-x-4">
-                  {socialLinks.map((social, index) => (
-                    <motion.a
+                <p className="font-mono text-sm text-dark-400 mb-2">{t('contact.followMe')}</p>
+                <div className="flex gap-2">
+                  {socialLinks.map(social => (
+                    <a
                       key={social.label}
                       href={social.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      className={`p-3 bg-dark-800 rounded-lg border border-dark-700 hover:border-primary-500 transition-all duration-300 ${social.color}`}
+                      aria-label={social.label}
+                      className="btn-ghost !px-3"
                     >
-                      <social.icon className="w-5 h-5 text-gray-400" />
-                    </motion.a>
+                      <social.icon className="w-4 h-4" /> <span className="text-sm">{social.label}</span>
+                    </a>
                   ))}
                 </div>
               </div>
 
-              {/* Availability */}
-              <div className="bg-dark-800 border border-primary-500/30 rounded-lg p-6">
-                <h4 className="text-lg font-semibold text-white mb-2">
-                  {t('contact.available')}
-                </h4>
-                <p className="text-white/90 text-sm mb-3">
-                  {t('contact.availableDesc')}
+              <div className="border-l-2 border-primary-500/50 pl-4">
+                <p className="font-mono text-sm text-primary-400 mb-1 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" /> {t('contact.available')}
                 </p>
-                <div className="flex items-center space-x-2 text-white/80">
-                  <Calendar className="w-4 h-4" />
-                  <span className="text-sm">{t('contact.availableDate')}</span>
-                </div>
+                <p className="text-sm text-gray-400">{t('contact.availableDesc')}</p>
+                <p className="text-sm text-gray-300 mt-1 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-primary-400" /> {t('contact.availableDate')}
+                </p>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Contact Form */}
-            <motion.div variants={itemVariants}>
-              <div className="bg-dark-800 rounded-lg p-8 border border-dark-700">
-                <h3 className="text-2xl font-semibold text-white mb-6">
-                  {t('contact.sendMessage')}
-                </h3>
-                
-                {isSubmitted ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-8"
-                  >
-                    <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                    <h4 className="text-xl font-semibold text-white mb-2">
-                      {t('contact.successTitle')}
-                    </h4>
-                    <p className="text-gray-400">
-                      {t('contact.successDesc')}
+            <Window title={`./send_message.sh — ${t('contact.sendMessage')}`} bodyClassName="p-5 md:p-6">
+              {isSubmitted ? (
+                <div className="py-10 text-center font-mono">
+                  <CheckCircle className="w-12 h-12 text-primary-400 mx-auto mb-4" />
+                  <p className="text-primary-300 font-bold mb-1">[+] {t('contact.successTitle')}</p>
+                  <p className="text-gray-400 text-sm">{t('contact.successDesc')}</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {fields.slice(0, 2).map(f => (
+                      <div key={f.name}>
+                        <label htmlFor={f.name} className="block font-mono text-sm text-gray-300 mb-1.5">
+                          <span className="text-primary-500">--</span>{f.label.toLowerCase()}
+                        </label>
+                        <input id={f.name} name={f.name} type={f.type} value={formData[f.name]} onChange={handleInputChange} required placeholder={f.placeholder} className="term-input" />
+                      </div>
+                    ))}
+                  </div>
+                  <div>
+                    <label htmlFor="subject" className="block font-mono text-sm text-gray-300 mb-1.5">
+                      <span className="text-primary-500">--</span>{fields[2].label.toLowerCase()}
+                    </label>
+                    <input id="subject" name="subject" type="text" value={formData.subject} onChange={handleInputChange} required placeholder={fields[2].placeholder} className="term-input" />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="block font-mono text-sm text-gray-300 mb-1.5">
+                      <span className="text-primary-500">--</span>{t('contact.message').toLowerCase()}
+                    </label>
+                    <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={6} placeholder={t('contact.messagePlaceholder')} className="term-input resize-none" />
+                  </div>
+
+                  {error && (
+                    <p role="alert" className="font-mono text-sm text-red-400">
+                      [!] {t('ui.sendError')} <a href={`mailto:${EMAIL}`} className="underline">{EMAIL}</a>
                     </p>
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                          {t('contact.name')}
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors"
-                          placeholder={t('contact.namePlaceholder')}
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                          {t('contact.email')}
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors"
-                          placeholder={t('contact.emailPlaceholder')}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
-                        {t('contact.subject')}
-                      </label>
-                      <input
-                        type="text"
-                        id="subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors"
-                        placeholder={t('contact.subjectPlaceholder')}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                        {t('contact.message')}
-                      </label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        required
-                        rows={6}
-                        className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 transition-colors resize-none"
-                        placeholder={t('contact.messagePlaceholder')}
-                      />
-                    </div>
-                    
-                    <motion.button
-                      type="submit"
-                      disabled={isSubmitting}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          <span>{t('contact.sending')}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-5 h-5" />
-                          <span>{t('contact.send')}</span>
-                        </>
-                      )}
-                    </motion.button>
-                  </form>
-                )}
-              </div>
-            </motion.div>
+                  )}
+
+                  <button type="submit" disabled={isSubmitting} className="btn-primary w-full !py-3">
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-dark-900/30 border-t-dark-900 rounded-full animate-spin" />
+                        {t('contact.sending')}
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" /> {t('contact.send')}
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
+            </Window>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )
 }
 
 export default Contact
-
-
